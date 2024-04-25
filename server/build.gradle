@@ -25,6 +25,7 @@ dependencies {
     runtimeOnly 'io.micrometer:micrometer-registry-influx'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'org.springframework.kafka:spring-kafka'
 }
 
 tasks.named('test') {
