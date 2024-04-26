@@ -6,7 +6,7 @@ import Logo from "../../images/logo/logo.svg";
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     const location = useLocation();
     const { pathname } = location;
-
+    // 수정
     const trigger = useRef(null);
     const sidebar = useRef(null);
 
