@@ -63,7 +63,7 @@ const Header = (props) => {
                         action="https://formbold.com/s/unique_form_id"
                         method="POST"
                     >
-                        <div className="relative"></div>
+                        <div className="relative">오토카징</div>
                     </form>
                 </div>
 
