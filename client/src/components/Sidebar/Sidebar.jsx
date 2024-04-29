@@ -17,6 +17,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     );
 
     // close on click outside
+    // 테스트
+
     useEffect(() => {
         const clickHandler = ({ target }) => {
             if (!sidebar.current || !trigger.current) return;
