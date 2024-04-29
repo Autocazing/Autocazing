@@ -13,22 +13,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MenuEntity {
+public class IngredientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer menuId;
+    private Integer ingredientId;
     @Column(nullable = false)
-    private String menuName;
+    private String ingredientName;
     @Column(nullable = false)
-    private Integer menuPrice;
+    private Integer ingredientPrice;
     @Column(nullable = false)
-    private Boolean onEvent;
+    private Integer ingredientCapacity;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    //가게와 연관
+    //연관
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "store_id", nullable = false)
 //    private StoreEntity store;

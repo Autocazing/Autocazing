@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "orders")	// schema 설정 따로 x, public schema 내에 생성됨.
+@Table(name = "order")	// schema 설정 따로 x, public schema 내에 생성됨.
 
 public class OrderEntity {
     //기본키
@@ -31,9 +31,14 @@ public class OrderEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    //가게 ID 외래키설정
+//    가게 ID 외래키설정
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "store_id")
-//    private Store store;
+//    private StoreEntity storeEntity   ;
+
+
+    //OrderSpecific 테이블과 연관?
+//    @OneToMany(mappedBy = "order")
+//    private List<OrderSpecific> orderSpecifics;
 
 }

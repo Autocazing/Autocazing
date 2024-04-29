@@ -13,23 +13,30 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MenuEntity {
+public class MenuIngredientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer menuId;
+    private Integer id;
+
     @Column(nullable = false)
-    private String menuName;
-    @Column(nullable = false)
-    private Integer menuPrice;
-    @Column(nullable = false)
-    private Boolean onEvent;
+    private Integer quantity;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    //가게와 연관
+    //연관
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private StoreEntity store;
+//    @JoinColumn(name = "menu_id", referencedColumnName = "menuId")
+//    private MenuEntity menu;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "ingredient_id", referencedColumnName = "ingredientId")
+//    private IngredientEntity ingredient;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "vendor_id", referencedColumnName = "vendorId")
+//    private VendorEntity vendor;
 }

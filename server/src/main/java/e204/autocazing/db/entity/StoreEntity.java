@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "stores")
+@Table(name = "store")
 
 public class StoreEntity {
     //기본키
@@ -38,4 +38,6 @@ public class StoreEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+//    @OneToMany(mappedBy = "storeEntity")
+//    private List<Order> orders;
 }

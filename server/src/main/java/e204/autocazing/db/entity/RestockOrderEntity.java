@@ -13,23 +13,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MenuEntity {
+public class RestockOrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer menuId;
+    private Integer restockOrderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private StoreEntity store;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String menuName;
-    @Column(nullable = false)
-    private Integer menuPrice;
-    @Column(nullable = false)
-    private Boolean onEvent;
+    private Status status;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    //가게와 연관
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private StoreEntity store;
+    public enum Status {
+        WRITRING,ORDERED, ON_DELIVEREY,ARRIVED,COMPLETE
+    }
 }
