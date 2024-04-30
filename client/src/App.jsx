@@ -14,44 +14,48 @@ import MaterialManagement from "./pages/management/MaterialManagement";
 import MenuManagement from "./pages/management/MenuManagement";
 import StockManagement from "./pages/management/StockManagement";
 
+import DefaultLayout from "./layout/DefaultLayout";
+
 function App() {
     return (
         <div>
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/cafeData" element={<CafeData />}>
-                    <Route path="material" element={<Material />}></Route>
-                    <Route path="menu" element={<Menu />}></Route>
-                    <Route path="sales" element={<Sales />}></Route>
-                </Route>
-                <Route path="/order" element={<Order />}>
-                    <Route path="orderList" element={<OrderList />}></Route>
-                    <Route
-                        path="progressOrder"
-                        element={<ProgressOrder />}
-                    ></Route>
-                </Route>
-                <Route path="/cafeReport" element={<CafeReport />} />
-                <Route path="/management" element={<Management />}>
-                    <Route
-                        path="companyManagement"
-                        element={<CompanyManagement />}
-                    ></Route>
-                    <Route
-                        path="materialManagement"
-                        element={<MaterialManagement />}
-                    ></Route>
-                    <Route
-                        path="menuManagement"
-                        element={<MenuManagement />}
-                    ></Route>
-                    <Route
-                        path="stockManagement"
-                        element={<StockManagement />}
-                    ></Route>
-                </Route>
-            </Routes>
-            {/* <div className="text-3xl font-bold underline">hello</div> */}
+            <DefaultLayout>
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/cafeData" element={<CafeData />}>
+                        <Route path="material" element={<Material />}></Route>
+                        <Route path="menu" element={<Menu />}></Route>
+                        <Route path="sales" element={<Sales />}></Route>
+                    </Route>
+                    <Route path="/order" element={<Order />}>
+                        <Route path="orderList" element={<OrderList />}></Route>
+                        <Route
+                            path="progressOrder"
+                            element={<ProgressOrder />}
+                        ></Route>
+                    </Route>
+                    <Route path="/cafeReport" element={<CafeReport />} />
+                    <Route path="/management" element={<Management />}>
+                        <Route
+                            path="companyManagement"
+                            element={<CompanyManagement />}
+                        ></Route>
+                        <Route
+                            path="materialManagement"
+                            element={<MaterialManagement />}
+                        ></Route>
+                        <Route
+                            path="menuManagement"
+                            element={<MenuManagement />}
+                        ></Route>
+                        <Route
+                            path="stockManagement"
+                            element={<StockManagement />}
+                        ></Route>
+                    </Route>
+                </Routes>
+                {/* <div className="text-3xl font-bold underline">hello</div> */}
+            </DefaultLayout>
         </div>
     );
 }
