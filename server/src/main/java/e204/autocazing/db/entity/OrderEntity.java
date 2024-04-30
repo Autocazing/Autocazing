@@ -9,13 +9,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "order")	// schema 설정 따로 x, public schema 내에 생성됨.
+@Table(name = "orders")	// schema 설정 따로 x, public schema 내에 생성됨.
 
 public class OrderEntity {
     //기본키
@@ -31,14 +33,21 @@ public class OrderEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-//    가게 ID 외래키설정
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id")
-//    private StoreEntity storeEntity   ;
+    @ElementCollection
+    @CollectionTable(name = "order_specific", joinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderSpecific> orderSpecific;
+
+    @Embeddable
+    @Getter
+    @Setter
+    public class OrderSpecific {
+        private Integer menuId;
+        private int quantity;
+        private int price;
 
 
-    //OrderSpecific 테이블과 연관?
-//    @OneToMany(mappedBy = "order")
-//    private List<OrderSpecific> orderSpecifics;
-
+    }
 }
+
+
+
