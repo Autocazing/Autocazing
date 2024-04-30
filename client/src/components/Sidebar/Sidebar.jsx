@@ -78,7 +78,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <!-- Menu Item Dashboard --> */}
                             <li>
                                 <NavLink
-                                    to="/calendar"
+                                    to="/"
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                                         pathname.includes("calendar") &&
                                         "bg-graydark dark:bg-meta-4"
@@ -187,7 +187,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-elements"
+                                                            to="/cafeData/sales"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -201,7 +201,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/cafeData/material"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -215,7 +215,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/cafeData/menu"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -321,7 +321,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-elements"
+                                                            to="/order/progressOrder"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -335,7 +335,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/order/orderList"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -359,7 +359,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <!-- Menu Item Forms --> */}
                             <li>
                                 <NavLink
-                                    to="/tables"
+                                    to="/cafeReport"
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                                         pathname.includes("tables") &&
                                         "bg-graydark dark:bg-meta-4"
@@ -480,7 +480,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-elements"
+                                                            to="/management/companyManagement"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -494,7 +494,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/management/materialManagement"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -508,7 +508,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/management/menuManagement"
                                                             className={({
                                                                 isActive,
                                                             }) =>
@@ -522,7 +522,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
-                                                            to="/forms/form-layout"
+                                                            to="/management/stockManagement"
                                                             className={({
                                                                 isActive,
                                                             }) =>

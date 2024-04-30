@@ -1,5 +1,5 @@
-const ProgressiveOrder = () => {
+const ProgressOrder = () => {
     return <div>ProgressiveOrder</div>;
 };
 
-export default ProgressiveOrder;
+export default ProgressOrder;
