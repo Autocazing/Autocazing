@@ -1,7 +1,7 @@
-import CardDataStats from "../components/CardDataState";
-import ChartOne from "../components/ChartOne";
-import DefaultLayout from "../layout/DefaultLayout";
-const Test = () => {
+import CardDataStats from "../../components/CardDataState";
+import ChartOne from "../../components/ChartOne";
+import DefaultLayout from "../../layout/DefaultLayout";
+const Dashboard = () => {
     return (
         <DefaultLayout>
             <div>
@@ -119,4 +119,4 @@ const Test = () => {
     );
 };
 
-export default Test;
+export default Dashboard;
