@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: autocazing_apigateway
+  cloud:
+    gateway:
+      routes:
+        - id: test1-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/test1/**
+          filters:
+            - AddRequestHeader=first-request, first-request-header2
+            - AddResponseHeader=first-response, first-response-header2
+        - id: test2-service
+          uri: http://localhost:8083/
+          predicates:
+            - Path=/test2/**
+          filters:
+            - AddRequestHeader=second-request, second-request-header2
+            - AddResponseHeader=second-response, second-response-header2
