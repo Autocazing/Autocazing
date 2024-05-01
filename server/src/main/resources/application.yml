@@ -8,3 +8,8 @@ spring:
     url: jdbc:mysql://localhost:3306/autocazing?serverTimezone=Asia/Seoul
     username: root
     password: ssafy
+  output:
+    ansi:
+      enabled: always
+
+
