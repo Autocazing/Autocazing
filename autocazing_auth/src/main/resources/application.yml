@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: autocazing_auth
+  datasource:
+    url: jdbc:mysql://localhost:3306/autocazing?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ssafy
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQL8Dialect
