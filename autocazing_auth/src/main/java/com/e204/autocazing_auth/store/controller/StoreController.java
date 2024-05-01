@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.e204.autocazing_auth.config.security.JwtTokenProvider;
 import com.e204.autocazing_auth.db.entity.StoreEntity;
 import com.e204.autocazing_auth.db.repository.StoreRepository;
 
@@ -19,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreController {
 
 	private final PasswordEncoder passwordEncoder;
-	//private final JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenProvider jwtTokenProvider;
 	private final StoreRepository storeRepository;
 
 	@PostMapping("/register")
@@ -32,7 +33,7 @@ public class StoreController {
 			.build());
 	}
 
-	/*@PostMapping("/login")
+	@PostMapping("/login")
 	public String login(@RequestBody Map<String, String> store) {
 		StoreEntity storeEntity = storeRepository.findByLoginId(store.get("loginId"))
 			.orElseThrow(() -> new IllegalArgumentException("가입 되지 않은 아이디입니다"));
@@ -41,5 +42,5 @@ public class StoreController {
 		}
 
 		return jwtTokenProvider.createToken(storeEntity.getLoginId());
-	}*/
+	}
 }
