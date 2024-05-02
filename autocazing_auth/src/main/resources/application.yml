@@ -1,6 +1,6 @@
 spring:
   application:
-    name: autocazing_auth
+    name: auth-server
   datasource:
     url: jdbc:mysql://localhost:3306/autocazing?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
@@ -9,3 +9,5 @@ spring:
     hibernate:
       ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  config:
+    import: optional:configserver:http://config-server:8888
