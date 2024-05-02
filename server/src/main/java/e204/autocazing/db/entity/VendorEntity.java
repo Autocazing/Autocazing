@@ -11,14 +11,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "Vendor")
 public class VendorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer vendorId;
+
     @Column(nullable = false)
     private String vendorName;
+
     @Column(nullable = false)
     private String vendorManager;
+
     @Column(nullable = false)
     private String vendorManagerContact;
+
+    @Column(nullable = false)
+    private String vendorDescription;
+
 }

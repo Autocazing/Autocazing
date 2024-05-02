@@ -19,6 +19,7 @@ public class OrderRequestDto {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderDetailDto {
         private Integer menuId; // 메뉴 ID

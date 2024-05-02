@@ -13,13 +13,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "menuIngredient")
+@IdClass(MenuIngredientId.class) //복합 키 클래스를 지정하기.
 public class MenuIngredientEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private MenuEntity menu;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "ingredient_id")
+    private IngredientEntity ingredient;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer capacity; //메뉴에 들어가는 재료의 양
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

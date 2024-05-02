@@ -40,7 +40,9 @@ public class OrderEntity {
     @Embeddable
     @Getter
     @Setter
-    public class OrderSpecific {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderSpecific {
         private Integer menuId;
         private int quantity;
         private int price;

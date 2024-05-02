@@ -57,7 +57,7 @@ public class OrderService {
         OrderEntity orderEntity = new OrderEntity();
         List<OrderEntity.OrderSpecific> orderSpecifics = orderRequestDto.getOrderDetails().stream()
                 .map(detail -> {
-                    OrderEntity.OrderSpecific specific = new OrderEntity().new OrderSpecific(); // 인스턴스 생성 방법을 주목
+                    OrderEntity.OrderSpecific specific = new OrderEntity.OrderSpecific(); // 인스턴스 생성 방법을 주목
                     specific.setMenuId(detail.getMenuId());
                     specific.setQuantity(detail.getQuantity());
                     specific.setPrice(detail.getPrice());
