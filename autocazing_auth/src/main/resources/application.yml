@@ -1,10 +1,8 @@
 spring:
   application:
     name: auth-server
-  datasource:
-    url: jdbc:mysql://localhost:3306/autocazing?characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: ssafy
+  profiles:
+    active: ${profile}
   jpa:
     hibernate:
       ddl-auto: create
@@ -13,11 +11,3 @@ spring:
     import: optional:configserver:http://config-server:8888
 server:
   port: 8085
-eureka:
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.instance_id:${random.value}}
