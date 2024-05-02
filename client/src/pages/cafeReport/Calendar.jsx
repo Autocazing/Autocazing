@@ -1,7 +1,13 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./Calendar.css";
-const Calendar = () => {
+const Calendar = ({ reportData }) => {
+    const events = reportData.map((data) => ({
+        title: `${data.date} 리포트`,
+        start: data.date,
+        allDay: true,
+    }));
+
     return (
         <div>
             <FullCalendar
@@ -9,6 +15,7 @@ const Calendar = () => {
                 plugins={[dayGridPlugin]}
                 showNonCurrentDates={false}
                 contentHeight={600}
+                events={events}
             />
         </div>
     );
