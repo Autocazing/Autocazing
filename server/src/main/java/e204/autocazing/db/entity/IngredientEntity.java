@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,15 +35,14 @@ public class IngredientEntity {
     private Integer minimumCount;
 
     @Column(nullable = false)
-    private Long deliveryTime;
+    private Integer deliveryTime;
 
     @Column(nullable = false)
     private Integer orderCount;
 
-    @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "ingredient")

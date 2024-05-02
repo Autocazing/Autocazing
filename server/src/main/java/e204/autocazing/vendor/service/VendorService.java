@@ -16,13 +16,13 @@ public class VendorService {
     @Autowired
     private VendorRepository vendorRepository;
 
-    public VendorEntity createVendor(PostVendorDto postVendorDto) {
+    public void createVendor(PostVendorDto postVendorDto) {
         VendorEntity vendorEntity = new VendorEntity();
         vendorEntity.setVendorName(postVendorDto.getVendorName());
         vendorEntity.setVendorManager(postVendorDto.getVendorManager());
         vendorEntity.setVendorManagerContact(postVendorDto.getVendorManagerContact());
         vendorEntity.setVendorDescription(postVendorDto.getVendorDescription());
-        return vendorRepository.save(vendorEntity);
+        vendorRepository.save(vendorEntity);
 
     }
 

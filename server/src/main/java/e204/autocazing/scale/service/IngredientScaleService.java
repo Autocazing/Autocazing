@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 public class IngredientScaleService {
     @Autowired
     private IngredientScaleRepository ingredientScaleRepository;
-    public IngredientScaleEntity createIngredientScale(PostIngredientScaleDto postScaleDto) {
+    public void createIngredientScale(PostIngredientScaleDto postScaleDto) {
         IngredientScaleEntity postScale = new IngredientScaleEntity();
         postScale.setUnit(postScaleDto.getUnit());
-        return ingredientScaleRepository.save(postScale);
+        ingredientScaleRepository.save(postScale);
     }
 
     public IngredientScaleDto updateIngredientScale(Integer scaleId, PatchIngredientScaleDto patchIngredientScaleDto) {
