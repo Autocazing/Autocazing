@@ -1,14 +1,28 @@
 import CardDataStats from "../../components/CardDataState";
 import ChartOne from "../../components/ChartOne";
+
+const date = new Date();
+
+const year = date.getFullYear();
+const month = date.getMonth();
+const day = date.getDate();
+
+const date2 = new Date(year, month, day - 1);
+const date3 = new Date(year, month, 1);
+
+const today = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+const yesterday = `${date2.getFullYear()}.${date2.getMonth()}.${date2.getDate()}`;
+const curmonth = `${date3.getFullYear()}.${date3.getMonth()}.${date3.getDate()} ~ ${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+
 const Dashboard = () => {
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
                 <CardDataStats
-                    title="Total views"
-                    total="$3.456K"
-                    rate="0.43%"
-                    levelUp
+                    title="금일 매출 현황"
+                    total="314,320"
+                    isNum={true}
+                    Date={today}
                 >
                     <svg
                         className="fill-primary dark:fill-white"
@@ -29,10 +43,10 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="Total Profit"
-                    total="$45,2K"
-                    rate="4.35%"
-                    levelUp
+                    title="전일 매출"
+                    total="263,100"
+                    isNum={true}
+                    Date={yesterday}
                 >
                     <svg
                         className="fill-primary dark:fill-white"
@@ -57,10 +71,10 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="Total Product"
-                    total="2.450"
-                    rate="2.59%"
-                    levelUp
+                    title="당월 매출"
+                    total="6,130,340"
+                    isNum={true}
+                    Date={curmonth}
                 >
                     <svg
                         className="fill-primary dark:fill-white"
@@ -81,10 +95,12 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="Total Users"
-                    total="3.456"
-                    rate="0.95%"
-                    levelDown
+                    title="금일 방문 인원"
+                    total="122"
+                    isNum={false}
+                    Date={today}
+                    rate="100"
+                    levelUp
                 >
                     <svg
                         className="fill-primary dark:fill-white"
