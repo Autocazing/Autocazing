@@ -1,6 +1,6 @@
-import OrderListTable from "../../components/order/OrderListTable";
+import CartListTable from "../../components/order/CartListTable";
 
-const OrderList = () => {
+const CartList = () => {
     return (
         <>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -12,9 +12,9 @@ const OrderList = () => {
                     <li className="font-bold text-primary">장바구니</li>
                 </ol>
             </div>
-            <OrderListTable />
+            <CartListTable />
         </>
     );
 };
 
-export default OrderList;
+export default CartList;

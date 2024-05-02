@@ -4,7 +4,7 @@ import Material from "./pages/cafeData/Material";
 import Menu from "./pages/cafeData/Menu";
 import Sales from "./pages/cafeData/Sales";
 import CafeData from "./pages/cafeData/CafeData";
-import OrderList from "./pages/order/OrderList";
+import CartList from "./pages/order/CartList";
 import ProgressOrder from "./pages/order/ProgressOrder";
 import Order from "./pages/order/Order";
 import CafeReport from "./pages/cafeReport/CafeReport";
@@ -28,7 +28,7 @@ function App() {
                         <Route path="sales" element={<Sales />}></Route>
                     </Route>
                     <Route path="/order" element={<Order />}>
-                        <Route path="orderList" element={<OrderList />}></Route>
+                        <Route path="orderList" element={<CartList />}></Route>
                         <Route
                             path="progressOrder"
                             element={<ProgressOrder />}
