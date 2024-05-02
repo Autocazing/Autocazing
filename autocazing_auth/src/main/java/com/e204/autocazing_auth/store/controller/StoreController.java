@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.e204.autocazing_auth.config.security.JwtTokenProvider;
 import com.e204.autocazing_auth.db.entity.StoreEntity;
 import com.e204.autocazing_auth.db.repository.StoreRepository;
+import com.e204.autocazing_auth.store.dto.StoreRequestDto;
+import com.e204.autocazing_auth.store.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,15 +24,11 @@ public class StoreController {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final StoreRepository storeRepository;
+	private final StoreService storeService;
 
 	@PostMapping("/register")
-	public StoreEntity register(@RequestBody Map<String, String> store) {
-
-		return storeRepository.save(StoreEntity.builder()
-			.loginId(store.get("loginId"))
-			.password(passwordEncoder.encode(store.get("password")))
-			.storeName(store.get("storeName"))
-			.build());
+	public StoreEntity register(@RequestBody StoreRequestDto storeRequestDto) {
+		return storeService.createStore(storeRequestDto);
 	}
 
 	@PostMapping("/login")
