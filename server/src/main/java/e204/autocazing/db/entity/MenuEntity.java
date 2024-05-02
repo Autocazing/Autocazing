@@ -30,10 +30,9 @@ public class MenuEntity {
     @Column(nullable = false)
     private Boolean onEvent;
 
-    @Column(updatable = false)
+
     @CreationTimestamp
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
@@ -42,9 +41,9 @@ public class MenuEntity {
 
 
     //가게와 연관
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private StoreEntity store;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private StoreEntity store;
 
 
 }
