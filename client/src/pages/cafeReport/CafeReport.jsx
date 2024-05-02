@@ -1,3 +1,5 @@
+import Calendar from "./Calendar";
+
 const CafeReport = () => {
     return (
         <div>
@@ -10,6 +12,8 @@ const CafeReport = () => {
                     <li className="font-bold text-primary">리포트</li>
                 </ol>
             </div>
+
+            <Calendar />
         </div>
     );
 };
