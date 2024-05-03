@@ -1,5 +1,6 @@
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
+import testmilk from "../../images/management/testmilk.jpg";
 
 const StockList = [
     // 테스트용
@@ -131,9 +132,8 @@ const StockTable = () => {
                         key={key}
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <div className="flex-shrink-0">
-                                사진
-                                {/* <img src={brand.logo} alt="Brand" /> */}
+                            <div className="flex-shrink-0 h-1- w-10">
+                                <img src={testmilk} alt="tmp"></img>
                             </div>
                             <p className="hidden text-black dark:text-white sm:block">
                                 {stock.name}
