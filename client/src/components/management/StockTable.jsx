@@ -5,78 +5,92 @@ import testmilk from "../../images/management/testmilk.jpg";
 const StockList = [
     // 테스트용
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 3,
         PRcount: 5,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-29",
         amout: 7,
         PRcount: 5,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-05-02",
         amout: 11,
         PRcount: 5,
     },
     {
+        image: testmilk,
         name: "원두(2KG)",
         expiration: "2024-04-27",
         amout: 8,
         PRcount: 3,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 2,
         PRcount: 0,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-05-02",
         amout: 11,
         PRcount: 5,
     },
     {
+        image: testmilk,
         name: "원두(2KG)",
         expiration: "2024-04-27",
         amout: 8,
         PRcount: 3,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 2,
         PRcount: 0,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 2,
         PRcount: 0,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-05-02",
         amout: 11,
         PRcount: 5,
     },
     {
+        image: testmilk,
         name: "원두(2KG)",
         expiration: "2024-04-27",
         amout: 8,
         PRcount: 3,
     },
     {
+        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 2,
         PRcount: 0,
     },
 ];
+
+const excelsample = () => {};
 
 const StockTable = () => {
     return (
@@ -85,8 +99,14 @@ const StockTable = () => {
                 <h4 className="mb-6 text-xl font-semibold text-black dark:text-white flex-row">
                     Stock List
                 </h4>
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    onClick={excelsample}
+                >
+                    엑셀 에제
+                </button>
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                    재고추가
+                    엑셀 추가
                 </button>
             </div>
 
@@ -133,7 +153,7 @@ const StockTable = () => {
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
                             <div className="flex-shrink-0 h-1- w-10">
-                                <img src={testmilk} alt="tmp"></img>
+                                <img src={stock.image} alt="tmp"></img>
                             </div>
                             <p className="hidden text-black dark:text-white sm:block">
                                 {stock.name}
