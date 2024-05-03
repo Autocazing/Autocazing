@@ -4,6 +4,7 @@ import CompanyManagementModal from "./CompanyManagementModal";
 
 const CompanyManagement = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
     return (
         <>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

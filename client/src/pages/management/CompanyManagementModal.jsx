@@ -1,4 +1,6 @@
 import Modal from "react-modal";
+import { useState } from "react";
+import closeIcon from "../../images/icon/close.svg";
 
 const customStyles = {
     overlay: {
@@ -12,7 +14,7 @@ const customStyles = {
     },
     content: {
         width: "30rem",
-        height: "70%",
+        height: "65%",
         zIndex: "150",
         position: "absolute",
         top: "50%",
@@ -24,12 +26,17 @@ const customStyles = {
         padding: "20px",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         overflow: "auto",
     },
 };
 
 const CompanyManagementModal = ({ isOpen, onClose }) => {
+    const [companyPostData, setCompanyPostData] = useState({
+        companyName: "",
+        name: "",
+        email: "",
+    });
+
     return (
         <Modal
             isOpen={isOpen}
@@ -38,20 +45,65 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
             contentLabel="Add Company"
             ariaHideApp={false}
         >
-            <div>
-                <div>
-                    <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                        업체추가
-                    </h1>
-                </div>
+            <div className="flex justify-end">
+                <button
+                    onClick={onClose}
+                    style={{
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                    }}
+                    aria-label="Close modal"
+                >
+                    <img
+                        src={closeIcon}
+                        alt="Close"
+                        style={{ width: "24px", height: "24px" }}
+                    />
+                </button>
             </div>
+            <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
+                업체추가
+            </h1>
+            <form action="#">
+                <div className="p-6.5">
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            업체명
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="업체명을 입력해주세요."
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
 
-            <button
-                onClick={onClose}
-                className="mt-auto mx-auto inline-flex items-center justify-center rounded-md bg-primary py-2 px-4 text-center font-medium text-white hover:bg-opacity-90 focus:outline-none"
-            >
-                닫기
-            </button>
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            담당자 이름
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="담당자 이름을 입력해주세요."
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            연락처 <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            placeholder="담당자 연락처를 입력해주세요."
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
+
+                    <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
+                        추가하기
+                    </button>
+                </div>
+            </form>
         </Modal>
     );
 };
