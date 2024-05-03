@@ -37,6 +37,16 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
         email: "",
     });
 
+    // 추가하기 버ㅌ느 누르면 companyPostData axios Post로 보내기
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCompanyPostData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+
+        // console.log(companyPostData);
+    };
     return (
         <Modal
             isOpen={isOpen}
@@ -73,6 +83,9 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="text"
+                            name="companyName"
+                            value={companyPostData.companyName}
+                            onChange={handleChange}
                             placeholder="업체명을 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -84,6 +97,9 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="text"
+                            name="name"
+                            value={companyPostData.name}
+                            onChange={handleChange}
                             placeholder="담당자 이름을 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -94,6 +110,9 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="email"
+                            name="email"
+                            onChange={handleChange}
+                            value={companyPostData.email}
                             placeholder="담당자 연락처를 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
