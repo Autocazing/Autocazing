@@ -9,14 +9,15 @@ public class FilterConfig {
 	@Bean
 	public RouteLocator gatewayRoutes(RouteLocatorBuilder builder){
 		return builder.routes()
-			.route(r -> r.path("/test1/**")
-				.filters(f -> f.addRequestHeader("first-request","first-request-header2")
-					.addResponseHeader("first-response","first-response-header2"))
-				.uri("lb://Test1Discovery"))
-			.route(r -> r.path("/test2/**")
-				.filters(f -> f.addRequestHeader("second-request","second-request-header2")
-					.addResponseHeader("second-response","second-response-header2"))
-				.uri("lb://Test2Discovery"))
+			.route(r -> r.path("/api/menus/**","/api/stock/**","/api/ingredients/**"
+					,"/api/restock/**","/api/sales/**","/api/orders/**","/api/vendors/**")
+				.uri("lb://server"))
+			.route(r -> r.path("/api/alerts/**")
+				.uri("lb://alert-service"))
+			.route(r -> r.path("/api/reports/**")
+				.uri("lb://solution-service"))
+			.route(r -> r.path("/api/users/**")
+				.uri("lb://auth-server"))
 			.build();
 	}
 }
