@@ -4,6 +4,15 @@ import Sidebar from "../components/Sidebar/Sidebar";
 
 const DefaultLayout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const isLoginPage = window.location.pathname === "/login";
+
+    if (isLoginPage) {
+        return (
+            <div className="dark:bg-boxdark-2 dark:text-bodydark">
+                {children}
+            </div>
+        );
+    }
 
     return (
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
