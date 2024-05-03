@@ -1,5 +1,8 @@
 package com.e204.autocazing_apigateway;
 
+import java.nio.charset.StandardCharsets;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
@@ -19,6 +22,10 @@ import reactor.core.publisher.Mono;
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
 	Environment env;
+
+	@Value("${token.secret}")
+	private String secret;
+
 	public AuthorizationHeaderFilter(Environment env) {
 		super(Config.class);
 		this.env = env;
@@ -48,9 +55,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 	private boolean isJwtValid(String jwt) {
 		boolean returnValue = true;
 		String subject = null;
-
 		try {
-			subject = Jwts.parserBuilder().setSigningKey("token.secret").build()
+			byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
+			subject = Jwts.parserBuilder().setSigningKey(secretBytes).build()
 				.parseClaimsJws(jwt).getBody().getSubject();
 		} catch(Exception exception) {
 			returnValue = false;
@@ -58,6 +65,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
 		if(subject == null || subject.isEmpty())
 			returnValue=false;
+
 		return returnValue;
 	}
 
