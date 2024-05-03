@@ -144,8 +144,8 @@ const excelsample = async () => {
 
     secondRow.getCell(2).value = "우유(1L)";
     secondRow.getCell(3).value = "2024-04-27";
-    secondRow.getCell(4).value = "3";
-    secondRow.getCell(5).value = "5";
+    secondRow.getCell(4).value = 3;
+    secondRow.getCell(5).value = 5;
 
     // 엑셀 파일로 저장
     workbook.xlsx.writeBuffer().then((buffer) => {
