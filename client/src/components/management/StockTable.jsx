@@ -113,6 +113,15 @@ const excelsample = async () => {
         "발주예정수량",
     ]);
 
+    ["A1", "B1", "C1", "D1"].map((key) => {
+        worksheet.getCell(key).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "59b0fc" },
+        };
+        return null;
+    });
+
     StockList.map((stock, idx) => {
         const Row = worksheet.addRow([]);
         Row.getCell(1).value = stock.name;
@@ -136,6 +145,8 @@ const excelsample = async () => {
     });
 };
 
+const excelupload = () => {};
+
 const StockTable = () => {
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -149,7 +160,10 @@ const StockTable = () => {
                 >
                     엑셀 에제
                 </button>
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    onClick={excelupload}
+                >
                     엑셀 추가
                 </button>
             </div>
