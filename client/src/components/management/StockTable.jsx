@@ -113,11 +113,25 @@ const fileselect = (e) => {
         await workbook.xlsx.load(data); // 엑셀 파일 로드
 
         const worksheet = workbook.getWorksheet(1);
+        const jsonData = [];
 
         // 여기서 데이터 처리해야함
         worksheet.eachRow((row, rowNumber) => {
-            console.log(`Row ${rowNumber} = ${JSON.stringify(row.values)}`);
+            if (rowNumber === 1) return;
+            const rowData = row.values.filter((value) => value != null);
+            const [name, expiration, amount, PRcount] = rowData.slice(0);
+
+            const item = {
+                name,
+                expiration,
+                amount,
+                PRcount,
+            };
+
+            jsonData.push(item);
         });
+
+        console.log(jsonData);
     };
 
     // 파일을 ArrayBuffer로 읽음
