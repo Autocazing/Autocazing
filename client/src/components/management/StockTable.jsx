@@ -41,66 +41,9 @@ const StockList = [
         amout: 2,
         PRcount: 0,
     },
-    {
-        image: testmilk,
-        name: "우유(1L)",
-        expiration: "2024-05-02",
-        amout: 11,
-        PRcount: 5,
-    },
-    {
-        image: testmilk,
-        name: "원두(2KG)",
-        expiration: "2024-04-27",
-        amout: 8,
-        PRcount: 3,
-    },
-    {
-        image: testmilk,
-        name: "우유(1L)",
-        expiration: "2024-04-27",
-        amout: 2,
-        PRcount: 0,
-    },
-    {
-        image: testmilk,
-        name: "우유(1L)",
-        expiration: "2024-04-27",
-        amout: 2,
-        PRcount: 0,
-    },
-    {
-        image: testmilk,
-        name: "우유(1L)",
-        expiration: "2024-05-02",
-        amout: 11,
-        PRcount: 5,
-    },
-    {
-        image: testmilk,
-        name: "원두(2KG)",
-        expiration: "2024-04-27",
-        amout: 8,
-        PRcount: 3,
-    },
-    {
-        image: testmilk,
-        name: "우유(1L)",
-        expiration: "2024-04-27",
-        amout: 2,
-        PRcount: 0,
-    },
 ];
 
 const excelsample = async () => {
-    // 이미지를 ArrayBuffer로 변환
-    const response = await fetch(testmilk);
-    const imageBlob = await response.blob();
-    const imageArrayBuffer = await new Response(imageBlob).arrayBuffer();
-
-    // ArrayBuffer를 base64로 변환
-    const base64String = arrayBufferToBase64(imageArrayBuffer);
-
     // 엑셀 워크북 생성
     const workbook = new ExcelJS.Workbook();
 
@@ -115,37 +58,35 @@ const excelsample = async () => {
 
     // 행 추가 (품목명, 유통기한, 총량, 발주예정수량)
     const firstRow = worksheet.addRow([
-        "품목명(사진-이름)",
-        "",
+        "품목명",
         "유통기한",
         "총량",
         "발주예정수량",
+        "*추가할 재고를 예시 형식에 맞게 2행부터 작성",
     ]);
 
-    worksheet.mergeCells("A1:B1");
-
-    // 이미지와 이름 삽입
-    const secondRow = worksheet.addRow([]);
-    const imageId = workbook.addImage({
-        base64: base64String,
-        extension: "jpeg",
+    ["A1", "B1", "C1", "D1"].map((key) => {
+        worksheet.getCell(key).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "59b0fc" },
+        };
+        return null;
     });
 
-    const tmp = worksheet.getRow(2);
+    worksheet.getCell("E1").font = {
+        bold: true,
+    };
 
-    // 두 번째 행의 높이를 늘리기
-    tmp.height = 50; // 높이를 적절한 값으로 설정
+    StockList.map((stock, idx) => {
+        const Row = worksheet.addRow([]);
+        Row.getCell(1).value = stock.name;
+        Row.getCell(2).value = stock.expiration;
+        Row.getCell(3).value = stock.amout;
+        Row.getCell(4).value = stock.PRcount;
 
-    worksheet.addImage(imageId, {
-        tl: { col: 0, row: 1 }, // 이미지 삽입 위치 지정
-        br: { col: 1, row: 2 }, // 이미지 삽입 위치 지정
-        editAs: "oneCell", // 이미지 사이즈 조정
+        return null;
     });
-
-    secondRow.getCell(2).value = "우유(1L)";
-    secondRow.getCell(3).value = "2024-04-27";
-    secondRow.getCell(4).value = 3;
-    secondRow.getCell(5).value = 5;
 
     // 엑셀 파일로 저장
     workbook.xlsx.writeBuffer().then((buffer) => {
@@ -160,13 +101,41 @@ const excelsample = async () => {
     });
 };
 
-const arrayBufferToBase64 = (arrayBuffer) => {
-    const bytes = new Uint8Array(arrayBuffer);
-    let binary = "";
-    for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
+const fileselect = (e) => {
+    const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
+
+    //파일 읽기
+    const workbook = new ExcelJS.Workbook();
+    const render = new FileReader();
+
+    render.onload = async (e) => {
+        const data = new Uint8Array(e.target.result);
+        await workbook.xlsx.load(data); // 엑셀 파일 로드
+
+        const worksheet = workbook.getWorksheet(1);
+        const jsonData = [];
+
+        // 여기서 데이터 처리해야함
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return;
+            const rowData = row.values.filter((value) => value != null);
+            const [name, expiration, amount, PRcount] = rowData.slice(0);
+
+            const item = {
+                name,
+                expiration,
+                amount,
+                PRcount,
+            };
+
+            jsonData.push(item);
+        });
+
+        console.log(jsonData);
+    };
+
+    // 파일을 ArrayBuffer로 읽음
+    render.readAsArrayBuffer(selectedfile);
 };
 
 const StockTable = () => {
@@ -182,9 +151,7 @@ const StockTable = () => {
                 >
                     엑셀 에제
                 </button>
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                    엑셀 추가
-                </button>
+                <input type="file" onChange={fileselect} />
             </div>
 
             <div
