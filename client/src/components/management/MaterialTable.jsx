@@ -41,7 +41,10 @@ const MaterialTable = () => {
                 </button>
             </div>
 
-            <div className="flex flex-col">
+            <div
+                className="flex flex-col overflow-auto"
+                style={{ height: "35rem" }}
+            >
                 <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">

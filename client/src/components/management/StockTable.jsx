@@ -33,6 +33,48 @@ const StockList = [
         amout: 2,
         PRcount: 0,
     },
+    {
+        name: "우유(1L)",
+        expiration: "2024-05-02",
+        amout: 11,
+        PRcount: 5,
+    },
+    {
+        name: "원두(2KG)",
+        expiration: "2024-04-27",
+        amout: 8,
+        PRcount: 3,
+    },
+    {
+        name: "우유(1L)",
+        expiration: "2024-04-27",
+        amout: 2,
+        PRcount: 0,
+    },
+    {
+        name: "우유(1L)",
+        expiration: "2024-04-27",
+        amout: 2,
+        PRcount: 0,
+    },
+    {
+        name: "우유(1L)",
+        expiration: "2024-05-02",
+        amout: 11,
+        PRcount: 5,
+    },
+    {
+        name: "원두(2KG)",
+        expiration: "2024-04-27",
+        amout: 8,
+        PRcount: 3,
+    },
+    {
+        name: "우유(1L)",
+        expiration: "2024-04-27",
+        amout: 2,
+        PRcount: 0,
+    },
 ];
 
 const StockTable = () => {
@@ -47,7 +89,10 @@ const StockTable = () => {
                 </button>
             </div>
 
-            <div className="flex flex-col">
+            <div
+                className="flex flex-col overflow-auto"
+                style={{ height: "35rem" }}
+            >
                 <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
                     <div className="p-2.5 xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
