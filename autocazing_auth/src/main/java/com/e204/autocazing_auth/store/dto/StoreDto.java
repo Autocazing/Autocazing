@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreRequestDto {
+public class StoreDto {
 	private Integer storeId;
 	private String loginId;
 	private String password;

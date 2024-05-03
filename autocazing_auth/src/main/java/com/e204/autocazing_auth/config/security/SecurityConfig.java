@@ -18,27 +18,46 @@ import com.e204.autocazing_auth.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
-public class WebSecurity {
+public class SecurityConfig {
+	private final StoreService storeService;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final Environment env;
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+		AuthenticationManager authenticationManager = getAuthenticationFilter(http);
+
 		http
 			.csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
-			.headers(
-				headersConfigurer ->
-					headersConfigurer
-						.frameOptions(
-							HeadersConfigurer.FrameOptionsConfig::sameOrigin
-						)
-			)
 			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입 api만 권한 없어도 접근 가능
 				.requestMatchers("/api/users/login").permitAll()
 				.requestMatchers("/api/users/register").permitAll()
 				.anyRequest().authenticated()
+			)
+			.authenticationManager(authenticationManager)
+			.addFilter(getAuthenticationFilter(authenticationManager))
+			.headers(
+			headersConfigurer ->
+				headersConfigurer
+					.frameOptions(
+						HeadersConfigurer.FrameOptionsConfig::sameOrigin
+					)
 			);
 
 		return http.build();
 	}
 
+	private AuthenticationManager getAuthenticationFilter(HttpSecurity http) throws Exception {
+
+		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.userDetailsService(storeService).passwordEncoder(bCryptPasswordEncoder);
+		return authenticationManagerBuilder.build();
+	}
+
+	private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+		return new AuthenticationFilter(authenticationManager, storeService, env);
+	}
 }
