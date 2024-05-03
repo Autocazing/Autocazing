@@ -6,36 +6,43 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Config> {
-	public CustomFilter() {
+public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+	public GlobalFilter() {
 		super(Config.class);
 	}
 
 	@Override
 	public GatewayFilter apply(Config config) {
-		//Pre Filter
+		// Global Pre Filter
 		return ((exchange, chain) -> {
 			ServerHttpRequest request = exchange.getRequest();
 			ServerHttpResponse response = exchange.getResponse();
 
-			log.info("Custom PRE filter: request uri -> {}", request.getId());
-			//System.out.println("Custom PRE filter: request uri : "+ request.getId());
+			log.info("Global Filter baseMessage: {}}", config.getBaseMessage());
 
-			//Custom Post Filter
+			if (config.isPreLogger()) {
+				log.info("Global Filter Start: request id -> {}", request.getId());
+			}
+
+			// Global Post Filter
 			return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-				log.info("Custom POST filter: response code -> {}", response.getStatusCode());
-				//System.out.println("Custom POST filter: response code : "+ response.getStatusCode());
-				//System.out.println("Custom POST filter: response token : "+ response.getHeaders().get("token"));
+				if (config.isPostLogger()) {
+					log.info("Global Filter End: response code -> {}", response.getStatusCode());
+				}
 			}));
 		});
 	}
 
+	@Data
 	public static class Config {
-
+		private String baseMessage;
+		private boolean preLogger;
+		private boolean postLogger;
 	}
 }
