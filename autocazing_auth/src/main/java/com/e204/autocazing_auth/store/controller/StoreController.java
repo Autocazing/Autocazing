@@ -15,10 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/users")
 public class StoreController {
-
-	// private final PasswordEncoder passwordEncoder;
-	// private final JwtTokenProvider jwtTokenProvider;
-	// private final StoreRepository storeRepository;
 	private final StoreService storeService;
 
 	@PostMapping("/register")
@@ -26,14 +22,4 @@ public class StoreController {
 		return storeService.createStore(storeDto);
 	}
 
-	// @PostMapping("/login")
-	// public String login(@RequestBody Map<String, String> store) {
-	// 	StoreEntity storeEntity = storeRepository.findByLoginId(store.get("loginId"))
-	// 		.orElseThrow(() -> new IllegalArgumentException("가입 되지 않은 아이디입니다"));
-	// 	if (!passwordEncoder.matches(store.get("password"), storeEntity.getPassword())) {
-	// 		throw new IllegalArgumentException("이메일 또는 비밀번호가 맞지 않습니다.");
-	// 	}
-	//
-	// 	return jwtTokenProvider.createToken(storeEntity.getLoginId());
-	// }
 }

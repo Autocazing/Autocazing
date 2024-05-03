@@ -48,14 +48,22 @@ public class StoreService implements UserDetailsService {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_OWNER"));
 
-		System.out.println("!!!!! loadUserByUsername");
-
 		return new User(storeEntity.get().getLoginId(), storeEntity.get().getPassword(),
 			true, true, true, true, authorities);
 	}
 
 	public StoreDto getUserDetailsByLoginId(String loginId) {
-		ModelMapper modelMapper = new ModelMapper();
-		return modelMapper.map(storeRepository.findByLoginId(loginId), StoreDto.class);
+		Optional<StoreEntity> storeEntity = storeRepository.findByLoginId(loginId);
+		storeEntity.orElseThrow(() -> new UsernameNotFoundException("loginId"));
+
+		StoreDto storeDto = new StoreDto();
+		storeDto.setStoreId(storeEntity.get().getStoreId());
+		storeDto.setLoginId(storeEntity.get().getLoginId());
+		storeDto.setPassword(storeEntity.get().getPassword());
+		storeDto.setStoreName(storeEntity.get().getStoreName());
+		storeDto.setCreatedAt(storeEntity.get().getCreatedAt());
+		storeDto.setUpdatedAt(storeEntity.get().getUpdatedAt());
+
+		return storeDto;
 	}
 }
