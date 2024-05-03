@@ -2,6 +2,8 @@ import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
 import testmilk from "../../images/management/testmilk.jpg";
 
+import ExcelJS from "exceljs";
+
 const StockList = [
     // 테스트용
     {
@@ -90,7 +92,82 @@ const StockList = [
     },
 ];
 
-const excelsample = () => {};
+const excelsample = async () => {
+    // 이미지를 ArrayBuffer로 변환
+    const response = await fetch(testmilk);
+    const imageBlob = await response.blob();
+    const imageArrayBuffer = await new Response(imageBlob).arrayBuffer();
+
+    // ArrayBuffer를 base64로 변환
+    const base64String = arrayBufferToBase64(imageArrayBuffer);
+
+    // 엑셀 워크북 생성
+    const workbook = new ExcelJS.Workbook();
+
+    // 워크시트 생성
+    const worksheet = workbook.addWorksheet("Sample");
+
+    worksheet.getColumn(1).width = 15;
+    worksheet.getColumn(2).width = 15;
+    worksheet.getColumn(3).width = 15;
+    worksheet.getColumn(4).width = 15;
+    worksheet.getColumn(5).width = 15;
+
+    // 행 추가 (품목명, 유통기한, 총량, 발주예정수량)
+    const firstRow = worksheet.addRow([
+        "품목명(사진-이름)",
+        "",
+        "유통기한",
+        "총량",
+        "발주예정수량",
+    ]);
+
+    worksheet.mergeCells("A1:B1");
+
+    // 이미지와 이름 삽입
+    const secondRow = worksheet.addRow([]);
+    const imageId = workbook.addImage({
+        base64: base64String,
+        extension: "jpeg",
+    });
+
+    const tmp = worksheet.getRow(2);
+
+    // 두 번째 행의 높이를 늘리기
+    tmp.height = 50; // 높이를 적절한 값으로 설정
+
+    worksheet.addImage(imageId, {
+        tl: { col: 0, row: 1 }, // 이미지 삽입 위치 지정
+        br: { col: 1, row: 2 }, // 이미지 삽입 위치 지정
+        editAs: "oneCell", // 이미지 사이즈 조정
+    });
+
+    secondRow.getCell(2).value = "우유(1L)";
+    secondRow.getCell(3).value = "2024-04-27";
+    secondRow.getCell(4).value = "3";
+    secondRow.getCell(5).value = "5";
+
+    // 엑셀 파일로 저장
+    workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sample.xlsx";
+        a.click();
+    });
+};
+
+const arrayBufferToBase64 = (arrayBuffer) => {
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+};
 
 const StockTable = () => {
     return (
