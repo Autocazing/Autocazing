@@ -41,6 +41,65 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
         period: 0,
         companyName: "",
     });
+    const [isDirectInput, setIsDirectInput] = useState(false);
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setMaterialPostData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+        // console.log(materialPostData);
+    };
+    const handleUnitChange = (event) => {
+        const { value } = event.target;
+        if (value === "직접입력") {
+            setIsDirectInput(true);
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                unit: value,
+            }));
+        } else {
+            setIsDirectInput(false);
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                unit: value,
+            }));
+        }
+
+        console.log(materialPostData);
+    };
+
+    const handleDirectUnitInput = (event) => {
+        const { value } = event.target;
+        if (isDirectInput) {
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                unit: value,
+            }));
+        }
+        console.log(materialPostData);
+    };
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setMaterialPostData((prevState) => ({
+                    ...prevState,
+                    picture: e.target.result,
+                }));
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                picture: "",
+            }));
+        }
+        // console.log(materialPostData);
+    };
+
     return (
         <Modal
             isOpen={isOpen}
@@ -71,42 +130,73 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
             </h1>
             <div className="p-6.5">
                 <div className="mb-4.5">
+                    <div className="flex justify-center items-center mb-3">
+                        <div className="w-36 h-36 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-lg">
+                            {materialPostData.picture ? (
+                                <img
+                                    src={materialPostData.picture}
+                                    alt="Preview"
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            ) : (
+                                "재료사진"
+                            )}
+                        </div>
+                    </div>
                     <label className="mb-2.5 block text-black dark:text-white">
-                        제품 사진
+                        재료 사진
                     </label>
                     <input
+                        onChange={handleFileChange}
+                        name="picture"
                         type="file"
                         className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
                 </div>
-                <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        재료명
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="재료명을 입력해주세요."
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
+                <div className="mb-0.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            재료명
+                        </label>
+                        <input
+                            name="name"
+                            value={materialPostData.name}
+                            onChange={handleInputChange}
+                            type="text"
+                            placeholder="재료명 입력"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            재료가격
+                        </label>
+                        <input
+                            name="price"
+                            value={materialPostData.price}
+                            onChange={handleInputChange}
+                            type="number"
+                            placeholder="재료 가격 입력"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
                 </div>
-                <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        재료가격
-                    </label>
-                    <input
-                        type="number"
-                        placeholder="재료 가격을 입력해주세요."
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                </div>
+
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
                             용량
                         </label>
                         <input
+                            name="volume"
+                            value={materialPostData.volume}
+                            onChange={handleInputChange}
                             type="number"
-                            placeholder="제품의 용량을 입력해주세요"
+                            placeholder="제품 용량 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
@@ -115,13 +205,22 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                         <label className="mb-2.5 block text-black dark:text-white">
                             단위
                         </label>
-                        <select className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                        <select
+                            name="unit"
+                            value={
+                                isDirectInput
+                                    ? "직접입력"
+                                    : materialPostData.unit
+                            }
+                            onChange={handleUnitChange}
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        >
                             <option
                                 value=""
                                 disabled
                                 className="text-body dark:text-bodydark"
                             >
-                                단위를 선택해주세요.
+                                단위 선택
                             </option>
                             <option
                                 value="g"
@@ -154,35 +253,69 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                                 직접입력
                             </option>
                         </select>
+                        {isDirectInput && (
+                            <input
+                                type="text"
+                                placeholder="단위 직접 입력"
+                                className="mt-2 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                onChange={handleDirectUnitInput}
+                            />
+                        )}
                     </div>
                 </div>
+                <div className="mb-1 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            재료 최소 개수
+                        </label>
+                        <input
+                            name="minimum"
+                            value={materialPostData.minimum}
+                            onChange={handleInputChange}
+                            type="number"
+                            placeholder="임계점 입력"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
 
+                    <div className="mb-4.5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            자동 발주 수량
+                        </label>
+                        <input
+                            name="orderVolume"
+                            value={materialPostData.orderVolume}
+                            onChange={handleInputChange}
+                            type="number"
+                            placeholder="자동 발주 수량 입력"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                    </div>
+                </div>
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
-                        재료 최소 개수
+                        배송 소요 기간
                     </label>
                     <input
+                        name="period"
+                        value={materialPostData.period}
+                        onChange={handleInputChange}
                         type="number"
-                        placeholder="재료 최소 개수를 입력해주세요."
+                        placeholder="배송 소요 기간 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div>
 
-                <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        자동 발주 수량
-                    </label>
-                    <input
-                        type="number"
-                        placeholder="자동으로 발주시킬 수량을 입력해주세요."
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                </div>
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         담당 업체명
                     </label>
-                    <select className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <select
+                        name="companyName"
+                        value={materialPostData.companyName}
+                        onChange={handleInputChange}
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    >
                         <option
                             value=""
                             disabled
