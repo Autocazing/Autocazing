@@ -5,15 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuIngredientDto {
 
-        private Integer ingredientId;
-        private Integer capacity;
+public class UpdateMenuDto {
+    private String menuName;
+    private Integer menuPrice;
+    private Boolean onEvent;
+    private List<MenuIngredientDto> ingredients;
 
-
-    }
-
+}

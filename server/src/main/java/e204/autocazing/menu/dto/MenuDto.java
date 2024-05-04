@@ -1,9 +1,6 @@
 package e204.autocazing.menu.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,10 +8,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostMenuDto {
+@Builder
+public class MenuDto {
+    private Integer menuId;
     private String menuName;
     private Integer menuPrice;
     private Boolean onEvent;
+    private Integer storeId;  // 가게 ID만 포함
     private List<MenuIngredientDto> ingredients;
-    private Integer storeId;
+
 }
