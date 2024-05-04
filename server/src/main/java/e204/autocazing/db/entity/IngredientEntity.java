@@ -45,7 +45,7 @@ public class IngredientEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient" , cascade = CascadeType.ALL)
     private List<MenuIngredientEntity> menuIngredients;
 
     @ManyToOne(fetch = FetchType.LAZY)
