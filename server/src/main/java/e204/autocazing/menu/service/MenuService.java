@@ -131,15 +131,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuDto fromEntity(MenuEntity menu) {
-        MenuDto menuDto = new MenuDto();
-        menuDto.setMenuId(menu.getMenuId());
-        menuDto.setMenuName(menu.getMenuName());
-        menuDto.setMenuPrice(menu.getMenuPrice());
-        menuDto.setOnEvent(menu.getOnEvent());
-        // Assume convertToMenuDto includes logic to add ingredient list
-        return menuDto;
-    }
     private MenuDto convertToMenuDto(MenuEntity menuEntity) {
         MenuDto menuDto = new MenuDto();
         menuDto.setMenuId(menuEntity.getMenuId());
