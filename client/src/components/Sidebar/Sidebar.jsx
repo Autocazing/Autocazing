@@ -542,6 +542,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                 }}
                             </SidebarLinkGroup>
                             {/* <!-- Menu Item Tables --> */}
+                            <li>
+                                <button
+                                    aria-controls="sidebar"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSidebarOpen(!sidebarOpen);
+                                    }}
+                                    className="font-bold text-red-500 mt-3 ml-3 lg:hidden"
+                                >
+                                    사이드바 닫기
+                                </button>
+                            </li>
                         </ul>
                     </div>
                     {/* <!-- Others Group --> */}
