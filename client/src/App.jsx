@@ -13,6 +13,7 @@ import CompanyManagement from "./pages/management/CompanyManagement";
 import MaterialManagement from "./pages/management/MaterialManagement";
 import MenuManagement from "./pages/management/MenuManagement";
 import StockManagement from "./pages/management/StockManagement";
+import LoginPage from "./pages/login/LoginPage";
 
 import DefaultLayout from "./layout/DefaultLayout";
 
@@ -53,6 +54,8 @@ function App() {
                             element={<StockManagement />}
                         ></Route>
                     </Route>
+
+                    <Route path="/login" element={<LoginPage />}></Route>
                 </Routes>
                 {/* <div className="text-3xl font-bold underline">hello</div> */}
             </DefaultLayout>

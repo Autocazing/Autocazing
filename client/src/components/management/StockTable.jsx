@@ -158,29 +158,29 @@ const StockTable = () => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
+                <div className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
                     <div className="p-2.5 xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             품목명
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             유통기한
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             총량
                         </h5>
                     </div>
-                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                    <div className="p-2.5 text-center sm:block xl:p-5">
+                        <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             발주 예정 수량
                         </h5>
                     </div>
-                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                    <div className="p-2.5 text-center sm:block xl:p-5">
+                        <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             수정/삭제
                         </h5>
                     </div>
@@ -188,7 +188,7 @@ const StockTable = () => {
 
                 {StockList.map((stock, key) => (
                     <div
-                        className={`grid grid-cols-3 sm:grid-cols-5 ${
+                        className={`grid grid-cols-5 sm:grid-cols-5 ${
                             key === StockList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
@@ -196,10 +196,10 @@ const StockTable = () => {
                         key={key}
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <div className="flex-shrink-0 h-1- w-10">
+                            <div className="hidden flex-shrink-0 h-1- w-10 sm:block">
                                 <img src={stock.image} alt="tmp"></img>
                             </div>
-                            <p className="hidden text-black dark:text-white sm:block">
+                            <p className=" text-black dark:text-white text-cen sm:block">
                                 {stock.name}
                             </p>
                         </div>
@@ -210,19 +210,19 @@ const StockTable = () => {
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
+                        <div className="items-center justify-center p-2.5 sm:flex   xl:p-5">
+                            <p className="text-black dark:text-white text-center">
                                 {stock.amout}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
+                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
+                            <p className="text-black dark:text-white text-center">
                                 {stock.PRcount}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
                             <button className="mr-2">
                                 <img src={modifyIcon} alt="Modify" />
                             </button>
