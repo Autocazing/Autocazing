@@ -1,8 +1,10 @@
+import cafeImage from "../../images/login/cafe-interior-design.jpg";
+
 const LoginPage = () => {
     return (
         <>
             <div className="flex items-center justify-center h-screen w-full px-5 sm:px-0">
-                <div className="flex bg-white rounded-lg shadow-lg overflow-hidden lg:max-w-full w-full h-full">
+                <div className="flex bg-slate-200-lg  overflow-hidden lg:max-w-full w-full h-full">
                     <div className="w-full p-8 lg:w-1/2 flex flex-col justify-center">
                         <p className="font-bold text-center text-7xl">
                             AutoCazing
@@ -30,7 +32,7 @@ const LoginPage = () => {
                     <div
                         className="hidden md:block lg:w-1/2 bg-cover bg-blue-700"
                         style={{
-                            backgroundImage: `url(https://www.tailwindtap.com//assets/components/form/userlogin/login_tailwindtap.jpg)`,
+                            backgroundImage: `url(${cafeImage})`,
                         }}
                     ></div>
                 </div>
