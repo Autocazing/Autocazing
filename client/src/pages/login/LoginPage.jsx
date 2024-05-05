@@ -28,6 +28,18 @@ const LoginPage = () => {
                                 Login
                             </button>
                         </div>
+                        <div>
+                            <hr className="mt-12 border-t-2 border-gray-300 mx-auto w-full max-w-150" />
+                            <p className="text-center mt-8 text-black font-bold text-xs sm:text-base">
+                                서비스 이용을 위한 회원가입은 관리자에게 문의
+                                부탁드립니다.
+                            </p>
+                        </div>
+                        <div className="mt-8 text-center">
+                            <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
+                                문의하기
+                            </button>
+                        </div>
                     </div>
                     <div
                         className="hidden md:block lg:w-1/2 bg-cover bg-blue-700"
