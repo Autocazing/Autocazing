@@ -27,9 +27,6 @@ const MenuTable = () => {
                 <h4 className="mb-6 text-xl font-semibold text-black dark:text-white flex-row">
                     Menu List
                 </h4>
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                    메뉴추가
-                </button>
             </div>
 
             <div
@@ -39,17 +36,17 @@ const MenuTable = () => {
                 <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            업체명
+                            메뉴명
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            담당자 이름
+                            메뉴가격
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            담당자 연락처
+                            메뉴재료
                         </h5>
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
