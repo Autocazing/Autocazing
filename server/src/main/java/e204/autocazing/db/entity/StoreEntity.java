@@ -29,6 +29,7 @@ public class StoreEntity {
     //가게 이름
     @Column(nullable = false)
     private String storeName;
+
     //생성 시간
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
