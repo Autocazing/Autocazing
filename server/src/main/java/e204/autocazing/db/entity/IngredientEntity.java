@@ -60,6 +60,9 @@ public class IngredientEntity {
     @JoinColumn(name = "vendor_id", nullable = false)
     private VendorEntity vendor;
 
+    @OneToOne(mappedBy = "ingredient")
+    private StockEntity stock;
+
     //연관
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "store_id", nullable = false)
