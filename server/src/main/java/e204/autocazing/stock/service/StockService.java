@@ -9,6 +9,7 @@ import e204.autocazing.stock.dto.StockDetailsDto;
 import e204.autocazing.stock.dto.UpdateStockDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class StockService {
     private StockRepository stockRepository;
     @Autowired
     private IngredientRepository ingredientRepository;
+
     public void createStock(PostStockDto postStockDto) {
         IngredientEntity ingredient = ingredientRepository.findById(postStockDto.getIngredientId())
                 .orElseThrow(() -> new RuntimeException("Not found ingredient ID"));
@@ -77,4 +79,32 @@ public class StockService {
         stockRepository.delete(stock);
     }
 
+    @Transactional
+    public void decreaseStock(Integer ingredientId, Integer quantity) {
+        List<StockEntity> stocks = stockRepository.findByIngredientIngredientIdOrderByExpirationDateAsc(ingredientId);
+        if (stocks.isEmpty()) {
+            throw new RuntimeException("No stock found for ingredient ID: " + ingredientId);
+        }
+
+        for (StockEntity stock : stocks) {
+            if (quantity <= 0) {
+                break; // 필요한 재고를 모두 사용했으면 반복 종료
+            }
+
+            int currentQuantity = stock.getQuantity();
+            if (currentQuantity <= quantity) {
+                quantity -= currentQuantity; // 이 재고를 모두 사용
+                stock.setQuantity(0); // 재고 소진
+            } else {
+                stock.setQuantity(currentQuantity - quantity);
+                quantity = 0; // 필요한 재고를 모두 사용했으므로 0으로 설정
+            }
+            stockRepository.save(stock);
+        }
+
+        //재고 부족
+        if (quantity > 0) {
+            throw new RuntimeException("Insufficient stock for ingredient ID: " + ingredientId);
+        }
+    }
 }
