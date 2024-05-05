@@ -8,27 +8,20 @@ const LoginPage = () => {
                             AutoCazing
                         </p>
                         <div className="mt-20">
-                            <label className="block text-gray-700 font-bold mb-2 text-2xl">
-                                ID
-                            </label>
                             <input
-                                className="mx-auto text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full  focus:outline-2  max-w-150 focus:outline-blue-700"
+                                className="mx-auto h-13 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full  focus:outline-2  max-w-150 focus:outline-blue-700"
                                 type="email"
-                                required
+                                placeholder="아이디"
                             />
                         </div>
                         <div className="mt-8 flex flex-col justify-between">
-                            <div className="flex justify-between">
-                                <label className="block text-gray-700 text-sm font-bold mb-2 text-2xl">
-                                    Password
-                                </label>
-                            </div>
                             <input
-                                className="mx-auto text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 max-w-150 focus:outline-blue-700"
+                                className="mx-auto h-13 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 max-w-150 focus:outline-blue-700"
                                 type="password"
+                                placeholder="비밀번호"
                             />
                         </div>
-                        <div className="mt-12">
+                        <div className="mt-15 text-center">
                             <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
                                 Login
                             </button>
