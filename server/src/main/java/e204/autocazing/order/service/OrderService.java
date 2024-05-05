@@ -1,13 +1,17 @@
 package e204.autocazing.order.service;
 
+import e204.autocazing.db.entity.MenuEntity;
 import e204.autocazing.db.entity.OrderEntity;
+import e204.autocazing.db.repository.MenuRepository;
 import e204.autocazing.db.repository.OrderRepository;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.order.dto.DetailOrderResponseDto;
 import e204.autocazing.order.dto.OrderRequestDto;
 import e204.autocazing.order.dto.OrderResponseDto;
+import e204.autocazing.stock.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +22,10 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
-
+    @Autowired
+    private StockService stockService;
+    @Autowired
+    private MenuRepository menuRepository;
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orders = orderRepository.findAll();
         if(orders.isEmpty()) {
@@ -53,6 +60,7 @@ public class OrderService {
         return elementDto;
     }
 
+    @Transactional
     public void addOrder(OrderRequestDto orderRequestDto) {
         OrderEntity orderEntity = new OrderEntity();
         List<OrderEntity.OrderSpecific> orderSpecifics = orderRequestDto.getOrderDetails().stream()
@@ -65,6 +73,16 @@ public class OrderService {
                 }).collect(Collectors.toList());
         orderEntity.setOrderSpecific(orderSpecifics);
         orderRepository.save(orderEntity); // 주문 정보 저장
+
+        //여기서 재고를 감소 시키는 로직?
+        // 재고 감소 로직 추가
+        orderRequestDto.getOrderDetails().forEach(detail -> {
+            MenuEntity menu = menuRepository.findById(detail.getMenuId())
+                    .orElseThrow(() -> new RuntimeException("Menu not found with id " + detail.getMenuId()));
+            menu.getMenuIngredients().forEach(ingredient -> {
+                stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getQuantity());
+            });
+        });
     }
 
     public void deleteOrder(Integer orderId) {
