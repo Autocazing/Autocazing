@@ -29,6 +29,22 @@ const customStyles = {
     },
 };
 const StockManagementModal = ({ isOpen, onClose }) => {
+    const [stockPostData, setStockPostData] = useState({
+        name: "",
+        volume: 0,
+        period: "",
+        predictOrder: 0,
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value, type } = e.target;
+        setStockPostData((prevState) => ({
+            ...prevState,
+            [name]: type === "number" ? parseInt(value, 10) || 0 : value,
+        }));
+        // console.log(stockPostData);
+    };
+
     return (
         <Modal
             isOpen={isOpen}
@@ -62,7 +78,11 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                     <label className="mb-2.5 block text-black dark:text-white">
                         품목명
                     </label>
-                    <select className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <select
+                        name="name"
+                        onChange={handleInputChange}
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    >
                         <option
                             value=""
                             disabled
@@ -95,6 +115,8 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         총량
                     </label>
                     <input
+                        name="volume"
+                        onChange={handleInputChange}
                         type="number"
                         placeholder="총량 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -105,8 +127,9 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         유통기한
                     </label>
                     <input
-                        type="number"
-                        placeholder="YYYY-MM-DD"
+                        name="period"
+                        onChange={handleInputChange}
+                        type="date"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div>
@@ -115,6 +138,8 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         발주 예정 수량
                     </label>
                     <input
+                        name="predictOrder"
+                        onChange={handleInputChange}
                         type="number"
                         placeholder="발주 예정 수량 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
