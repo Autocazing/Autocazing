@@ -28,12 +28,6 @@ public class StoreService implements UserDetailsService {
 	StoreRepository storeRepository;
 	BCryptPasswordEncoder passwordEncoder;
 
-	@Value("${token.secret}")
-	String secret;
-
-	@Value("${spring.cloud.gateway.globalcors.add-to-simple-url-handler-mapping}")
-	String testValue;
-
 	@Autowired
 	public StoreService(StoreRepository storeRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.storeRepository = storeRepository;
@@ -46,9 +40,6 @@ public class StoreService implements UserDetailsService {
 		StoreEntity storeEntity = mapper.map(storeDto, StoreEntity.class);
 		storeEntity.setPassword(passwordEncoder.encode(storeDto.getPassword())); // 비밀번호를 암호화
 		storeRepository.save(storeEntity);
-
-		log.info("token secret : " + secret);
-		log.info("testValue : "+ testValue);
 
 		return storeEntity;
 	}
