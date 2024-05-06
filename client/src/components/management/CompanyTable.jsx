@@ -33,24 +33,24 @@ const CompanyTable = () => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
+                <div className="grid grid-cols-4 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-sm font-medium uppercase sm:text-base">
                             업체명
                         </h5>
                     </div>
-                    <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                    <div className="p-2.5 text-center text-sm xl:p-5">
+                        <h5 className="text-sm font-medium uppercase sm:text-base">
                             담당자 이름
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs pt-0.5 font-medium uppercase sm:text-base sm:pt-0">
                             담당자 연락처
                         </h5>
                     </div>
-                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                    <div className=" p-2.5 text-center sm:block xl:p-5 sm:ml-8">
+                        <h5 className="text-sm font-medium uppercase sm:text-base">
                             수정/삭제
                         </h5>
                     </div>
@@ -58,7 +58,7 @@ const CompanyTable = () => {
 
                 {CompanyList.map((company, key) => (
                     <div
-                        className={`grid grid-cols-3 sm:grid-cols-4 ${
+                        className={`grid grid-cols-4 sm:grid-cols-4 ${
                             key === CompanyList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
@@ -77,18 +77,26 @@ const CompanyTable = () => {
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
+                        <div className="items-center justify-center pt-2.5 pb-2.5 text-xs  sm:flex sm:text-base xl:p-5">
+                            <p className="text-center text-black dark:text-white">
                                 {company.email}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <button className="mr-2">
-                                <img src={modifyIcon} alt="Modify" />
+                        <div className="items-center justify-center text-center p-2.5 sm:flex xl:p-5">
+                            <button className="mr-2 sm:ml-8">
+                                <img
+                                    className="w-5 h-5 sm:w-auto sm:h-auto"
+                                    src={modifyIcon}
+                                    alt="Modify"
+                                />
                             </button>
                             <button>
-                                <img src={deleteIcon} alt="delete" />
+                                <img
+                                    className="w-5 h-5 sm:w-auto sm:h-auto"
+                                    src={deleteIcon}
+                                    alt="delete"
+                                />
                             </button>
                         </div>
                     </div>
