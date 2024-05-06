@@ -33,7 +33,7 @@ const MenuTable = () => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
+                <div className="grid grid-cols-4 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
                             메뉴명
@@ -49,7 +49,7 @@ const MenuTable = () => {
                             메뉴재료
                         </h5>
                     </div>
-                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
+                    <div className="p-2.5 text-center sm:block xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
                             수정/삭제
                         </h5>
@@ -58,7 +58,7 @@ const MenuTable = () => {
 
                 {MenuList.map((menu, key) => (
                     <div
-                        className={`grid grid-cols-3 sm:grid-cols-4 ${
+                        className={`grid grid-cols-4 sm:grid-cols-4 ${
                             key === MenuList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
@@ -77,13 +77,13 @@ const MenuTable = () => {
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
+                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
+                            <p className=" text-center text-black dark:text-white">
                                 {menu.material}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
                             <button className="mr-2">
                                 <img src={modifyIcon} alt="Modify" />
                             </button>
