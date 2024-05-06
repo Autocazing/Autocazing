@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,7 +40,6 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입 api만 권한 없어도 접근 가능
 				.requestMatchers("/api/users/login").permitAll()
 				.requestMatchers("/api/users/register").permitAll()
-				.requestMatchers("/api/users/**").permitAll()
 				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
@@ -51,8 +51,11 @@ public class SecurityConfig {
 					.frameOptions(
 						HeadersConfigurer.FrameOptionsConfig::sameOrigin
 					)
+			)
+			.sessionManagement((sessionManagement) ->
+				sessionManagement
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			);
-
 		return http.build();
 	}
 
