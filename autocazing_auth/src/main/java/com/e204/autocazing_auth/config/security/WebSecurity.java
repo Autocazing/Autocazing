@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.e204.autocazing_auth.filter.AuthenticationFilter;
 import com.e204.autocazing_auth.store.service.StoreService;
@@ -40,5 +41,4 @@ public class WebSecurity {
 
 		return http.build();
 	}
-
 }

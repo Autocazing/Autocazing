@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -19,10 +20,19 @@ import com.e204.autocazing_auth.db.entity.StoreEntity;
 import com.e204.autocazing_auth.db.repository.StoreRepository;
 import com.e204.autocazing_auth.store.dto.StoreDto;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class StoreService implements UserDetailsService {
 	StoreRepository storeRepository;
 	BCryptPasswordEncoder passwordEncoder;
+
+	@Value("${token.secret}")
+	String secret;
+
+	@Value("${spring.cloud.gateway.globalcors.add-to-simple-url-handler-mapping}")
+	String testValue;
 
 	@Autowired
 	public StoreService(StoreRepository storeRepository, BCryptPasswordEncoder passwordEncoder) {
@@ -36,6 +46,9 @@ public class StoreService implements UserDetailsService {
 		StoreEntity storeEntity = mapper.map(storeDto, StoreEntity.class);
 		storeEntity.setPassword(passwordEncoder.encode(storeDto.getPassword())); // 비밀번호를 암호화
 		storeRepository.save(storeEntity);
+
+		log.info("token secret : " + secret);
+		log.info("testValue : "+ testValue);
 
 		return storeEntity;
 	}
