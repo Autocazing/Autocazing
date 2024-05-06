@@ -39,6 +39,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입 api만 권한 없어도 접근 가능
 				.requestMatchers("/api/users/login").permitAll()
 				.requestMatchers("/api/users/register").permitAll()
+				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
 			.authenticationManager(authenticationManager)
