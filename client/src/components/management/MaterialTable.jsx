@@ -42,39 +42,39 @@ const MaterialTable = () => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
+                <div className="grid grid-cols-7 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             재료명
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             재료 가격(원)
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             용량
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             최소 개수
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             배송소요기간
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             업체명
                         </h5>
                     </div>
-                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                    <div className="p-2.5 text-center sm:block xl:p-5">
+                        <h5 className="text-xs font-medium uppercase sm:text-base">
                             수정/삭제
                         </h5>
                     </div>
@@ -82,14 +82,14 @@ const MaterialTable = () => {
 
                 {MaterialList.map((material, key) => (
                     <div
-                        className={`grid grid-cols-3 sm:grid-cols-7 ${
+                        className={`grid grid-cols-7 sm:grid-cols-7 text-xs sm:text-base ${
                             key === MaterialList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
                         }`}
                         key={key}
                     >
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
+                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
                                 {material.materialname}
                             </p>
@@ -101,36 +101,44 @@ const MaterialTable = () => {
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className=" flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
                                 {material.amount}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
                                 {material.minnum}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
                                 {material.delivertime}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
                                 {material.companyname}
                             </p>
                         </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
                             <button className="mr-2">
-                                <img src={modifyIcon} alt="Modify" />
+                                <img
+                                    src={modifyIcon}
+                                    alt="Modify"
+                                    className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
+                                />
                             </button>
                             <button>
-                                <img src={deleteIcon} alt="delete" />
+                                <img
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
+                                />
                             </button>
                         </div>
                     </div>
