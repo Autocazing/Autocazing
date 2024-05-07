@@ -1,0 +1,44 @@
+spring :
+  application:
+    name:
+      alert-service
+  profiles:
+    active: ${profile}
+  jpa:
+    database: mysql
+    hibernate.ddl-auto: update
+    show-sql: true
+  output:
+    ansi:
+      enabled: ALWAYS
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  config:
+    import: optional:configserver:http://config-server:8888
+
+#logging
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+  pattern:
+    file: "%d %-5level [%thread] %logger : %msg%n"
+
+#swagger
+#springdoc:
+#  packages-to-scan: com.e204.autocazing_alert
+#  default-consumes-media-type: application/json;charset=UTF-8
+#  default-produces-media-type: application/json;charset=UTF-8
+#  api-docs:
+#    path: /api/users/api-docs
+#  swagger-ui:
+#    path: /api/users/docs # Swagger ???? ??? ??
+#    disable-swagger-default-url: true   # ?? ???? ???? ?? ?? ?? ?????
+#    operations-sorter: alpha    # API? ?? ????? ??? ??? ??
+#    enabled: true   # ???? ?? ???? ?? ??
