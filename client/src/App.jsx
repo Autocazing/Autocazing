@@ -22,7 +22,7 @@ function App() {
         <div>
             <DefaultLayout>
                 <Routes>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/cafeData" element={<CafeData />}>
                         <Route path="material" element={<Material />}></Route>
                         <Route path="menu" element={<Menu />}></Route>
@@ -55,7 +55,7 @@ function App() {
                         ></Route>
                     </Route>
 
-                    <Route path="/login" element={<LoginPage />}></Route>
+                    <Route path="/" element={<LoginPage />}></Route>
                 </Routes>
                 {/* <div className="text-3xl font-bold underline">hello</div> */}
             </DefaultLayout>

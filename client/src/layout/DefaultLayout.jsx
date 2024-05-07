@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 
 const DefaultLayout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const isLoginPage = window.location.pathname === "/login";
+    const isLoginPage = window.location.pathname === "/";
 
     if (isLoginPage) {
         return (
