@@ -16,10 +16,9 @@ const LoginPage = () => {
             { loginId: Id, password: Pw },
             (res) => {
                 if (res) {
-                    console.log(res);
-                    console.log(res.data.token);
-                    localStorage.setItem("accessToken", res.data.token);
-                    // navigate("/dashboard"); // 메인페이지 이동
+                    // console.log(res.headers.token);
+                    localStorage.setItem("accessToken", res.headers.token);
+                    navigate("/dashboard"); // 메인페이지 이동
                 }
             },
             (err) => {
