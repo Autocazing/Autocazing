@@ -25,7 +25,5 @@ public class DetailOrderResponseDto {
         private Integer menuId;
         private int quantity;
         private int price;
-
-
     }
 }

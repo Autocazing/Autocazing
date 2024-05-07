@@ -23,7 +23,7 @@ public class RestockOrderSpecificEntity {
     private Integer ingredientPrice;
 
     //연관
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "restock_order_id")
-//    private RestockOrderEntity restockOrder;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "restock_order_id")
+   private RestockOrderEntity restockOrder;
 }

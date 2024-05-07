@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +17,6 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orders")	// schema 설정 따로 x, public schema 내에 생성됨.
-
 public class OrderEntity {
     //기본키
     @Id
@@ -48,6 +46,3 @@ public class OrderEntity {
         private int price;
     }
 }
-
-
-

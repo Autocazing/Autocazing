@@ -1,6 +1,7 @@
 package e204.autocazing.sale.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import e204.autocazing.sale.dto.saleDto;
 import e204.autocazing.sale.service.SaleService;
 
 @RestController
-@RequestMapping("/sales")
+@RequestMapping("api/sales")
 public class SaleController {
 	//월별 매출 : 12달
 	//주별 매출 : 12주
@@ -25,7 +26,7 @@ public class SaleController {
 
 	@GetMapping("")
 	public ResponseEntity getSales(@RequestParam("type") String type){
-		List<saleDto> sales = saleService.getSales(type);
+		List<Map<String, Object>> sales = saleService.getSales(type);
 		return ResponseEntity.ok(sales);
 	}
 }
