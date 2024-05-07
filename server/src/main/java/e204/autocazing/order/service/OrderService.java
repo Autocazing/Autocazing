@@ -6,9 +6,7 @@ import e204.autocazing.exception.MenuNotFoundException;
 import e204.autocazing.exception.OrderProcessingException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.exception.RestockProcessingException;
-import e204.autocazing.order.dto.DetailOrderResponseDto;
-import e204.autocazing.order.dto.OrderRequestDto;
-import e204.autocazing.order.dto.OrderResponseDto;
+import e204.autocazing.order.dto.*;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,61 +40,49 @@ public class OrderService {
 
 
     public List<OrderResponseDto> getAllOrders() {
-        List<OrderEntity> orders = orderRepository.findAll();
-        if(orders.isEmpty()) {
-            System.out.println("텅텅빔요");
-        }
-        // 가져온 MapEntity 리스트를 MapResponseDto 리스트로 변환
-        List<OrderResponseDto> orderResponseDtos = orders.stream()
-                .map(orderEntity -> OrderResponseDto.fromEntity(orderEntity))
+        return orderRepository.findAll().stream()
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
-
-        return orderResponseDtos;
     }
 
-    public DetailOrderResponseDto getOrderSpecific(Integer orderId) {
+    private OrderResponseDto convertToDto(OrderEntity order) {
+        List<OrderSpecificDto> orderSpecifics = order.getOrderSpecific().stream()
+                .map(specific -> new OrderSpecificDto(specific.getMenuId(), specific.getMenuQuantity(), specific.getMenuPrice()))
+                .collect(Collectors.toList());
+        return new OrderResponseDto(order.getOrderId(), orderSpecifics);
+    }
+
+    public OrderResponseDto getOrderById(Integer orderId) {
         OrderEntity orderEntity = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
-        DetailOrderResponseDto detailResponseDto = new DetailOrderResponseDto();
-        detailResponseDto.setOrderId(orderEntity.getOrderId());
-        // OrderSpecific 목록을 OrderDetailDto 리스트로 변환
-        List<DetailOrderResponseDto.OrderDetailDto> orderDetails = orderEntity.getOrderSpecific().stream()
-                .map(this::convertToOrderDetailDto)
-                .collect(Collectors.toList());
-        detailResponseDto.setOrderDetails(orderDetails); // 변환된 상세 목록을 DTO에 설정
 
-        return detailResponseDto;
+        List<OrderSpecificDto> orderSpecifics = orderEntity.getOrderSpecific().stream()
+                .map(specific -> new OrderSpecificDto(specific.getMenuId(), specific.getMenuQuantity(), specific.getMenuPrice()))
+                .collect(Collectors.toList());
+
+        return new OrderResponseDto(orderEntity.getOrderId(), orderSpecifics);
+
     }
-    private DetailOrderResponseDto.OrderDetailDto convertToOrderDetailDto(OrderEntity.OrderSpecific orderSpecific) {
-        DetailOrderResponseDto.OrderDetailDto elementDto = new DetailOrderResponseDto.OrderDetailDto();
-        elementDto.setMenuId(orderSpecific.getMenuId());
-        elementDto.setQuantity(orderSpecific.getQuantity());
-        elementDto.setPrice(orderSpecific.getPrice());
-        return elementDto;
-    }
+
 
         @Transactional
-        public void addOrder(OrderRequestDto orderRequestDto) {
+        public void addOrder(PostOrderDto postOrderDto) {
 
-            OrderEntity orderEntity = new OrderEntity();
-            List<OrderEntity.OrderSpecific> orderSpecifics = orderRequestDto.getOrderDetails().stream()
-                    .map(detail -> {
-                        OrderEntity.OrderSpecific specific = new OrderEntity.OrderSpecific();
-                        specific.setMenuId(detail.getMenuId());
-                        specific.setQuantity(detail.getQuantity());
-                        //specific.setPrice(detail.getPrice());
-                        return specific;
-                    }).collect(Collectors.toList());
-            orderEntity.setOrderSpecific(orderSpecifics);
-            orderRepository.save(orderEntity); // 주문 정보 저장
+            OrderEntity order = new OrderEntity();
+            order.setOrderSpecific(postOrderDto.getOrderSpecifics().stream()
+                    .map(post -> new OrderSpecific(post.getMenuId(), post.getMenuQuantity(), post.getMenuPrice()))
+                    .collect(Collectors.toList()));
 
-            orderRequestDto.getOrderDetails().forEach(detail -> {
+            // 재료와 재고 처리 로직
+            postOrderDto.getOrderSpecifics().forEach(detail -> {
                 MenuEntity menu = menuRepository.findById(detail.getMenuId())
-                        .orElseThrow(() -> new MenuNotFoundException("Menu not found with id " + detail.getMenuId()));
+                        .orElseThrow(() -> new RuntimeException("Menu not found with id " + detail.getMenuId()));
                 menu.getMenuIngredients().forEach(ingredient -> {
-                    stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getQuantity());
+                    stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getMenuQuantity());
                 });
             });
+
+            orderRepository.save(order);
     }
 
 
