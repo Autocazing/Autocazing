@@ -19,6 +19,7 @@ const LoginPage = () => {
                     // console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
                     navigate("/dashboard"); // 메인페이지 이동
+                    navigate(0);
                 }
             },
             (err) => {
