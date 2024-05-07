@@ -26,10 +26,10 @@ public class SaleService {
 			LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
 			saleDtoList = orderRepository.calculateWeekSales(currentTime);
 		}
-		/*else if(type.equals("month")){
+		else if(type.equals("month")){
 			LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
 			saleDtoList = orderRepository.calculateMonthSales(currentTime);
-		}*/
+		}
 
 		return saleDtoList;
 	}
