@@ -31,14 +31,14 @@ logging:
     file: "%d %-5level [%thread] %logger : %msg%n"
 
 #swagger
-#springdoc:
-#  packages-to-scan: com.e204.autocazing_alert
-#  default-consumes-media-type: application/json;charset=UTF-8
-#  default-produces-media-type: application/json;charset=UTF-8
-#  api-docs:
-#    path: /api/users/api-docs
-#  swagger-ui:
-#    path: /api/users/docs # Swagger ???? ??? ??
-#    disable-swagger-default-url: true   # ?? ???? ???? ?? ?? ?? ?????
-#    operations-sorter: alpha    # API? ?? ????? ??? ??? ??
-#    enabled: true   # ???? ?? ???? ?? ??
+springdoc:
+  packages-to-scan: com.e204.autocazing_alert
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/alerts/api-docs
+  swagger-ui:
+    path: /api/alerts/docs
+    disable-swagger-default-url: true
+    operations-sorter: alpha
+    enabled: true
