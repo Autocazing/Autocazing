@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,12 +23,22 @@ public class ReportEntity {
     @Column(nullable = false)
     private Integer storeId;
     @Column(nullable = false)
-    private Integer sales;
+    private Integer sales;  // 익일 일매출
 
     @Column(nullable = false)
-    private Integer expectedMonthlySales;
+    private Integer expectedMonthlySales;   // 현월의 예상 월매출(딥러닝 예측 기반)
     @Column(nullable = false)
-    private Integer currentMonthlySales;
+    private Integer currentMonthlySales;    // 현재까지 달성한 월매출
+
+    @ElementCollection
+    @CollectionTable(name = "menuSpecifics", joinColumns = @JoinColumn(name="reportId", referencedColumnName = "reportId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Integer> menuSpecific; // 매출에 문제가 생긴 메뉴들의 id
+
+    @ElementCollection
+    @CollectionTable(name = "expirationSpecifics", joinColumns = @JoinColumn(name="reportId", referencedColumnName = "reportId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Integer> expirationSpecific;   // 유통기한 만료되는 재료들의 id
 
     @Column(nullable = false)
     private Timestamp createdAt;
@@ -34,11 +46,13 @@ public class ReportEntity {
     private Timestamp updatedAt;
 
     @Builder
-    public ReportEntity(Integer storeId, Integer sales, Integer expectedMonthlySales, Integer currentMonthlySales) {
+    public ReportEntity(Integer storeId, Integer sales, Integer expectedMonthlySales, Integer currentMonthlySales, List<Integer> menuSpecific, List<Integer> expirationSpecific) {
         this.storeId = storeId;
         this.sales = sales;
         this.expectedMonthlySales = expectedMonthlySales;
         this.currentMonthlySales = currentMonthlySales;
+        this.menuSpecific = menuSpecific;
+        this.expirationSpecific = expirationSpecific;
     }
 
     @PrePersist
