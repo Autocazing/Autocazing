@@ -19,4 +19,5 @@ public class StockDetailsDto {
     private Integer ingredientId;
     private Integer deliveringCount;
 
+
 }

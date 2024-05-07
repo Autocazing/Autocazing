@@ -69,6 +69,7 @@ public class StockService {
         stockDetails.setExpirationDate(stock.getExpirationDate());
         stockDetails.setQuantity(stock.getQuantity());
         stockDetails.setDeliveringCount(deliveringCount);
+        //setDeliveringCount
         return stockDetails;
     }
 
