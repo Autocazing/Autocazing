@@ -1,16 +1,19 @@
 package e204.autocazing.order.service;
 
-import e204.autocazing.db.entity.MenuEntity;
-import e204.autocazing.db.entity.OrderEntity;
-import e204.autocazing.db.repository.MenuRepository;
-import e204.autocazing.db.repository.OrderRepository;
+import e204.autocazing.db.entity.*;
+import e204.autocazing.db.repository.*;
+import e204.autocazing.exception.MenuNotFoundException;
+import e204.autocazing.exception.OrderProcessingException;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.exception.RestockProcessingException;
 import e204.autocazing.order.dto.DetailOrderResponseDto;
 import e204.autocazing.order.dto.OrderRequestDto;
 import e204.autocazing.order.dto.OrderResponseDto;
+import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,6 +29,18 @@ public class OrderService {
     private StockService stockService;
     @Autowired
     private MenuRepository menuRepository;
+    @Autowired
+    private IngredientRepository ingredientRepository;
+    @Autowired
+    private StockRepository stockRepository;
+    @Autowired
+    private RestockOrderService restockOrderService;
+    @Autowired
+    private RestockOrderRepository restockOrderRepository;
+    @Autowired
+    private RestockOrderSpecificRepository restockOrderSpecificRepository;
+
+
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orders = orderRepository.findAll();
         if(orders.isEmpty()) {
@@ -60,30 +75,44 @@ public class OrderService {
         return elementDto;
     }
 
-    @Transactional
-    public void addOrder(OrderRequestDto orderRequestDto) {
-        OrderEntity orderEntity = new OrderEntity();
-        List<OrderEntity.OrderSpecific> orderSpecifics = orderRequestDto.getOrderDetails().stream()
-                .map(detail -> {
-                    OrderEntity.OrderSpecific specific = new OrderEntity.OrderSpecific(); // 인스턴스 생성 방법을 주목
-                    specific.setMenuId(detail.getMenuId());
-                    specific.setQuantity(detail.getQuantity());
-                    specific.setPrice(detail.getPrice());
-                    return specific;
-                }).collect(Collectors.toList());
-        orderEntity.setOrderSpecific(orderSpecifics);
-        orderRepository.save(orderEntity); // 주문 정보 저장
+        @Transactional
+        public void addOrder(OrderRequestDto orderRequestDto) {
 
-        //여기서 재고를 감소 시키는 로직?
-        // 재고 감소 로직 추가
-        orderRequestDto.getOrderDetails().forEach(detail -> {
-            MenuEntity menu = menuRepository.findById(detail.getMenuId())
-                    .orElseThrow(() -> new RuntimeException("Menu not found with id " + detail.getMenuId()));
-            menu.getMenuIngredients().forEach(ingredient -> {
-                stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getQuantity());
+            OrderEntity orderEntity = new OrderEntity();
+            List<OrderEntity.OrderSpecific> orderSpecifics = orderRequestDto.getOrderDetails().stream()
+                    .map(detail -> {
+                        OrderEntity.OrderSpecific specific = new OrderEntity.OrderSpecific();
+                        specific.setMenuId(detail.getMenuId());
+                        specific.setQuantity(detail.getQuantity());
+                        //specific.setPrice(detail.getPrice());
+                        return specific;
+                    }).collect(Collectors.toList());
+            orderEntity.setOrderSpecific(orderSpecifics);
+            orderRepository.save(orderEntity); // 주문 정보 저장
+
+            orderRequestDto.getOrderDetails().forEach(detail -> {
+                MenuEntity menu = menuRepository.findById(detail.getMenuId())
+                        .orElseThrow(() -> new MenuNotFoundException("Menu not found with id " + detail.getMenuId()));
+                menu.getMenuIngredients().forEach(ingredient -> {
+                    stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getQuantity());
+                });
             });
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void checkAndAddRestockOrderSpecifics()  {
+        List<IngredientEntity> ingredients = ingredientRepository.findAll();
+        ingredients.forEach(ingredient -> {
+            StockEntity stock = stockRepository.findByIngredient(ingredient);
+            //stock 이 null이거나 (새상품) 배송중 + 재고의 양이 재료의 설정값보다 적을때
+            if (stock == null || restockOrderService.isdelivering(ingredient) + stock.getQuantity() <= ingredient.getMinimumCount()) {
+                    restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
+            }
         });
     }
+
+
 
     public void deleteOrder(Integer orderId) {
         Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);

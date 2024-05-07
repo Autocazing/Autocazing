@@ -4,6 +4,7 @@ import e204.autocazing.db.entity.IngredientEntity;
 import e204.autocazing.db.entity.StockEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.StockRepository;
+import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.dto.PostStockDto;
 import e204.autocazing.stock.dto.StockDetailsDto;
 import e204.autocazing.stock.dto.UpdateStockDto;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,9 @@ public class StockService {
     private StockRepository stockRepository;
     @Autowired
     private IngredientRepository ingredientRepository;
+    @Autowired
+    private RestockOrderService restockOrderService;
+
 
     public void createStock(PostStockDto postStockDto) {
         IngredientEntity ingredient = ingredientRepository.findById(postStockDto.getIngredientId())
@@ -34,25 +39,36 @@ public class StockService {
 
     // 전체 재고 조회
     public List<StockDetailsDto> findAllStocks() {
-        return stockRepository.findAll().stream()
-                .map(stock -> new StockDetailsDto(
-                        stock.getStockId(),
-                        stock.getQuantity(),
-                        stock.getExpirationDate(),
-                        stock.getIngredient().getIngredientId()))
-                .collect(Collectors.toList());
+        // 전체 재고를 조회하고 StockDetailsDto 리스트로 변환합니다.
+        List<StockEntity> stocks = stockRepository.findAll();
+        List<StockDetailsDto> stockDetailsList = new ArrayList<>();
+
+
+        for (StockEntity stock : stocks) {
+            int deliveringCount = restockOrderService.isdelivering(stock.getIngredient());
+            StockDetailsDto stockDetails = new StockDetailsDto();
+            stockDetails.setStockId(stock.getStockId());
+            stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
+            stockDetails.setExpirationDate(stock.getExpirationDate());
+            stockDetails.setQuantity(stock.getQuantity());
+            stockDetails.setDeliveringCount(deliveringCount);
+            stockDetailsList.add(stockDetails);
+        }
+        return stockDetailsList;
     }
 
     // 재고 상세 조회
     public StockDetailsDto findStockById(Integer stockId) {
         StockEntity stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new RuntimeException("Stock not found"));
+        int deliveringCount = restockOrderService.isdelivering(stock.getIngredient());
+        System.out.println("@@StockService deliveringCount : " + deliveringCount);
         StockDetailsDto stockDetails = new StockDetailsDto();
         stockDetails.setStockId(stock.getStockId());
         stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
         stockDetails.setExpirationDate(stock.getExpirationDate());
         stockDetails.setQuantity(stock.getQuantity());
-
+        stockDetails.setDeliveringCount(deliveringCount);
         return stockDetails;
     }
 
@@ -79,6 +95,8 @@ public class StockService {
         stockRepository.delete(stock);
     }
 
+    //주문 들어온 메뉴의 들어가는 재료를 재고에서 빼기.
+    //뺀 후에 재고 체크를 통해 자동 발주 신청 까지.
     @Transactional
     public void decreaseStock(Integer ingredientId, Integer quantity) {
         List<StockEntity> stocks = stockRepository.findByIngredientIngredientIdOrderByExpirationDateAsc(ingredientId);
@@ -107,4 +125,18 @@ public class StockService {
             throw new RuntimeException("Insufficient stock for ingredient ID: " + ingredientId);
         }
     }
+
+    //재고체크 재료의 수량이 설정한 값보다 낮으면 발주 리스트 추가.
+    @Transactional
+    public void checkAndAddRestockOrderSpecifics() {
+        List<IngredientEntity> ingredients = ingredientRepository.findAll();
+
+        for (IngredientEntity ingredient : ingredients) {
+            StockEntity stock = stockRepository.findByIngredient(ingredient);
+            if (stock != null && stock.getQuantity() <= ingredient.getMinimumCount()) {
+                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
+            }
+        }
+    }
+
 }

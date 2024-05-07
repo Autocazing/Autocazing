@@ -1,6 +1,7 @@
 package e204.autocazing.order.controller;
 
 
+import e204.autocazing.exception.RestockProcessingException;
 import e204.autocazing.order.dto.DetailOrderResponseDto;
 import e204.autocazing.order.dto.OrderRequestDto;
 import e204.autocazing.order.dto.OrderResponseDto;
@@ -31,10 +32,16 @@ public class OrderController {
         return new ResponseEntity(detailOrder, HttpStatus.OK);
     }
 
+    //여기 예외처리 추가할 예정.
     @PostMapping("")
     public ResponseEntity addOrder(@RequestBody OrderRequestDto orderRequestDto){
-        orderService.addOrder(orderRequestDto);
-        return new ResponseEntity(HttpStatus.CREATED);
+
+            //주문 받기 및 재고 검사로 주문 받을 수 있는 지 검사 + 재고 재료 사용한만큼 줄이기.
+            orderService.addOrder(orderRequestDto);
+            // 발주 검사 및 발주추가
+            orderService.checkAndAddRestockOrderSpecifics();
+            return ResponseEntity.ok(HttpStatus.CREATED);
+
     }
 
     @DeleteMapping("/{orderId}")
