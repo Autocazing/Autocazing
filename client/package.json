@@ -2,7 +2,7 @@
     "name": "client",
     "version": "0.1.0",
     "private": true,
-    "homepage": "/login",
+    "homepage": "/",
     "dependencies": {
         "@fullcalendar/core": "^6.1.11",
         "@fullcalendar/daygrid": "^6.1.11",
