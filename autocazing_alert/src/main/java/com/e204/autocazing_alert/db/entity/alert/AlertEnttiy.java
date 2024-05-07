@@ -1,4 +1,4 @@
-package com.e204.autocazing_alert.db.entity;
+package com.e204.autocazing_alert.db.entity.alert;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
