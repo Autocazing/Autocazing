@@ -8,11 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(OrderProcessingException.class)
-//    public ResponseEntity<String> handleOrderProcessingException(OrderProcessingException e) {
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order processing error: " + e.getMessage());
-//    }
-
     @ExceptionHandler(RestockProcessingException.class)
     public ResponseEntity<String> handleRestockProcessingException(RestockProcessingException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during restocking: " + e.getMessage());
