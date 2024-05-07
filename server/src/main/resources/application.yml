@@ -22,7 +22,7 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   api-docs:
-    path: /api/api-docs
+    path: /api/inventory-service/api-docs
   swagger-ui:
     path: /api/inventory-service/docs # Swagger 페이지로 접속할 경로
     disable-swagger-default-url: true   # 기본 페이지로 리디렉션 되지 않게 하는 설정입니다
