@@ -15,9 +15,10 @@ const LoginPage = () => {
         login(
             { loginId: Id, password: Pw },
             (res) => {
+                console.log(res);
                 console.log(res.data.token);
                 localStorage.setItem("accessToken", res.data.token);
-                navigate("/"); // 메인페이지 이동
+                navigate("/dashboard"); // 메인페이지 이동
             },
             (err) => {
                 console.log("로그인 오류");
