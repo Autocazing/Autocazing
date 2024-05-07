@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
+//
     @ExceptionHandler(RestockProcessingException.class)
     public ResponseEntity<String> handleRestockProcessingException(RestockProcessingException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during restocking: " + e.getMessage());
