@@ -1,6 +1,14 @@
+import { useState } from "react";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
 
 const LoginPage = () => {
+    const [Id, setId] = useState(""); // Id
+    const [Pw, setPw] = useState(""); // Pw
+
+    const loginHandler = (e) => {
+        e.preventDefault();
+    };
+
     return (
         <>
             <div className="flex items-center justify-center h-screen w-full px-5 sm:px-0">
@@ -14,6 +22,9 @@ const LoginPage = () => {
                                 className="mx-auto h-13 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full  focus:outline-2  max-w-150 focus:outline-blue-700"
                                 type="email"
                                 placeholder="아이디"
+                                onChange={(e) => {
+                                    setId(e.target.value);
+                                }}
                             />
                         </div>
                         <div className="mt-8 flex flex-col justify-between">
@@ -21,10 +32,16 @@ const LoginPage = () => {
                                 className="mx-auto h-13 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 max-w-150 focus:outline-blue-700"
                                 type="password"
                                 placeholder="비밀번호"
+                                onChange={(e) => {
+                                    setPw(e.target.value);
+                                }}
                             />
                         </div>
                         <div className="mt-15 text-center">
-                            <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
+                            <button
+                                onClick={loginHandler}
+                                className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600"
+                            >
                                 Login
                             </button>
                         </div>
