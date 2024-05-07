@@ -51,36 +51,42 @@ const StockManagementModal = ({ isOpen, onClose }) => {
     const fileselect = (e) => {
         const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
 
-        //파일 읽기
+        // 파일 읽기
         const workbook = new ExcelJS.Workbook();
-        const render = new FileReader();
+        const reader = new FileReader();
 
-        render.onload = async (e) => {
+        reader.onload = async (e) => {
             const data = new Uint8Array(e.target.result);
             await workbook.xlsx.load(data); // 엑셀 파일 로드
 
             const worksheet = workbook.getWorksheet(1);
+            const newData = []; // 새로운 데이터를 저장할 배열
 
-            // 여기서 데이터 처리해야함
+            // 데이터 처리
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return;
+                if (rowNumber === 1) return; // 첫 번째 행(제목 행)은 건너뜀
                 const rowData = row.values.filter((value) => value != null);
-                const [name, expiration, amount, PRcount] = rowData.slice(0);
+                const [name, period, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
 
                 const item = {
                     name,
-                    expiration,
-                    amount,
-                    PRcount,
+                    period,
+                    volume,
+                    predictOrder,
                 };
+                // console.log(item);
 
-                setStockPostData(item);
+                newData.push(item);
             });
+
+            setStockPostData(newData); // 모든 데이터를 한 번에 상태로 설정
         };
+        // console.log(stockPostData);
 
         // 파일을 ArrayBuffer로 읽음
-        render.readAsArrayBuffer(selectedfile);
+        reader.readAsArrayBuffer(selectedfile);
     };
+
     return (
         <Modal
             isOpen={isOpen}
@@ -110,6 +116,49 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                 재고추가
             </h1>
             <div className="p-6.5">
+                {stockPostData.length > 0 ? (
+                    <table className="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    품목명
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    총량
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    유통기한
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    발주 예정 수량
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {stockPostData.map((item, index) => (
+                                <tr key={index}>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.name}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.volume}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.period}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.predictOrder}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className="text-gray-800 font-semibold text-center text-lg mt-5 mb-10">
+                        영수증 파일이 있다면 파일을 넣어주세요.
+                    </p>
+                )}
+
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         영주증 파일
