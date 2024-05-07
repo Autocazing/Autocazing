@@ -4,6 +4,10 @@ spring :
       alert-service
   profiles:
     active: ${profile}
+  jpa:
+    database: mysql
+    hibernate.ddl-auto: update
+    show-sql: true
   output:
     ansi:
       enabled: ALWAYS
@@ -11,6 +15,8 @@ spring :
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  config:
+    import: optional:configserver:http://config-server:8888
 
 #logging
 logging:
