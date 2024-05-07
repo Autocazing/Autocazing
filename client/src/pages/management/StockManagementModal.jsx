@@ -1,6 +1,7 @@
 import Modal from "react-modal";
 import { useState } from "react";
 import closeIcon from "../../images/icon/close.svg";
+import ExcelJS from "exceljs";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -29,12 +30,14 @@ const customStyles = {
     },
 };
 const StockManagementModal = ({ isOpen, onClose }) => {
-    const [stockPostData, setStockPostData] = useState({
-        name: "",
-        volume: 0,
-        period: "",
-        predictOrder: 0,
-    });
+    const [stockPostData, setStockPostData] = useState([
+        {
+            name: "",
+            volume: 0,
+            period: "",
+            predictOrder: 0,
+        },
+    ]);
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
@@ -45,6 +48,39 @@ const StockManagementModal = ({ isOpen, onClose }) => {
         // console.log(stockPostData);
     };
 
+    const fileselect = (e) => {
+        const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
+
+        //파일 읽기
+        const workbook = new ExcelJS.Workbook();
+        const render = new FileReader();
+
+        render.onload = async (e) => {
+            const data = new Uint8Array(e.target.result);
+            await workbook.xlsx.load(data); // 엑셀 파일 로드
+
+            const worksheet = workbook.getWorksheet(1);
+
+            // 여기서 데이터 처리해야함
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber === 1) return;
+                const rowData = row.values.filter((value) => value != null);
+                const [name, expiration, amount, PRcount] = rowData.slice(0);
+
+                const item = {
+                    name,
+                    expiration,
+                    amount,
+                    PRcount,
+                };
+
+                setStockPostData(item);
+            });
+        };
+
+        // 파일을 ArrayBuffer로 읽음
+        render.readAsArrayBuffer(selectedfile);
+    };
     return (
         <Modal
             isOpen={isOpen}
@@ -71,9 +107,19 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                 </button>
             </div>
             <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                재료추가
+                재고추가
             </h1>
             <div className="p-6.5">
+                <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                        영주증 파일
+                    </label>
+                    <input
+                        onChange={fileselect}
+                        type="file"
+                        className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                    />
+                </div>
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         품목명
