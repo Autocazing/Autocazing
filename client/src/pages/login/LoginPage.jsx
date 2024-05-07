@@ -1,12 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../utils/axios/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
 
 const LoginPage = () => {
     const [Id, setId] = useState(""); // Id
     const [Pw, setPw] = useState(""); // Pw
 
+    const navigate = useNavigate();
+
     const loginHandler = (e) => {
         e.preventDefault();
+
+        login(
+            { loginId: Id, password: Pw },
+            (res) => {
+                console.log(res.data.token);
+                localStorage.setItem("accessToken", res.data.token);
+                navigate("/"); // 루트경로 이동
+            },
+            (err) => {
+                console.log("로그인 오류");
+                console.log(err);
+            },
+        );
     };
 
     return (

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://j10e202.p.ssafy.io/api",
+    baseURL: "https://k10e204.p.ssafy.io/api",
     // timeout: 5000, // 일단 타임아웃 5초로
     withCredentials: true,
     // headers: {'our-server-token': 'not-yet'} // 우리 서버 아직 토큰 헤더 이름 안나옴...
@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
             // const refresh =
             //     "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OHc4Z3hxVGtpV3BRXyIsImlhdCI6MTcxMTMzNzMwMSwiZXhwIjoxNzE0MDE1NzAxfQ.IMVHPA7WjwqlgOyMXf2HpW03DuHOC3FZD1F_EtmP2P8";
 
-            // refreshToken으로 새 accessToken 요청
+            // refreshToken으로 새 accessToken 요청 (나중에 수정해야함)
             try {
                 const response = await axios.post(
                     "https://j10e202.p.ssafy.io/api/auth/refresh",
