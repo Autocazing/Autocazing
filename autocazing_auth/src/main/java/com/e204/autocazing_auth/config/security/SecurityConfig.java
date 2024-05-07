@@ -37,9 +37,10 @@ public class SecurityConfig {
 		http
 			.csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
 			.cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
-			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입 api만 권한 없어도 접근 가능
-				.requestMatchers("/api/users/login").permitAll()
-				.requestMatchers("/api/users/register").permitAll()
+			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입, swagger 권한 없어도 접근 가능
+				.requestMatchers("/api/users/login", "/api/users/register").permitAll()
+				.requestMatchers("/api/inventory-service/**","/api/inventory-service/**",
+					"/api/alert-service/**","/api/solution-service/**","/api/auth-server/**").permitAll()
 				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
