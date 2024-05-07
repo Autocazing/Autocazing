@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import e204.autocazing.sale.dto.SalesResponseDto;
 import e204.autocazing.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,7 +53,11 @@ public class SaleController {
 		)
 	})
 	@GetMapping("")
-	public ResponseEntity getSales(@RequestParam("type") String type){ //type : 일별 day, 주별 week, 월별 month
+	public ResponseEntity getSales(
+		@Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
+			required = true,
+			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
+		@RequestParam("type") String type){ //type : 일별 day, 주별 week, 월별 month
 		List<Map<String, Object>> sales = saleService.getSales(type);
 		return ResponseEntity.ok(sales);
 	}
