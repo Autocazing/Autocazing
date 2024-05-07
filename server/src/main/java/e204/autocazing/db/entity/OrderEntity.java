@@ -46,8 +46,6 @@ public class OrderEntity {
         private Integer menuId;
         private int quantity;
         private int price;
-
-
     }
 }
 
