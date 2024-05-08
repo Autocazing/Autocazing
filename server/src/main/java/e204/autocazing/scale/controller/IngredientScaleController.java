@@ -33,15 +33,7 @@ public class IngredientScaleController {
     //단위 추가
     @Operation(summary = "단위 생성 요청", description = "직접 단위를 추가 했을 때 동작을 수행하는 API입니다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "단위 추가 성공",
-            content = @Content(examples = {
-                @ExampleObject(
-                    name = "단위 생성 반환 body",
-                    summary = "단위 생성 반환 body의 예시",
-                    value = "{\"scaleId\": 1,\"unit\": \"ml\"}"
-                )
-            })
-        )
+        @ApiResponse(responseCode = "201", description = "단위 추가 성공")
     })
     @PostMapping
     public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {

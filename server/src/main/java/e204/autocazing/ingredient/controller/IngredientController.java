@@ -32,24 +32,7 @@ public class IngredientController {
     // 재료 등록
     @Operation(summary = "재료 등록 요청", description = "재료를 등록 했을 때 동작을 수행하는 API입니다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "재료 등록 성공",
-            content = @Content(examples = {
-                @ExampleObject(
-                    name = "재료 등록 반환 body",
-                    summary = "재료 등록 반환 body의 예시",
-                    value = "{\"ingredientId\": 1,\n"
-                        + "    \"storeId\": 1,\n"
-                        + "    \"vendorId\": 1,\n"
-                        + "    \"ingredientName\": \"milk\",\n"
-                        + "    \"ingredientPrice\": 5000,\n"
-                        + "    \"ingredientCapacity\": 5,\n"
-                        + "    \"scaleId\": 1,\n"
-                        + "    \"minimumCount\": 15,\n"
-                        + "    \"deliveryTime\": 1,\n"
-                        + "    \"orderCount\": 10}"
-                )
-            })
-        )
+        @ApiResponse(responseCode = "201", description = "재료 등록 성공")
     })
     @PostMapping
     public ResponseEntity<IngredientEntity> createIngredient(@RequestBody PostIngredientDto postIngredientDto) {
