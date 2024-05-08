@@ -1,6 +1,7 @@
 import Modal from "react-modal";
 import { useState } from "react";
 import closeIcon from "../../images/icon/close.svg";
+import ExcelJS from "exceljs";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -29,12 +30,14 @@ const customStyles = {
     },
 };
 const StockManagementModal = ({ isOpen, onClose }) => {
-    const [stockPostData, setStockPostData] = useState({
-        name: "",
-        volume: 0,
-        period: "",
-        predictOrder: 0,
-    });
+    const [stockPostData, setStockPostData] = useState([
+        {
+            name: "",
+            volume: 0,
+            period: "",
+            predictOrder: 0,
+        },
+    ]);
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
@@ -43,6 +46,45 @@ const StockManagementModal = ({ isOpen, onClose }) => {
             [name]: type === "number" ? parseInt(value, 10) || 0 : value,
         }));
         // console.log(stockPostData);
+    };
+
+    const fileselect = (e) => {
+        const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
+
+        // 파일 읽기
+        const workbook = new ExcelJS.Workbook();
+        const reader = new FileReader();
+
+        reader.onload = async (e) => {
+            const data = new Uint8Array(e.target.result);
+            await workbook.xlsx.load(data); // 엑셀 파일 로드
+
+            const worksheet = workbook.getWorksheet(1);
+            const newData = []; // 새로운 데이터를 저장할 배열
+
+            // 데이터 처리
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber === 1) return; // 첫 번째 행(제목 행)은 건너뜀
+                const rowData = row.values.filter((value) => value != null);
+                const [name, period, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
+
+                const item = {
+                    name,
+                    period,
+                    volume,
+                    predictOrder,
+                };
+                // console.log(item);
+
+                newData.push(item);
+            });
+
+            setStockPostData(newData); // 모든 데이터를 한 번에 상태로 설정
+        };
+        // console.log(stockPostData);
+
+        // 파일을 ArrayBuffer로 읽음
+        reader.readAsArrayBuffer(selectedfile);
     };
 
     return (
@@ -71,9 +113,62 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                 </button>
             </div>
             <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                재료추가
+                재고추가
             </h1>
             <div className="p-6.5">
+                {stockPostData.length > 0 ? (
+                    <table className="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    품목명
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    총량
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    유통기한
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    발주 예정 수량
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {stockPostData.map((item, index) => (
+                                <tr key={index}>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.name}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.volume}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.period}
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {item.predictOrder}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className="text-gray-800 font-semibold text-center text-lg mt-5 mb-10">
+                        영수증 파일이 있다면 파일을 넣어주세요.
+                    </p>
+                )}
+
+                <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                        영주증 파일
+                    </label>
+                    <input
+                        onChange={fileselect}
+                        type="file"
+                        className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                    />
+                </div>
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         품목명
