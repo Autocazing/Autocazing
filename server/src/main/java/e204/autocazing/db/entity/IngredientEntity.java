@@ -45,6 +45,10 @@ public class IngredientEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private String imageUrl =" ";
+
+
     @OneToMany(mappedBy = "ingredient" , cascade = CascadeType.ALL)
     private List<MenuIngredientEntity> menuIngredients;
 

@@ -28,6 +28,9 @@ public class MenuEntity {
     private Boolean onEvent;
     @Column(nullable = false)
     private int discount_rate;
+    @Column(nullable = false)
+    private String imageUrl =" ";
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;

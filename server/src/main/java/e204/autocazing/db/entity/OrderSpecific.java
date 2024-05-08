@@ -15,5 +15,4 @@ public class OrderSpecific {
     private Integer menuId;
     private int menuQuantity;
     private int menuPrice;
-
 }
