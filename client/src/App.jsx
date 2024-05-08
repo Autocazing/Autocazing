@@ -64,6 +64,7 @@ function App() {
                             ></Route>
                         </Route>
                     </Route>
+
                     <Route path="/pos" element={<Pos />} />
                     <Route path="/" element={<LoginPage />}></Route>
                 </Routes>
