@@ -13,6 +13,4 @@ public class IngredientScaleDto {
     private Integer scaleId;
     private String unit;
 
-
-
 }
