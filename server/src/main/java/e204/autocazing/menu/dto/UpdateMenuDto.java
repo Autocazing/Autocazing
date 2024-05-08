@@ -16,6 +16,8 @@ public class UpdateMenuDto {
     private String menuName;
     private Integer menuPrice;
     private Boolean onEvent;
+    private int discountRate;
+    private String imageUrl;
     private List<MenuIngredientDto> ingredients;
 
 }

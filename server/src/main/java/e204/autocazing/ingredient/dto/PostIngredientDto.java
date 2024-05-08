@@ -29,4 +29,5 @@ public class PostIngredientDto {
 
     private Integer orderCount;
 
+    private String imageUrl;
 }

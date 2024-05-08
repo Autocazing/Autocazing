@@ -19,4 +19,5 @@ public class IngredientDto {
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;
+    private String imageUrl;
 }

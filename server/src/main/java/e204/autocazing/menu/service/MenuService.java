@@ -35,6 +35,8 @@ public class MenuService {
         menu.setMenuName(postMenuDto.getMenuName());
         menu.setMenuPrice(postMenuDto.getMenuPrice());
         menu.setOnEvent(postMenuDto.getOnEvent());
+        menu.setDiscountRate(postMenuDto.getDiscountRate());
+        menu.setImageUrl(postMenuDto.getImageUrl());
         // 가게 정보 설정
         StoreEntity store = storeRepository.findById(postMenuDto.getStoreId())
                 .orElseThrow(() -> new RuntimeException("Store not found with id: " + postMenuDto.getStoreId()));
@@ -68,6 +70,12 @@ public class MenuService {
         }
         if (updateMenuDto.getOnEvent() != null) {
             menu.setOnEvent(updateMenuDto.getOnEvent());
+        }
+        if(updateMenuDto.getDiscountRate() != 0 ){
+            menu.setDiscountRate(updateMenuDto.getDiscountRate());
+        }
+        if(updateMenuDto.getImageUrl() != null){
+            menu.setImageUrl(updateMenuDto.getImageUrl());
         }
 
         if(updateMenuDto.getIngredients() != null){
@@ -110,6 +118,8 @@ public class MenuService {
         menuDto.setMenuName(menu.getMenuName());
         menuDto.setMenuPrice(menu.getMenuPrice());
         menuDto.setOnEvent(menu.getOnEvent());
+        menuDto.setDiscountRate(menu.getDiscountRate());
+        menuDto.setImageUrl(menu.getImageUrl());
 
         // MenuIngredientDto 리스트 변환
         List<MenuIngredientDto> ingredientDtos = menu.getMenuIngredients()
@@ -137,6 +147,8 @@ public class MenuService {
         menuDto.setMenuName(menuEntity.getMenuName());
         menuDto.setMenuPrice(menuEntity.getMenuPrice());
         menuDto.setOnEvent(menuEntity.getOnEvent());
+        menuDto.setDiscountRate(menuEntity.getDiscountRate());
+        menuDto.setImageUrl(menuEntity.getImageUrl());
         menuDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);
 
         List<MenuIngredientDto> ingredientDtos = menuEntity.getMenuIngredients()
