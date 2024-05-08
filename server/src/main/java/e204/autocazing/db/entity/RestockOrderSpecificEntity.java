@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "RestockOrderSpecific")
+@Table(name = "RestockOrderSpecifics")
 public class RestockOrderSpecificEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

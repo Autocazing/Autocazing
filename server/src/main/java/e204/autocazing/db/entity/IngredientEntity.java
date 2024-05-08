@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "Ingredient")
+@Table(name = "ingredients")
 public class IngredientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
