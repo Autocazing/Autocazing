@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRestockDto {
-    private Integer storeId;
-    private RestockOrderEntity.RestockStatus status = RestockOrderEntity.RestockStatus.WRITING;
-
+public class RestockOrderStatusDto {
+    private RestockOrderEntity.RestockStatus status;
 }

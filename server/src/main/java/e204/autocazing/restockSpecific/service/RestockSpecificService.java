@@ -10,6 +10,7 @@ import e204.autocazing.ingredient.service.IngredientService;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
+import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,27 +51,32 @@ public class RestockSpecificService {
     }
 
     // 전체 조회
-    public List<RestockSpecificDto> findAllRestockOrderSpecifics() {
+    public List<RestockSpecificResponseDto> findAllRestockOrderSpecifics() {
         return restockOrderSpecificRepository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     // 상세 조회
-    public RestockSpecificDto findRestockOrderSpecificById(Integer restockOrderSpecificId) {
+    public RestockSpecificResponseDto findRestockOrderSpecificById(Integer restockOrderSpecificId) {
         RestockOrderSpecificEntity restockSpecific = restockOrderSpecificRepository.findById(restockOrderSpecificId)
                 .orElseThrow(() -> new RuntimeException("RestockOrderSpecific not found"));
         return convertToDto(restockSpecific);
     }
 
-    private RestockSpecificDto convertToDto(RestockOrderSpecificEntity restockSpecific) {
-        return new RestockSpecificDto(
-                restockSpecific.getRestockOrderSpecificId(),
-                restockSpecific.getIngredient().getIngredientId(),
-                restockSpecific.getRestockOrder().getRestockOrderId(),
-                restockSpecific.getIngredientQuantity(),
-                restockSpecific.getIngredientPrice()
-        );
+    private RestockSpecificResponseDto convertToDto(RestockOrderSpecificEntity restockSpecific) {
+        return RestockSpecificResponseDto.builder()
+                .restockOrderSpecificId(restockSpecific.getRestockOrderSpecificId())
+                .ingredientId(restockSpecific.getIngredient().getIngredientId())
+                .ingredientName(restockSpecific.getIngredient().getIngredientName())
+                .restockOrderId(restockSpecific.getRestockOrder().getRestockOrderId())
+                .ingredientQuantity(restockSpecific.getIngredientQuantity())
+                .ingredientPrice(restockSpecific.getIngredientPrice())
+                .vendorName(restockSpecific.getIngredient().getVendor().getVendorName())
+                .status(String.valueOf(restockSpecific.getRestockOrder().getStatus()))
+                .build();
+
+
     }
 
     // Update

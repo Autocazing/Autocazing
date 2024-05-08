@@ -1,5 +1,6 @@
 package e204.autocazing.ingredient.controller;
 
+import e204.autocazing.ingredient.dto.IngredientDetails;
 import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.IngredientDto;
@@ -63,8 +64,8 @@ public class IngredientController {
         )
     })
     @PatchMapping("/{ingredientId}")
-    public ResponseEntity<IngredientDto> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
-        IngredientDto updateIngredient = ingredientService.updateIngredient(ingredientId, ingredientDto);
+    public ResponseEntity<IngredientDetails> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
+        IngredientDetails updateIngredient = ingredientService.updateIngredient(ingredientId, ingredientDto);
         return ResponseEntity.ok(updateIngredient);
     }
 
@@ -83,13 +84,12 @@ public class IngredientController {
     @Operation(summary = "재료 목록 조회 요청", description = "재료 목록 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "재료 목록 조회 성공",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = IngredientScaleDto.class)), examples = {
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = IngredientDetails.class)), examples = {
                 @ExampleObject(
                     name = "재료 목록 조회 body",
                     summary = "재료 목록 조회 body의 예시",
                     value = "[{\"ingredientId\": 1,\n"
-                        + "    \"storeId\": 1,\n"
-                        + "    \"vendorId\": 1,\n"
+                        + "    \"vendorName\": 동민상사,\n"
                         + "    \"ingredientName\": \"milk\",\n"
                         + "    \"ingredientPrice\": 5000,\n"
                         + "    \"ingredientCapacity\": 5,\n"
@@ -102,12 +102,12 @@ public class IngredientController {
         )
     })
     @GetMapping
-    public ResponseEntity<List<IngredientDto>> getAllIngredients() {
-        List<IngredientDto> ingredients = ingredientService.findAllIngredients();
+    public ResponseEntity<List<IngredientDetails>> getAllIngredients() {
+        List<IngredientDetails> ingredients = ingredientService.findAllIngredients();
         return ResponseEntity.ok(ingredients);
     }
 
-    // 재료 상세 조회
+    // 재료 상세 조회 (쓸 일이 있나?)
     @Operation(summary = "재료 조회 요청", description = "재료 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "재료 조회 성공",
@@ -130,8 +130,8 @@ public class IngredientController {
         )
     })
     @GetMapping("/{ingredientId}")
-    public ResponseEntity<IngredientDto> getIngredientById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId) {
-        IngredientDto ingredient = ingredientService.findIngredientById(ingredientId);
+    public ResponseEntity<IngredientDetails> getIngredientById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId) {
+        IngredientDetails ingredient = ingredientService.findIngredientById(ingredientId);
         return ResponseEntity.ok(ingredient);
     }
 }

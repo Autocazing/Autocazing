@@ -13,6 +13,7 @@ public class PostRestockSpecificDto {
     private Integer ingredientId;
     private Integer restockOrderId;
     private Integer ingredientQuantity;
+
 //    private Integer ingredientPrice;
 
 }

@@ -1,15 +1,15 @@
 package e204.autocazing.restock.service;
 
-import e204.autocazing.db.entity.IngredientEntity;
-import e204.autocazing.db.entity.RestockOrderEntity;
-import e204.autocazing.db.entity.RestockOrderSpecificEntity;
-import e204.autocazing.db.entity.StockEntity;
+import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
 import e204.autocazing.db.repository.StockRepository;
+import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.restock.dto.PostRestockDto;
 import e204.autocazing.restock.dto.RestockDetailsDto;
+import e204.autocazing.restock.dto.RestockOrderStatusDto;
 import e204.autocazing.restock.dto.UpdateRestockDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +27,30 @@ public class RestockOrderService {
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
     @Autowired
     private StockRepository stockRepository;
+    @Autowired
+    private StoreRepository storeRepository;
+
 
     // Create
     @Transactional
     public void createRestockOrder(PostRestockDto postRestockDto) {
         RestockOrderEntity restockOrder = new RestockOrderEntity();
         restockOrder.setStatus(postRestockDto.getStatus());
+        StoreEntity store = storeRepository.findById(postRestockDto.getStoreId())
+                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + postRestockDto.getStoreId()));
+        restockOrder.setStore(store);
         restockOrderRepository.save(restockOrder);
     }
 
     // Read All
-    public List<RestockDetailsDto> findAllRestockOrders() {
-        return restockOrderRepository.findAll().stream()
+    public List<RestockDetailsDto> findAllRestockOrders(List<RestockOrderStatusDto> status) {
+        List<RestockOrderEntity> orders;
+        if (status == null || status.isEmpty()) {
+            orders = restockOrderRepository.findAll();
+        } else {
+            orders = restockOrderRepository.findByStatusIn(status);
+        }
+        return orders.stream()
                 .map(restock -> new RestockDetailsDto(
                         restock.getRestockOrderId(),
                         restock.getStatus(),
@@ -46,6 +58,7 @@ public class RestockOrderService {
                         restock.getUpdatedAt()))
                 .collect(Collectors.toList());
     }
+
 
     // Read Single
     public RestockDetailsDto findRestockOrderById(Integer restockOrderId) {
