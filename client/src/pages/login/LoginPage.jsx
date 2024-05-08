@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../utils/axios/Users";
+import { login } from "../../apis/server/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
 
 const LoginPage = () => {

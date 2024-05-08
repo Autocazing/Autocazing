@@ -46,7 +46,7 @@ axiosInstance.interceptors.response.use(
             // refreshToken으로 새 accessToken 요청 (나중에 수정해야함)
             try {
                 const response = await axios.post(
-                    "https://j10e202.p.ssafy.io/api/auth/refresh",
+                    "https://k10e204.p.ssafy.io/api/auth/refresh",
                     {
                         refresh,
                     },
