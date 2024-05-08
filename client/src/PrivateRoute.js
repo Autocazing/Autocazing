@@ -1,13 +1,18 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
-const PrivateRoute = ({ authenticated, component: Component }) => {
+const PrivateRoute = () => {
+    const access = localStorage.getItem("accessToken");
     // Component 명시
-    authenticated ? (
-        <Component />
-    ) : (
-        <Navigate to="/" replace state={{ showAlert: true }} />
-    );
+
+    useEffect(() => {
+        if (!access) {
+            alert("권한이 없습니다. 로그인 해주세요.");
+        }
+    }, [access]);
+
+    return access ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;
