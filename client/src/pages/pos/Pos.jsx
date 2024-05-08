@@ -6,13 +6,15 @@ import { TbTrash } from "react-icons/tb";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { useReactToPrint } from "react-to-print";
 
+// import { getMenus } from "../../apis/server/Pos";
+
 function Pos() {
     const componentRef = useRef();
     const [cart, setCart] = useState([]);
     const [paymentMode, setPaymentMode] = useState("");
     const [products, setProducts] = useState([
         {
-            name: "gpfdof",
+            name: "asddas",
             cost: 20,
             quantity: 0,
             id: 1,
@@ -23,10 +25,56 @@ function Pos() {
             quantity: 0,
             id: 2,
         },
+        {
+            name: "banaasd",
+            cost: 10,
+            quantity: 0,
+            id: 3,
+        },
+        {
+            name: "gpfdof",
+            cost: 20,
+            quantity: 0,
+            id: 4,
+        },
+        {
+            name: "bana",
+            cost: 10,
+            quantity: 0,
+            id: 5,
+        },
+        {
+            name: "banaasd",
+            cost: 10,
+            quantity: 0,
+            id: 6,
+        },
+        {
+            name: "gpfdof",
+            cost: 20,
+            quantity: 0,
+            id: 7,
+        },
+        {
+            name: "bana",
+            cost: 10,
+            quantity: 0,
+            id: 8,
+        },
+        {
+            name: "banaasd",
+            cost: 10,
+            quantity: 0,
+            id: 9,
+        },
     ]);
     const [total, setTotal] = useState(0);
 
     const [show, setShow] = useState(0);
+
+    // getMenus((res) => {
+    //     console.log(res);
+    // });
 
     const addToCart = (productId) => {
         const found = cart.some((el) => el.id === productId);
@@ -121,13 +169,13 @@ function Pos() {
                 {/* right side  */}
                 <div className="col-span-6 bg-slate-50/50 rounded min-h-max w-full pt-4 px-2">
                     {/* header  */}
-                    <div className="header flex items-baseline justify-between">
+                    {/* <div className="header flex items-baseline justify-between">
                         <h2 className="font-semibold text-base text-gray-800 leading-3 whitespace-nowrap ">
                             Choose Category{" "}
                         </h2>
-                    </div>
+                    </div> */}
                     {/* categories  */}
-                    <div className="flex pt-5 gap-3 overflow-auto categories">
+                    {/* <div className="flex pt-5 gap-3 overflow-auto categories">
                         <button className="card rounded-lg p-3 px-4 bg-white">
                             <MdRestaurantMenu className="h-4 mx-auto" />
                             <p className="text-gray-700 font-bold text-sm">
@@ -183,7 +231,7 @@ function Pos() {
                                 Breakfast
                             </p>
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* header  */}
                     <div className="flex my-3 px-2 justify-between items-center">
