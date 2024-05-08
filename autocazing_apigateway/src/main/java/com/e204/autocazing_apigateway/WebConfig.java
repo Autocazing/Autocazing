@@ -13,16 +13,16 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowCredentials(true)
-                .allowedOrigins("http://localhost:3000")
-                .allowedOrigins("https://k10e204.p.ssafy.io")
-                .allowedMethods("*")
-                .allowedHeaders("*")
-                .exposedHeaders("*");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowCredentials(true)
+//                .allowedOrigins("http://localhost:3000")
+//                .allowedOrigins("https://k10e204.p.ssafy.io")
+//                .allowedMethods("*")
+//                .allowedHeaders("*")
+//                .exposedHeaders("*");
+//    }
 
     @Bean
     public CorsWebFilter corsFilter() {
