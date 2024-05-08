@@ -18,7 +18,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 		+ "ORDER BY DATE(o.createdAt)")
 	List<Map<String, Object>> calculateDailySales(LocalDateTime startDate);
 
-
 	@Query(value = "SELECT new map(WEEK(o.createdAt) as week, YEAR(o.createdAt) as year, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
 		+"FROM OrderEntity o JOIN o.orderSpecific os "
 		+"WHERE o.createdAt >= :startDate "
