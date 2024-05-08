@@ -14,6 +14,7 @@ import MaterialManagement from "./pages/management/MaterialManagement";
 import MenuManagement from "./pages/management/MenuManagement";
 import StockManagement from "./pages/management/StockManagement";
 import LoginPage from "./pages/login/LoginPage";
+import Pos from "./pages/pos/Pos";
 
 import DefaultLayout from "./layout/DefaultLayout";
 import PrivateRoute from "./PrivateRoute";
@@ -63,7 +64,7 @@ function App() {
                             ></Route>
                         </Route>
                     </Route>
-
+                    <Route path="/pos" element={<Pos />} />
                     <Route path="/" element={<LoginPage />}></Route>
                 </Routes>
                 {/* <div className="text-3xl font-bold underline">hello</div> */}

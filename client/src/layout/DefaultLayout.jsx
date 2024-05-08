@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 const DefaultLayout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const isLoginPage = window.location.pathname === "/";
+    const posPage = window.location.pathname === "/pos";
 
     if (isLoginPage) {
         return (
@@ -12,6 +13,10 @@ const DefaultLayout = ({ children }) => {
                 {children}
             </div>
         );
+    }
+
+    if (posPage) {
+        return <div>{children}</div>;
     }
 
     return (
