@@ -27,7 +27,7 @@ public class MenuEntity {
     @Column(nullable = false)
     private Boolean onEvent;
     @Column(nullable = false)
-    private int discount_rate;
+    private int discountRate = 0;
     @Column(nullable = false)
     private String imageUrl =" ";
 

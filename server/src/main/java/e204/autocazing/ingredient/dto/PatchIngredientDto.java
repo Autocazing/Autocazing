@@ -20,4 +20,5 @@ public class PatchIngredientDto {
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;
+    private String imageUrl;
 }

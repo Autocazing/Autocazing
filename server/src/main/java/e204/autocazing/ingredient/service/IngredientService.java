@@ -37,6 +37,7 @@ public class IngredientService {
         ingredient.setMinimumCount(postIngredientDto.getMinimumCount());
         ingredient.setDeliveryTime(postIngredientDto.getDeliveryTime());
         ingredient.setOrderCount(postIngredientDto.getOrderCount());
+        ingredient.setImageUrl(postIngredientDto.getImageUrl());
 
         // 참조 설정
         StoreEntity store = storeRepository.findById(postIngredientDto.getStoreId())
@@ -74,6 +75,9 @@ public class IngredientService {
         }
         if (patchIngredientDto.getOrderCount() != null) {
             ingredientEntity.setOrderCount(patchIngredientDto.getOrderCount());
+        }
+        if(patchIngredientDto.getImageUrl() != null){
+            ingredientEntity.setImageUrl(patchIngredientDto.getImageUrl());
         }
         ingredientEntity.setUpdatedAt(LocalDateTime.now());
 
@@ -114,6 +118,7 @@ public class IngredientService {
                 .minimumCount(entity.getMinimumCount())
                 .orderCount(entity.getOrderCount())
                 .deliveryTime(entity.getDeliveryTime())
+                .imageUrl(entity.getImageUrl())
                 .build();
     }
 
@@ -126,6 +131,7 @@ public class IngredientService {
         entity.setIngredientCapacity(dto.getIngredientCapacity());
         entity.setMinimumCount(dto.getMinimumCount());
         entity.setDeliveryTime(dto.getDeliveryTime());
+        entity.setImageUrl(dto.getImageUrl());
         return entity;
     }
 }

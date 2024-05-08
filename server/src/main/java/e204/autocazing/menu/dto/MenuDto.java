@@ -14,6 +14,8 @@ public class MenuDto {
     private String menuName;
     private Integer menuPrice;
     private Boolean onEvent;
+    private int discountRate;
+    private String imageUrl;
     private Integer storeId;  // 가게 ID만 포함
     private List<MenuIngredientDto> ingredients;
 
