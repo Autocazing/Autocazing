@@ -101,43 +101,6 @@ const excelsample = async () => {
     });
 };
 
-const fileselect = (e) => {
-    const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
-
-    //파일 읽기
-    const workbook = new ExcelJS.Workbook();
-    const render = new FileReader();
-
-    render.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        await workbook.xlsx.load(data); // 엑셀 파일 로드
-
-        const worksheet = workbook.getWorksheet(1);
-        const jsonData = [];
-
-        // 여기서 데이터 처리해야함
-        worksheet.eachRow((row, rowNumber) => {
-            if (rowNumber === 1) return;
-            const rowData = row.values.filter((value) => value != null);
-            const [name, expiration, amount, PRcount] = rowData.slice(0);
-
-            const item = {
-                name,
-                expiration,
-                amount,
-                PRcount,
-            };
-
-            jsonData.push(item);
-        });
-
-        console.log(jsonData);
-    };
-
-    // 파일을 ArrayBuffer로 읽음
-    render.readAsArrayBuffer(selectedfile);
-};
-
 const StockTable = () => {
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -151,7 +114,6 @@ const StockTable = () => {
                 >
                     엑셀 에제
                 </button>
-                <input type="file" onChange={fileselect} />
             </div>
 
             <div
