@@ -17,4 +17,5 @@ public class PostMenuDto {
     private Boolean onEvent;
     private List<MenuIngredientDto> ingredients;
     private Integer storeId;
+    private int discount_rate;
 }

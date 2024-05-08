@@ -26,6 +26,8 @@ public class MenuEntity {
     private Integer menuPrice;
     @Column(nullable = false)
     private Boolean onEvent;
+    @Column(nullable = false)
+    private int discount_rate;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
