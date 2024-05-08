@@ -5,8 +5,11 @@ import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.IngredientDto;
 import e204.autocazing.ingredient.service.IngredientService;
 import e204.autocazing.db.entity.IngredientEntity;
+import e204.autocazing.scale.dto.IngredientScaleDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,30 +52,72 @@ public class IngredientController {
         )
     })
     @PostMapping
-    public ResponseEntity<IngredientEntity> createIngredient(
-            @Parameter(description = "재료를 입력하여 등록할 수 있습니다.",
-                required = true,
-                schema = @Schema(type = "string", example = "ml"))
-            @RequestBody PostIngredientDto postIngredientDto) {
+    public ResponseEntity<IngredientEntity> createIngredient(@RequestBody PostIngredientDto postIngredientDto) {
         ingredientService.createIngredient(postIngredientDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     // 재료 수정
+    @Operation(summary = "재료 수정 요청", description = "재료 수정을 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "재료 수정 성공",
+            content = @Content(examples = {
+                @ExampleObject(
+                    name = "재료 수정 반환 body",
+                    summary = "재료 수정 반환 body의 예시",
+                    value = "{\"ingredientId\": 1,\n"
+                        + "    \"storeId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
+                        + "    \"ingredientName\": \"milk\",\n"
+                        + "    \"ingredientPrice\": 5000,\n"
+                        + "    \"ingredientCapacity\": 5,\n"
+                        + "    \"scaleId\": 1,\n"
+                        + "    \"minimumCount\": 15,\n"
+                        + "    \"deliveryTime\": 1,\n"
+                        + "    \"orderCount\": 10}"
+                )
+            })
+        )
+    })
     @PatchMapping("/{ingredientId}")
-    public ResponseEntity<IngredientDto> updateIngredient(@PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
+    public ResponseEntity<IngredientDto> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
         IngredientDto updateIngredient = ingredientService.updateIngredient(ingredientId, ingredientDto);
         return ResponseEntity.ok(updateIngredient);
     }
 
     // 재료 삭제
+    @Operation(summary = "재료 삭제 요청", description = "재료 삭제를 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "재료 삭제 성공")
+    })
     @DeleteMapping("/{ingredientId}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable(name = "ingredientId") Integer ingredientId) {
+    public ResponseEntity<Void> deleteIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId) {
         ingredientService.deleteIngredient(ingredientId);
         return ResponseEntity.ok().build();
     }
 
     // 전체 재료 조회
+    @Operation(summary = "재료 목록 조회 요청", description = "재료 목록 조회를 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "재료 목록 조회 성공",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = IngredientScaleDto.class)), examples = {
+                @ExampleObject(
+                    name = "재료 목록 조회 body",
+                    summary = "재료 목록 조회 body의 예시",
+                    value = "[{\"ingredientId\": 1,\n"
+                        + "    \"storeId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
+                        + "    \"ingredientName\": \"milk\",\n"
+                        + "    \"ingredientPrice\": 5000,\n"
+                        + "    \"ingredientCapacity\": 5,\n"
+                        + "    \"scaleId\": 1,\n"
+                        + "    \"minimumCount\": 15,\n"
+                        + "    \"deliveryTime\": 1,\n"
+                        + "    \"orderCount\": 10}]"
+                )
+            })
+        )
+    })
     @GetMapping
     public ResponseEntity<List<IngredientDto>> getAllIngredients() {
         List<IngredientDto> ingredients = ingredientService.findAllIngredients();
@@ -80,8 +125,29 @@ public class IngredientController {
     }
 
     // 재료 상세 조회
+    @Operation(summary = "재료 조회 요청", description = "재료 조회를 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "재료 조회 성공",
+            content = @Content(examples = {
+                @ExampleObject(
+                    name = "재료 조회 body",
+                    summary = "재료 조회 body의 예시",
+                    value = "{\"ingredientId\": 1,\n"
+                        + "    \"storeId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
+                        + "    \"ingredientName\": \"milk\",\n"
+                        + "    \"ingredientPrice\": 5000,\n"
+                        + "    \"ingredientCapacity\": 5,\n"
+                        + "    \"scaleId\": 1,\n"
+                        + "    \"minimumCount\": 15,\n"
+                        + "    \"deliveryTime\": 1,\n"
+                        + "    \"orderCount\": 10}"
+                )
+            })
+        )
+    })
     @GetMapping("/{ingredientId}")
-    public ResponseEntity<IngredientDto> getIngredientById(@PathVariable(name = "ingredientId") Integer ingredientId) {
+    public ResponseEntity<IngredientDto> getIngredientById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId) {
         IngredientDto ingredient = ingredientService.findIngredientById(ingredientId);
         return ResponseEntity.ok(ingredient);
     }
