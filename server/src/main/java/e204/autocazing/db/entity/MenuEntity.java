@@ -41,6 +41,4 @@ public class MenuEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private StoreEntity store;
-
-
 }
