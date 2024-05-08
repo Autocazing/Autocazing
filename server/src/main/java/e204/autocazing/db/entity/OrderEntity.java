@@ -30,6 +30,11 @@ public class OrderEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private StoreEntity store;
+
+
     @ElementCollection
     @CollectionTable(name = "order_specifics", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"))
     private List<OrderSpecific> orderSpecific;
