@@ -97,11 +97,13 @@ public class OrderService {
 
 
 
-    public void deleteOrder(Integer orderId) {
+    public void deleteOrderById(Integer orderId) {
         Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
         if(orderEntity.isPresent()){
             orderRepository.deleteById(orderId);
             System.out.println("삭제완료");
         }
     }
+
+
 }

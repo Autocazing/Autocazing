@@ -12,7 +12,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         Server localServer = new Server().url("http://localhost:8080").description("Local HTTP Server");
-        Server httpsServer = new Server().url("https://k10e202.p.ssafy.io").description("Prod HTTPS Server");
+        Server httpsServer = new Server().url("https://k10e204.p.ssafy.io").description("Prod HTTPS Server");
         return new OpenAPI()
                 .servers(Arrays.asList(httpsServer, localServer))
                 .info(apiInfo());
