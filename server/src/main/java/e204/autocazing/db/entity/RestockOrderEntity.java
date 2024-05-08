@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "RestockOrder")
+@Table(name = "RestockOrders")
 public class RestockOrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

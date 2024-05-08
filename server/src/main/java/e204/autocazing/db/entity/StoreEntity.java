@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "store")
+@Table(name = "stores")
 
 public class StoreEntity {
     //기본키

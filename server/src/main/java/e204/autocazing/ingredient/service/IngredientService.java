@@ -112,6 +112,7 @@ public class IngredientService {
                 .ingredientPrice(entity.getIngredientPrice())
                 .ingredientCapacity(entity.getIngredientCapacity())
                 .minimumCount(entity.getMinimumCount())
+                .orderCount(entity.getOrderCount())
                 .deliveryTime(entity.getDeliveryTime())
                 .build();
     }

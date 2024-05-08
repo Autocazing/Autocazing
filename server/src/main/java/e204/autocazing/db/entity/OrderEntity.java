@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,17 +31,6 @@ public class OrderEntity {
     private LocalDateTime updatedAt;
 
     @ElementCollection
-    @CollectionTable(name = "order_specific", joinColumns = @JoinColumn(name = "order_id"))
+    @CollectionTable(name = "order_specifics", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"))
     private List<OrderSpecific> orderSpecific;
-
-    @Embeddable
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OrderSpecific {
-        private Integer menuId;
-        private int quantity;
-        private int price;
-    }
 }
