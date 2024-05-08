@@ -9,6 +9,7 @@ const PrivateRoute = () => {
     useEffect(() => {
         if (!access) {
             alert("권한이 없습니다. 로그인 해주세요.");
+            window.location.reload();
         }
     }, [access]);
 
