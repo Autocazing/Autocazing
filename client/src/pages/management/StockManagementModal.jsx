@@ -66,7 +66,18 @@ const StockManagementModal = ({ isOpen, onClose }) => {
             worksheet.eachRow((row, rowNumber) => {
                 if (rowNumber === 1) return; // 첫 번째 행(제목 행)은 건너뜀
                 const rowData = row.values.filter((value) => value != null);
-                const [name, period, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
+                const [name, period2, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
+
+                let period = period2;
+
+                if (period2 instanceof Date) {
+                    const year = period2.getFullYear();
+                    const month = (period2.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
+                    const day = period2.getDate().toString().padStart(2, "0");
+                    period = `${year}-${month}-${day}`;
+                }
 
                 const item = {
                     name,

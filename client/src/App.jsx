@@ -24,38 +24,45 @@ function App() {
         <div>
             <DefaultLayout>
                 <Routes>
-                    <Route element={<PrivateRoute />}></Route>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/cafeData" element={<CafeData />}>
-                        <Route path="material" element={<Material />}></Route>
-                        <Route path="menu" element={<Menu />}></Route>
-                        <Route path="sales" element={<Sales />}></Route>
-                    </Route>
-                    <Route path="/order" element={<Order />}>
-                        <Route path="orderList" element={<CartList />}></Route>
-                        <Route
-                            path="progressOrder"
-                            element={<ProgressOrder />}
-                        ></Route>
-                    </Route>
-                    <Route path="/cafeReport" element={<CafeReport />} />
-                    <Route path="/management" element={<Management />}>
-                        <Route
-                            path="companyManagement"
-                            element={<CompanyManagement />}
-                        ></Route>
-                        <Route
-                            path="materialManagement"
-                            element={<MaterialManagement />}
-                        ></Route>
-                        <Route
-                            path="menuManagement"
-                            element={<MenuManagement />}
-                        ></Route>
-                        <Route
-                            path="stockManagement"
-                            element={<StockManagement />}
-                        ></Route>
+                    <Route element={<PrivateRoute />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/cafeData" element={<CafeData />}>
+                            <Route
+                                path="material"
+                                element={<Material />}
+                            ></Route>
+                            <Route path="menu" element={<Menu />}></Route>
+                            <Route path="sales" element={<Sales />}></Route>
+                        </Route>
+                        <Route path="/order" element={<Order />}>
+                            <Route
+                                path="orderList"
+                                element={<CartList />}
+                            ></Route>
+                            <Route
+                                path="progressOrder"
+                                element={<ProgressOrder />}
+                            ></Route>
+                        </Route>
+                        <Route path="/cafeReport" element={<CafeReport />} />
+                        <Route path="/management" element={<Management />}>
+                            <Route
+                                path="companyManagement"
+                                element={<CompanyManagement />}
+                            ></Route>
+                            <Route
+                                path="materialManagement"
+                                element={<MaterialManagement />}
+                            ></Route>
+                            <Route
+                                path="menuManagement"
+                                element={<MenuManagement />}
+                            ></Route>
+                            <Route
+                                path="stockManagement"
+                                element={<StockManagement />}
+                            ></Route>
+                        </Route>
                     </Route>
 
                     <Route path="/pos" element={<Pos />} />
