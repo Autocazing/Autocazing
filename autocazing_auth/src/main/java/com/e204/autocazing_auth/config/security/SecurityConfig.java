@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
 	private final StoreService storeService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final Environment env;
