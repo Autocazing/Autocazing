@@ -1,6 +1,7 @@
 package e204.autocazing.scale.controller;
 
 import e204.autocazing.db.entity.IngredientScaleEntity;
+import e204.autocazing.sale.dto.SalesResponseDto;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
@@ -43,11 +44,7 @@ public class IngredientScaleController {
         )
     })
     @PostMapping
-    public ResponseEntity<IngredientScaleEntity> createIngredientScale(
-        @Parameter(description = " 단위를 입력하여 요청할 수 있습니다.",
-            required = true,
-            schema = @Schema(type = "string", example = "ml"))
-        @RequestBody PostIngredientScaleDto postScaleDto) {
+    public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
         ingredientScaleService.createIngredientScale(postScaleDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -55,15 +52,21 @@ public class IngredientScaleController {
     // 단위 수정
     @Operation(summary = "단위 수정 요청", description = "단위 수정 동작을 수행하는 API입니다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "단위 수정 성공")
+        @ApiResponse(responseCode = "200", description = "단위 수정 성공",
+            content = @Content(examples = {
+                @ExampleObject(
+                    name = "단위 생성 반환 body",
+                    summary = "단위 생성 반환 body의 예시",
+                    value = "{\"scaleId\": 1,\"unit\": \"ml\"}"
+                )
+            })
+        )
     })
     @PatchMapping("/{scaleId}")
     public ResponseEntity<IngredientScaleDto> updateIngredientScale(
         @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId,
-        @Parameter(description = "단위 수정 요청할 수 있습니다.",
-            required = true,
-            schema = @Schema(type = "string", example = "ml"))
         @RequestBody PatchIngredientScaleDto patchIngredientScaleDto) {
+
         IngredientScaleDto updatedScale = ingredientScaleService.updateIngredientScale(scaleId, patchIngredientScaleDto);
         return ResponseEntity.ok(updatedScale);
     }
@@ -88,7 +91,7 @@ public class IngredientScaleController {
                 @ExampleObject(
                     name = "단위 목록 조회 body",
                     summary = "단위 목록 조회 body의 예시",
-                    value = "[\"{\"scaleId\": 1,\"unit\": \"ml\"}]"
+                    value = "[{\"scaleId\": 1,\"unit\": \"ml\"}]"
                 )
             })
         )
@@ -103,11 +106,11 @@ public class IngredientScaleController {
     @Operation(summary = "단위 조회 요청", description = "단위 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "단위 조회 성공",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = IngredientScaleDto.class)), examples = {
+            content = @Content(examples = {
                 @ExampleObject(
                     name = "단위 조회 body",
                     summary = "단위 조회 body의 예시",
-                    value = "[\"{\"scaleId\": 1,\"unit\": \"ml\"}]"
+                    value = "{\"unit\": \"ml\"}"
                 )
             })
         )

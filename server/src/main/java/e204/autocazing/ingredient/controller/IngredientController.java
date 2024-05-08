@@ -5,6 +5,14 @@ import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.IngredientDto;
 import e204.autocazing.ingredient.service.IngredientService;
 import e204.autocazing.db.entity.IngredientEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +27,33 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     // 재료 등록
+    @Operation(summary = "재료 등록 요청", description = "재료를 등록 했을 때 동작을 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "재료 등록 성공",
+            content = @Content(examples = {
+                @ExampleObject(
+                    name = "재료 등록 반환 body",
+                    summary = "재료 등록 반환 body의 예시",
+                    value = "{\"ingredientId\": 1,\n"
+                        + "    \"storeId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
+                        + "    \"ingredientName\": \"milk\",\n"
+                        + "    \"ingredientPrice\": 5000,\n"
+                        + "    \"ingredientCapacity\": 5,\n"
+                        + "    \"scaleId\": 1,\n"
+                        + "    \"minimumCount\": 15,\n"
+                        + "    \"deliveryTime\": 1,\n"
+                        + "    \"orderCount\": 10}"
+                )
+            })
+        )
+    })
     @PostMapping
-    public ResponseEntity<IngredientEntity> createIngredient(@RequestBody PostIngredientDto postIngredientDto) {
+    public ResponseEntity<IngredientEntity> createIngredient(
+            @Parameter(description = "재료를 입력하여 등록할 수 있습니다.",
+                required = true,
+                schema = @Schema(type = "string", example = "ml"))
+            @RequestBody PostIngredientDto postIngredientDto) {
         ingredientService.createIngredient(postIngredientDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }

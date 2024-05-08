@@ -36,17 +36,17 @@ public class SaleController {
 					@ExampleObject(
 						name = "Daily Sales Example",
 						description = "Example of daily sales data retrieval",
-						value = "{\"type\": \"day\", \"date\": \"2024-04-07\", \"totalSales\": 271210}"
+						value = "[{\"type\": \"day\", \"date\": \"2024-04-07\", \"totalSales\": 271210}]"
 					),
 					@ExampleObject(
 						name = "Weekly Sales Example",
 						description = "Example of weekly sales data retrieval",
-						value = "{\"type\": \"week\", \"week\": 7, \"year\": 2024, \"totalSales\": 3239693}"
+						value = "[{\"type\": \"week\", \"week\": 7, \"year\": 2024, \"totalSales\": 3239693}]"
 					),
 					@ExampleObject(
 						name = "Monthly Sales Example",
 						description = "Example of monthly sales data retrieval",
-						value = "{\"type\": \"month\", \"month\": 5, \"year\": 2023, \"totalSales\": 12582632}"
+						value = "[{\"type\": \"month\", \"month\": 5, \"year\": 2023, \"totalSales\": 12582632}]"
 					)
 				}
 			)
