@@ -1,10 +1,13 @@
 package e204.autocazing.vendor.service;
 
+import e204.autocazing.db.entity.StoreEntity;
 import e204.autocazing.db.entity.VendorEntity;
+import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.db.repository.VendorRepository;
 import e204.autocazing.vendor.dto.PatchVendorDto;
 import e204.autocazing.vendor.dto.PostVendorDto;
 import e204.autocazing.vendor.dto.VendorDto;
+import org.apache.hc.client5.http.auth.AuthStateCacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,15 @@ import java.util.stream.Collectors;
 public class VendorService {
     @Autowired
     private VendorRepository vendorRepository;
+    @Autowired
+    private StoreRepository storeRepository;
+
 
     public void createVendor(PostVendorDto postVendorDto) {
         VendorEntity vendorEntity = new VendorEntity();
+        StoreEntity store = storeRepository.findById(postVendorDto.getStoreId())
+                .orElseThrow(() -> new RuntimeException("storeId not found" + postVendorDto.getStoreId()));
+        vendorEntity.setStore(store);
         vendorEntity.setVendorName(postVendorDto.getVendorName());
         vendorEntity.setVendorManager(postVendorDto.getVendorManager());
         vendorEntity.setVendorManagerContact(postVendorDto.getVendorManagerContact());

@@ -48,7 +48,6 @@ public class IngredientEntity {
     @Column(nullable = false)
     private String imageUrl =" ";
 
-
     @OneToMany(mappedBy = "ingredient" , cascade = CascadeType.ALL)
     private List<MenuIngredientEntity> menuIngredients;
 
@@ -66,9 +65,4 @@ public class IngredientEntity {
 
     @OneToOne(mappedBy = "ingredient")
     private StockEntity stock;
-
-    //연관
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private StoreEntity store;
 }

@@ -28,9 +28,9 @@ public class StockController {
     private StockService stockService;
 
 
-    @Operation(summary = "재고 요청", description = "재고 추가(재료)요청을 수행하는 API입니다.")
+    @Operation(summary = "재고 추가 요청", description = "재고 추가(재료)요청을 수행하는 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "주문 요청 성공",
+            @ApiResponse(responseCode = "201", description = "재고 추가 성공",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = PostStockDto.class)
                     )
@@ -107,5 +107,4 @@ public class StockController {
         stockService.deleteStock(stockId);
         return ResponseEntity.ok().build();
     }
-
 }
