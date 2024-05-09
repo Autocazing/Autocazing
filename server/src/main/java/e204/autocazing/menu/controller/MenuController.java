@@ -1,11 +1,7 @@
 package e204.autocazing.menu.controller;
 
-import e204.autocazing.db.entity.IngredientEntity;
-import e204.autocazing.db.entity.MenuEntity;
-import e204.autocazing.db.entity.MenuIngredientEntity;
 import e204.autocazing.menu.dto.*;
 import e204.autocazing.menu.service.MenuService;
-import e204.autocazing.scale.dto.IngredientScaleDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,15 +11,13 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.Getter;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/menus")
@@ -140,5 +134,15 @@ public class MenuController {
     public ResponseEntity getAllmenus(){
         List<MenuDto> menus = menuService.findAllMenus();
         return ResponseEntity.ok(menus);
+    }
+
+    @GetMapping("/sales")
+    public ResponseEntity getMenuSales(
+        @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
+            required = true,
+            schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
+        @RequestParam("type") String type, @RequestBody MenuSalesDto menuSalesDto){ //type : 일별 day, 주별 week, 월별 month
+        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuSalesDto);
+        return ResponseEntity.ok(sales);
     }
 }

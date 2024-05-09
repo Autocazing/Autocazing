@@ -13,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -161,5 +165,30 @@ public class MenuService {
         menuDto.setIngredients(ingredientDtos);
 
         return menuDto;
+    }
+
+    public List<Map<String, Object>> getMenuSales(String type, MenuSalesDto menuSalesDto) {
+        Integer menuId = menuSalesDto.getMenuId();
+        List<Map<String, Object>> saleDtoList = new ArrayList<>();
+
+        //더미데이터 기준
+        String dateTimeString = "2024-05-08 17:00:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+
+        if(type.equals("day")){
+            LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
+            saleDtoList = menuRepository.calculateDailySales(currentTime, menuId);
+        }
+        else if(type.equals("week")){
+            LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
+            saleDtoList = menuRepository.calculateWeekSales(currentTime, menuId);
+        }
+        else if(type.equals("month")){
+            LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
+            saleDtoList = menuRepository.calculateMonthSales(currentTime, menuId);
+        }
+
+        return saleDtoList;
     }
 }
