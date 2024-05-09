@@ -45,7 +45,7 @@ public class RestockSpecificController {
     @Operation(summary = "발주리스트 내 재료들 전체 조회", description = "발주리스트 상세재료 전체조회를 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "재고 전체 조회 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockSpecificDto.class)))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockSpecificResponseDto.class)))
 
             )
     })
