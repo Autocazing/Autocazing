@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("accessToken");
 
-        // 로컬에서 테스트 하고싶다면 토큰 이걸로
+        // 로컬에서 테스트 하고싶다면 토큰
         // const token =
         //     "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OHc4Z3hxVGtpV3BRXyIsImlhdCI6MTcxMTMzNzMwMSwiZXhwIjoxNzE0MDE1NzAxfQ.IMVHPA7WjwqlgOyMXf2HpW03DuHOC3FZD1F_EtmP2P8";
 
