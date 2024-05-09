@@ -60,8 +60,8 @@ public class IngredientEntity {
     private StoreEntity store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_id", nullable = false)
-    private VendorEntity vendor;
+    @JoinColumn(name = "vender_id", nullable = false)
+    private VenderEntity vender;
 
     @OneToOne(mappedBy = "ingredient")
     private StockEntity stock;

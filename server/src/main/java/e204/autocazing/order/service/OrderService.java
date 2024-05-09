@@ -87,11 +87,19 @@ public class OrderService {
     public void checkAndAddRestockOrderSpecifics()  {
         List<IngredientEntity> ingredients = ingredientRepository.findAll();
         ingredients.forEach(ingredient -> {
+            Integer totalQuantity = stockRepository.findTotalQuantityByIngredientId(ingredient.getIngredientId());
             StockEntity stock = stockRepository.findByIngredient(ingredient);
-            //stock 이 null이거나 (새상품) 배송중 + 재고의 양이 재료의 설정값보다 적을때
-            if (stock == null || restockOrderService.isdelivering(ingredient) + stock.getQuantity() <= ingredient.getMinimumCount()) {
-                    restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
+            //배송중인 물품 수
+            int totalDelivering = restockOrderService.isDelivering(ingredient);
+
+            if (totalQuantity + totalDelivering <= ingredient.getMinimumCount()) {
+                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
             }
+
+            //stock 이 null이거나 (새상품) 배송중 + 재고의 양이 재료의 설정값보다 적을때
+//            if (stock == null || restockOrderService.isDelivering(ingredient) + stock.getQuantity() <= ingredient.getMinimumCount()) {
+//                    restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
+//            }
         });
     }
 

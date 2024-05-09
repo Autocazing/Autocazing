@@ -72,7 +72,7 @@ public class RestockSpecificService {
                 .restockOrderId(restockSpecific.getRestockOrder().getRestockOrderId())
                 .ingredientQuantity(restockSpecific.getIngredientQuantity())
                 .ingredientPrice(restockSpecific.getIngredientPrice())
-                .vendorName(restockSpecific.getIngredient().getVendor().getVendorName())
+                .venderName(restockSpecific.getIngredient().getVender().getVenderName())
                 .status(String.valueOf(restockSpecific.getRestockOrder().getStatus()))
                 .build();
 

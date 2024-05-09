@@ -1,18 +1,14 @@
 package e204.autocazing.scale.service;
 
 import e204.autocazing.db.entity.IngredientScaleEntity;
-import e204.autocazing.db.entity.VendorEntity;
 import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
-import e204.autocazing.vendor.dto.VendorDto;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

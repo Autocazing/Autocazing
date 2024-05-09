@@ -10,7 +10,7 @@ import lombok.*;
 public class IngredientDetails {
     private Integer ingredientId;
     private String ingredientName;
-    private String vendorName;
+    private String venderName;
     private int ingredientPrice;
     private Integer ingredientCapacity;
     private String unit;

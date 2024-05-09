@@ -142,7 +142,7 @@ public class RestockOrderService {
     }
 
     //배송중인지 체크하기 이게 Order 도메인에 있는게 맞나?
-    public int isdelivering(IngredientEntity ingredient) {
+    public int isDelivering(IngredientEntity ingredient) {
         int deliverdCount = 0 ;
         //완료처리 안된 발주목록 가져오기.
         // RestockOrderRepository 호출
