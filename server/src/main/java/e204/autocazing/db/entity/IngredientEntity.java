@@ -53,7 +53,7 @@ public class IngredientEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scale_id", nullable = false)
-    private IngredientEntity scale;
+    private IngredientScaleEntity scale;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
