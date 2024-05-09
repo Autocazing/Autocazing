@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,4 +31,10 @@ public class VendorEntity {
     @Column(nullable = false)
     private String vendorDescription;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private StoreEntity store;
+
+    @OneToMany(mappedBy = "vendor")
+    private List<IngredientEntity> ingredients;
 }
