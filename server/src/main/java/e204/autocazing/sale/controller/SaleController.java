@@ -61,4 +61,23 @@ public class SaleController {
 		List<Map<String, Object>> sales = saleService.getSales(type);
 		return ResponseEntity.ok(sales);
 	}
+
+
+	@Operation(summary = "금일 판매 잔 수 조회 요청", description = "오늘 몇 잔 판매했는지를 조회하는 API입니다. ")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "Sales data retrieved successfully",
+			content = @Content(mediaType = "application/json",
+				examples = {
+					@ExampleObject(
+						value = "35"
+					)
+				}
+			)
+		)
+	})
+	@GetMapping("/sold")
+	public ResponseEntity getSoldNumber(){
+		Integer soldNumber = saleService.getSoldNumber();
+		return ResponseEntity.ok(soldNumber);
+	}
 }
