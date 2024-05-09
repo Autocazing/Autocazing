@@ -28,9 +28,9 @@ public class RestockController {
     @Autowired
     private RestockOrderService restockOrderService;
 
-    @Operation(summary = "발주 리스트생성 요청", description = "발주 리스트생성 요청을 수행하는 API입니다.")
+    @Operation(summary = "장바구니 생성 요청", description = "장바구니 생성 요청을 수행하는 API입니다. Backend에서 호출.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "발주 리스트생성 성공",
+            @ApiResponse(responseCode = "201", description = "장바구니 생성 성공",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = PostRestockDto.class)
                     )
@@ -43,7 +43,7 @@ public class RestockController {
     }
 
     // 전체 발주리스트 조회
-    @Operation(summary = "발주리스트 전체 조회", description = "발주리스트를  전체조회하는 API입니다.")
+    @Operation(summary = "발주리스트 전체 조회", description = "발주리스트를  status 에 따라 전체조회하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주리스트 전체 조회 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockDetailsDto.class)))
@@ -51,14 +51,18 @@ public class RestockController {
             )
     })
     @GetMapping("")
-    public ResponseEntity getAllRestockOrders(@RequestParam(value = "status", required = false) List<RestockOrderStatusDto> status) {
+    public ResponseEntity getAllRestockOrders(@RequestParam(value = "status", required = false)
+                                                  @Schema(description = "발주 상태 필터",
+                                                          example = "WRITING, ORDERED,ON_DELIVERY,ARRIVED,COMPLETE" // 예시를 보여주는 용도
+                                                          ) // 가능한 ENUM 값들
+                                                  List<RestockOrderStatusDto> status) {
         List<RestockDetailsDto> restocks = restockOrderService.findAllRestockOrders(status);
         return ResponseEntity.ok(restocks);
     }
 
 
-    // 재고 상세 조회
-    @Operation(summary = "발주리스트 상세 조회", description = "발주리스트 상세조회를 수행하는 API입니다.")
+
+    @Operation(summary = "발주리스트 상세 조회", description = "발주리스트 상세조회를 수행하  는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주 상세조회 성공",
                     content = @Content(mediaType = "application/json",

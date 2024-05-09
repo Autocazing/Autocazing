@@ -13,5 +13,6 @@ import lombok.Setter;
 public class PostRestockDto {
     private Integer storeId;
     private RestockOrderEntity.RestockStatus status = RestockOrderEntity.RestockStatus.WRITING;
+//    private List<RestockOrderSpecificDTO> details
 
 }

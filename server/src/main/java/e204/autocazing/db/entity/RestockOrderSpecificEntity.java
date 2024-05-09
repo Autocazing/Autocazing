@@ -30,4 +30,5 @@ public class RestockOrderSpecificEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id", nullable = false)
     private IngredientEntity ingredient;
+
 }

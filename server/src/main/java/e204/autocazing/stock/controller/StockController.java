@@ -16,8 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,14 +33,13 @@ public class StockController {
     @Operation(summary = "재고 추가 요청", description = "재고 추가(재료)요청을 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "재고 추가 성공",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PostStockDto.class)
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostStockDto.class)))
                     )
-            )
+
     })
     @PostMapping("")
-    public ResponseEntity createStock(@RequestBody PostStockDto postStockDto){
-        stockService.createStock(postStockDto);
+    public ResponseEntity createStock(@RequestBody List<PostStockDto> postStockDtos){
+        stockService.createStock(postStockDtos);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
@@ -107,4 +108,6 @@ public class StockController {
         stockService.deleteStock(stockId);
         return ResponseEntity.ok().build();
     }
+
+
 }
