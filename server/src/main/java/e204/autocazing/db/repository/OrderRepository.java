@@ -1,5 +1,6 @@
 package e204.autocazing.db.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -31,4 +32,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 		+"GROUP BY MONTH(o.createdAt), YEAR(o.createdAt) "
 		+"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
 	List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate);
+
+	@Query(value = "SELECT SUM(os.menuQuantity) as totalSales "
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE DATE(o.createdAt) = :today ")
+	Integer getSoldNumber(LocalDate today);
 }
