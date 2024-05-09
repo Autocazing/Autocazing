@@ -1,6 +1,8 @@
 package e204.autocazing.sale.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,11 @@ public class SaleService {
 	public List<Map<String, Object>> getSales(String type) {
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
+		//더미데이터 기준
+		String dateTimeString = "2024-05-08 17:00:00";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+
 		if(type.equals("day")){
 			LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
 			saleDtoList = orderRepository.calculateDailySales(currentTime);
@@ -32,5 +39,15 @@ public class SaleService {
 		}
 
 		return saleDtoList;
+	}
+
+	public Integer getSoldNumber() {
+		//더미데이터 기준
+		String dateTimeString = "2024-05-08 17:00:00";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+		LocalDate currentDay = LocalDate.from(baseDate);
+		return orderRepository.getSoldNumber(currentDay);
+
 	}
 }
