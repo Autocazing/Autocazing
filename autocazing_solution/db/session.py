@@ -12,5 +12,5 @@ SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(
     settings.MYSQL_DATABASE
 )
 
-db_engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
+db_engine = create_engine(SQLALCHEMY_DATABASE_URL)  # data base에 연결할 엔진 생성
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)  # 위의 엔진을 이용해 세션 팩토리 생성
