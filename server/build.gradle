@@ -16,7 +16,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2023.0.1")    // Release note GitHub : https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes
+    set('springCloudVersion', "2022.0.3")    // Release note GitHub : https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes
 }
 
 dependencies {

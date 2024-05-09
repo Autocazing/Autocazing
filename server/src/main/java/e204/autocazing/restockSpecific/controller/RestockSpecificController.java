@@ -65,8 +65,8 @@ public class RestockSpecificController {
             )
     })
     @GetMapping("/{restockOrderSpecificId}")
-    public ResponseEntity<RestockSpecificDto> getRestockOrderSpecificById(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
-        RestockSpecificDto specificDto = service.findRestockOrderSpecificById(restockOrderSpecificId);
+    public ResponseEntity<RestockSpecificResponseDto> getRestockOrderSpecificById(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
+        RestockSpecificResponseDto specificDto = service.findRestockOrderSpecificById(restockOrderSpecificId);
         return ResponseEntity.ok(specificDto);
     }
 
