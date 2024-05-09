@@ -2,6 +2,7 @@ package e204.autocazing.menu.controller;
 
 import e204.autocazing.menu.dto.*;
 import e204.autocazing.menu.service.MenuService;
+import e204.autocazing.sale.dto.SalesResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -136,6 +137,31 @@ public class MenuController {
         return ResponseEntity.ok(menus);
     }
 
+    @Operation(summary = "일별, 주별, 월별 메뉴 판매량 조회 요청", description = "요청일을 포함한 일별, 주별, 월별 메뉴 판매량 조회를 수행하는 API입니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Sales data retrieved successfully",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SalesResponseDto.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Daily Sales Example",
+                        description = "Example of daily sales data retrieval",
+                        value = "[{\"type\": \"day\", \"date\": \"2024-04-07\", \"totalSales\": 3}]"
+                    ),
+                    @ExampleObject(
+                        name = "Weekly Sales Example",
+                        description = "Example of weekly sales data retrieval",
+                        value = "[{\"type\": \"week\", \"week\": 7, \"year\": 2024, \"totalSales\": 9}]"
+                    ),
+                    @ExampleObject(
+                        name = "Monthly Sales Example",
+                        description = "Example of monthly sales data retrieval",
+                        value = "[{\"type\": \"month\", \"month\": 5, \"year\": 2023, \"totalSales\": 5}]"
+                    )
+                }
+            )
+        )
+    })
     @GetMapping("/sales")
     public ResponseEntity getMenuSales(
         @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
