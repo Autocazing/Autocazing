@@ -3,6 +3,7 @@ package e204.autocazing.restock.controller;
 import e204.autocazing.db.entity.RestockOrderEntity;
 import e204.autocazing.restock.dto.PostRestockDto;
 import e204.autocazing.restock.dto.RestockDetailsDto;
+import e204.autocazing.restock.dto.RestockOrderStatusDto;
 import e204.autocazing.restock.dto.UpdateRestockDto;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.dto.PostStockDto;
@@ -50,8 +51,8 @@ public class RestockController {
             )
     })
     @GetMapping("")
-    public ResponseEntity getAllRestockOrders() {
-        List<RestockDetailsDto> restocks = restockOrderService.findAllRestockOrders();
+    public ResponseEntity getAllRestockOrders(@RequestParam(value = "status", required = false) List<RestockOrderStatusDto> status) {
+        List<RestockDetailsDto> restocks = restockOrderService.findAllRestockOrders(status);
         return ResponseEntity.ok(restocks);
     }
 

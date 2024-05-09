@@ -1,20 +1,19 @@
 package e204.autocazing.ingredient.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchIngredientDto {
-    private Integer vendorId;
+@Builder
+public class IngredientDetails {
+    private Integer ingredientId;
     private String ingredientName;
-    private Integer ingredientPrice;
+    private String vendorName;
+    private int ingredientPrice;
     private Integer ingredientCapacity;
-    private Integer scaleId;
+    private String unit;
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;

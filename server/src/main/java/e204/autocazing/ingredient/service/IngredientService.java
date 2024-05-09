@@ -8,6 +8,7 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.db.repository.VendorRepository;
+import e204.autocazing.ingredient.dto.IngredientDetails;
 import e204.autocazing.ingredient.dto.IngredientDto;
 import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
@@ -54,7 +55,7 @@ public class IngredientService {
     }
 
 
-    public IngredientDto updateIngredient(Integer ingredientId, PatchIngredientDto patchIngredientDto) {
+    public IngredientDetails updateIngredient(Integer ingredientId, PatchIngredientDto patchIngredientDto) {
         IngredientEntity ingredientEntity = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found with id " + ingredientId));
         // Null 체크를 추가하여 값이 있는 경우에만 업데이트
@@ -79,6 +80,16 @@ public class IngredientService {
         if(patchIngredientDto.getImageUrl() != null){
             ingredientEntity.setImageUrl(patchIngredientDto.getImageUrl());
         }
+        if(patchIngredientDto.getScaleId() != null){
+            IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScaleId())
+                    .orElseThrow(() -> new RuntimeException("ingredientScaleId not found with id " + patchIngredientDto.getScaleId()));
+            ingredientEntity.setScale(scaleEntity);
+        }
+        if(patchIngredientDto.getVendorId() != null){
+            VendorEntity vendorEntity = vendorRepository.findById(patchIngredientDto.getVendorId())
+                    .orElseThrow(() -> new RuntimeException("vendorId not found with id " + patchIngredientDto.getVendorId()));
+            ingredientEntity.setVendor(vendorEntity);
+        }
         ingredientEntity.setUpdatedAt(LocalDateTime.now());
 
         ingredientRepository.save(ingredientEntity);
@@ -91,14 +102,16 @@ public class IngredientService {
         ingredientRepository.delete(ingredient); //deleteById로 바로해도되지만, 없는 상황을 대비.
     }
 
-    public IngredientDto findIngredientById(Integer ingredientId) {
+    public IngredientDetails findIngredientById(Integer ingredientId) {
         IngredientEntity ingredient = ingredientRepository.findById(ingredientId)
         .orElseThrow(() -> new EntityNotFoundException("Ingredient not found with id: " + ingredientId));
+
+
 
         return fromEntity(ingredient);
     }
 
-    public List<IngredientDto> findAllIngredients() {
+    public List<IngredientDetails> findAllIngredients() {
         List<IngredientEntity> ingredients = ingredientRepository.findAll();
         return ingredients.stream()
                 .map(this::fromEntity)
@@ -106,12 +119,11 @@ public class IngredientService {
     }
 
     //Entity -> Dto 로 변환
-    private IngredientDto fromEntity(IngredientEntity entity) {
-        return IngredientDto.builder()
+    private IngredientDetails fromEntity(IngredientEntity entity) {
+        return IngredientDetails.builder()
                 .ingredientId(entity.getIngredientId())
-                .storeId(entity.getStore().getStoreId())
-                .vendorId(entity.getVendor().getVendorId())
-                .scaleId(entity.getScale().getScaleId())
+                .vendorName(entity.getVendor().getVendorName())
+                .unit(entity.getScale().getUnit())
                 .ingredientName(entity.getIngredientName())
                 .ingredientPrice(entity.getIngredientPrice())
                 .ingredientCapacity(entity.getIngredientCapacity())
@@ -120,18 +132,5 @@ public class IngredientService {
                 .deliveryTime(entity.getDeliveryTime())
                 .imageUrl(entity.getImageUrl())
                 .build();
-    }
-
-    //Dto -> Entity 변환
-    private IngredientEntity convertToEntity(IngredientDto dto) {
-        IngredientEntity entity = new IngredientEntity();
-        entity.setIngredientId(dto.getIngredientId());
-        entity.setIngredientName(dto.getIngredientName());
-        entity.setIngredientPrice(dto.getIngredientPrice());
-        entity.setIngredientCapacity(dto.getIngredientCapacity());
-        entity.setMinimumCount(dto.getMinimumCount());
-        entity.setDeliveryTime(dto.getDeliveryTime());
-        entity.setImageUrl(dto.getImageUrl());
-        return entity;
     }
 }

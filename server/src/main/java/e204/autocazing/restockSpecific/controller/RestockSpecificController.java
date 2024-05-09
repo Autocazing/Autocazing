@@ -2,6 +2,7 @@ package e204.autocazing.restockSpecific.controller;
 
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
+import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import e204.autocazing.restockSpecific.service.RestockSpecificService;
 import e204.autocazing.stock.dto.PostStockDto;
@@ -49,8 +50,8 @@ public class RestockSpecificController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<RestockSpecificDto>> getAllRestockOrderSpecifics() {
-        List<RestockSpecificDto> RestockSpecifics = service.findAllRestockOrderSpecifics();
+    public ResponseEntity<List<RestockSpecificResponseDto>> getAllRestockOrderSpecifics() {
+        List<RestockSpecificResponseDto> RestockSpecifics = service.findAllRestockOrderSpecifics();
         return ResponseEntity.ok(RestockSpecifics);
     }
 
@@ -64,8 +65,8 @@ public class RestockSpecificController {
             )
     })
     @GetMapping("/{restockOrderSpecificId}")
-    public ResponseEntity<RestockSpecificDto> getRestockOrderSpecificById(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
-        RestockSpecificDto specificDto = service.findRestockOrderSpecificById(restockOrderSpecificId);
+    public ResponseEntity<RestockSpecificResponseDto> getRestockOrderSpecificById(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
+        RestockSpecificResponseDto specificDto = service.findRestockOrderSpecificById(restockOrderSpecificId);
         return ResponseEntity.ok(specificDto);
     }
 
