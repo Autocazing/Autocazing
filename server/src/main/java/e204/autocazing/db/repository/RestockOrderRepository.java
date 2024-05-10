@@ -1,7 +1,6 @@
 package e204.autocazing.db.repository;
 
 import e204.autocazing.db.entity.RestockOrderEntity;
-import e204.autocazing.restock.dto.RestockOrderStatusDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,5 +17,5 @@ public interface RestockOrderRepository extends JpaRepository<RestockOrderEntity
     @Query("SELECT r FROM RestockOrderEntity r WHERE r.status NOT IN ?1")
     List<RestockOrderEntity> findByStatusNot(Set<RestockOrderEntity.RestockStatus> statuses);
 
-    List<RestockOrderEntity> findByStatusIn(List<RestockOrderStatusDto> status);
+    List<RestockOrderEntity> findByStatusIn(List<RestockOrderEntity.RestockStatus> statuses);
 }

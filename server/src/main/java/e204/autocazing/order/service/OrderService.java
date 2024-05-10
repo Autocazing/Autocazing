@@ -100,6 +100,7 @@ public class OrderService {
     public void checkAndAddRestockOrderSpecifics()  {
         List<IngredientEntity> ingredients = ingredientRepository.findAll();
         ingredients.forEach(ingredient -> {
+            //총 재고 조회 (같은 재료 유통기한만 다른것도)
             Integer totalQuantity = stockRepository.findTotalQuantityByIngredientId(ingredient.getIngredientId());
             StockEntity stock = stockRepository.findByIngredient(ingredient);
             //배송중인 물품 수

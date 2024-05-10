@@ -41,35 +41,6 @@ public class RestockSpecificController {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    //전체  조회
-    @Operation(summary = "발주리스트 내 재료들 전체 조회", description = "발주리스트 상세재료 전체조회를 수행하는 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "재고 전체 조회 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockSpecificResponseDto.class)))
-
-            )
-    })
-    @GetMapping("")
-    public ResponseEntity<List<RestockSpecificResponseDto>> getAllRestockOrderSpecifics() {
-        List<RestockSpecificResponseDto> RestockSpecifics = service.findAllRestockOrderSpecifics();
-        return ResponseEntity.ok(RestockSpecifics);
-    }
-
-    //상세 조회
-    @Operation(summary = "발주리스트 재료를 상세 조회", description = "발주리스트 재료를 상세조회를 수행하는 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "발주리스트 재료들 상세 조회 성공",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = RestockSpecificDto.class)
-                    )
-            )
-    })
-    @GetMapping("/{restockOrderSpecificId}")
-    public ResponseEntity<RestockSpecificResponseDto> getRestockOrderSpecificById(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
-        RestockSpecificResponseDto specificDto = service.findRestockOrderSpecificById(restockOrderSpecificId);
-        return ResponseEntity.ok(specificDto);
-    }
-
     // 수정
     @Operation(summary = "발주리스트 내 재료목록  수정", description = "발주리스트 내 재료목록 수정을 수행하는 API입니다.")
     @ApiResponses({
