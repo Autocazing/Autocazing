@@ -147,7 +147,7 @@ function Pos() {
                         </h2>
                     </div>
                     {/* categories  */}
-                    <div className="flex pt-5 gap-3 overflow-auto categories">
+                    {/* <div className="flex pt-5 gap-3 overflow-auto categories">
                         <button className="card rounded-lg p-3 px-4 bg-white">
                             <MdRestaurantMenu className="h-4 mx-auto" />
                             <p className="text-gray-700 font-bold text-sm">
@@ -203,7 +203,7 @@ function Pos() {
                                 Breakfast
                             </p>
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* header  */}
                     <div className="flex my-3 px-2 justify-between items-center">
