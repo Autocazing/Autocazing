@@ -1,5 +1,5 @@
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
 from db.base import Base
@@ -13,8 +13,8 @@ class RestockStatus(PyEnum):
 
 class RestockOrderSpecific(Base):
     __tablename__ = 'restock_order_specifics'
-    restock_order_id = Column(Integer, ForeignKey('restock_orders.restock_order_id'), nullable=False)
-    ingredient_id = Column(Integer, nullable=False)
+    restock_order_id = Column(Integer, ForeignKey('restock_orders.restock_order_id'), nullable=False, primary_key=True) # SQLAlchemy는 PK가 없는 걸 허락하지 않음. 그래서 복합 PK를 만들어줌.
+    ingredient_id = Column(Integer, nullable=False, primary_key=True)   # 복합 PK
     ingredient_quantity = Column(Integer, nullable=False)
     ingredient_price = Column(Integer, nullable=False)
 

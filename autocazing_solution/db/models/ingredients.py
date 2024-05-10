@@ -1,10 +1,9 @@
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 from db.base import Base
 
 class Ingredients(Base):
-    __tablename__ = 'menus'
+    __tablename__ = 'ingredients'
     ingredient_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     store_id = Column(Integer, nullable=False)
 

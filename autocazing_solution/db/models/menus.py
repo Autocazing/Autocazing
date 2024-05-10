@@ -1,5 +1,4 @@
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 from db.base import Base
 
