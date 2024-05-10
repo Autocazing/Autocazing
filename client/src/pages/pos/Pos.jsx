@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MdRestaurantMenu } from "react-icons/md";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
@@ -6,7 +6,7 @@ import { TbTrash } from "react-icons/tb";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { useReactToPrint } from "react-to-print";
 
-// import { getMenus } from "../../apis/server/Pos";
+import { getMenu } from "../../apis/server/Pos";
 
 function Pos() {
     const componentRef = useRef();
@@ -14,92 +14,47 @@ function Pos() {
     const [paymentMode, setPaymentMode] = useState("");
     const [products, setProducts] = useState([
         {
-            name: "asddas",
-            cost: 20,
+            menuName: "",
+            menuPrice: 1000,
             quantity: 0,
-            id: 1,
+            menuId: 1,
         },
         {
-            name: "bana",
-            cost: 10,
+            menuName: "bana",
+            menuPrice: 10,
             quantity: 0,
-            id: 2,
-        },
-        {
-            name: "banaasd",
-            cost: 10,
-            quantity: 0,
-            id: 3,
-        },
-        {
-            name: "gpfdof",
-            cost: 20,
-            quantity: 0,
-            id: 4,
-        },
-        {
-            name: "bana",
-            cost: 10,
-            quantity: 0,
-            id: 5,
-        },
-        {
-            name: "banaasd",
-            cost: 10,
-            quantity: 0,
-            id: 6,
-        },
-        {
-            name: "gpfdof",
-            cost: 20,
-            quantity: 0,
-            id: 7,
-        },
-        {
-            name: "bana",
-            cost: 10,
-            quantity: 0,
-            id: 8,
-        },
-        {
-            name: "banaasd",
-            cost: 10,
-            quantity: 0,
-            id: 9,
+            menuId: 2,
         },
     ]);
+
     const [total, setTotal] = useState(0);
 
     const [show, setShow] = useState(0);
 
-    // getMenus((res) => {
-    //     console.log(res);
-    // });
-
     const addToCart = (productId) => {
-        const found = cart.some((el) => el.id === productId);
+        const found = cart.some((el) => el.menuId === productId);
 
         if (found) {
-            let newProd = products.filter((p) => p.id === productId);
+            let newProd = products.filter((p) => p.menuId === productId);
 
             const newCart = cart.map((p) =>
-                p.id === productId
+                p.menuId === productId
                     ? {
                           ...p,
                           quantity: (p.quantity += 1),
-                          cost: p.cost + newProd[0].cost,
+                          menuPrice: p.menuPrice + newProd[0].menuPrice,
                       }
                     : p,
             );
 
             let sum = newCart.reduce(function (acc, obj) {
-                return acc + obj.cost;
+                return acc + obj.menuPrice;
             }, 0);
             setTotal(sum);
 
             setCart(newCart);
         } else {
-            let newProd = products.filter((p) => p.id === productId);
+            let newProd = products.filter((p) => p.menuId === productId);
             newProd[0].quantity = 1;
             setCart(() => [...cart, ...newProd]);
         }
@@ -107,33 +62,37 @@ function Pos() {
 
     const increase = (productId) => {
         const newCart = cart.map((p) =>
-            p.id === productId
-                ? { ...p, quantity: (p.quantity += 1), cost: p.cost + p.cost }
+            p.menuId === productId
+                ? {
+                      ...p,
+                      quantity: (p.quantity += 1),
+                      menuPrice: p.menuPrice + p.menuPrice,
+                  }
                 : p,
         );
         let sum = newCart.reduce(function (acc, obj) {
-            return acc + obj.cost;
+            return acc + obj.menuPrice;
         }, 0);
         setTotal(sum);
         setCart(newCart);
     };
 
     const decrease = (productId) => {
-        let decProd = products.filter((p) => p.id === productId);
+        let decProd = products.filter((p) => p.menuId === productId);
         console.log(decProd);
         const newCart = cart.map((p) =>
-            p.id === productId
+            p.menuId === productId
                 ? {
                       ...p,
                       quantity: (p.quantity -= 1),
-                      cost: p.cost - decProd[0].cost,
+                      menuPrice: p.menuPrice - decProd[0].menuPrice,
                   }
                 : p,
         );
 
         const filtered = newCart.filter((p) => p.quantity > 0);
         let sum = filtered.reduce(function (acc, obj) {
-            return acc + obj.cost;
+            return acc + obj.menuPrice;
         }, 0);
         setTotal(sum);
 
@@ -145,8 +104,8 @@ function Pos() {
         setPaymentMode(null);
     };
 
-    const remove = (id) => {
-        let newCart = cart.filter((p) => p.id !== id);
+    const remove = (menuId) => {
+        let newCart = cart.filter((p) => p.menuId !== menuId);
         setCart(newCart);
     };
 
@@ -163,19 +122,30 @@ function Pos() {
         handlePrint();
     };
 
+    useEffect(() => {
+        getMenu(
+            (response) => {
+                console.log("Success:", response.data);
+            },
+            (error) => {
+                console.error("Error:", error);
+            },
+        );
+    }, []);
+
     return (
         <section className="w-full p-4 bg-gray-200 h-screen overflow-auto">
             <div className="grid grid-cols-12 w-full h-full gap-2">
                 {/* right side  */}
                 <div className="col-span-6 bg-slate-50/50 rounded min-h-max w-full pt-4 px-2">
                     {/* header  */}
-                    {/* <div className="header flex items-baseline justify-between">
+                    <div className="header flex items-baseline justify-between">
                         <h2 className="font-semibold text-base text-gray-800 leading-3 whitespace-nowrap ">
                             Choose Category{" "}
                         </h2>
-                    </div> */}
+                    </div>
                     {/* categories  */}
-                    {/* <div className="flex pt-5 gap-3 overflow-auto categories">
+                    <div className="flex pt-5 gap-3 overflow-auto categories">
                         <button className="card rounded-lg p-3 px-4 bg-white">
                             <MdRestaurantMenu className="h-4 mx-auto" />
                             <p className="text-gray-700 font-bold text-sm">
@@ -231,7 +201,7 @@ function Pos() {
                                 Breakfast
                             </p>
                         </button>
-                    </div> */}
+                    </div>
 
                     {/* header  */}
                     <div className="flex my-3 px-2 justify-between items-center">
@@ -249,8 +219,8 @@ function Pos() {
                         {products?.map((product) => (
                             <div
                                 className="col-span-1 lg:py-8 bg-white rounded-md shadow-sm px-2 py-3 group hover:shadow-lg hover:scale-[102%] transition duration-300 ease-linear"
-                                onClick={() => addToCart(product.id)}
-                                key={product.name}
+                                onClick={() => addToCart(product.menuId)}
+                                key={product.menuName}
                             >
                                 <div className="px-0 h-20 lg:h-28 rounded-lg">
                                     <img
@@ -260,11 +230,11 @@ function Pos() {
                                     />
                                 </div>
                                 <p className="text-center text-xs font-medium py-4 leading-tight break-all ">
-                                    {product?.name}
+                                    {product?.menuName}
                                 </p>
                                 <p className="font-bold py-2 bg-gray-200 text-center rounded text-base">
                                     {" "}
-                                    Ksh {product?.cost}
+                                    원 {product?.menuPrice}
                                 </p>
                             </div>
                         ))}
@@ -302,13 +272,13 @@ function Pos() {
                                             {p.name}
                                         </p>
                                         <p className="font-semibold text-sm  md:text-base">
-                                            {formatCurrency.format(p.cost)}
+                                            {formatCurrency.format(p.menuPrice)}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <button
-                                        onClick={() => decrease(p.id)}
+                                        onClick={() => decrease(p.menuId)}
                                         className=""
                                     >
                                         {" "}
@@ -316,7 +286,7 @@ function Pos() {
                                     </button>
                                     <p className="font-bold">{p.quantity}</p>
                                     <button
-                                        onClick={() => increase(p.id)}
+                                        onClick={() => increase(p.menuId)}
                                         className=""
                                     >
                                         {" "}
@@ -324,7 +294,7 @@ function Pos() {
                                     </button>
                                     <TbTrash
                                         className="mr-2 text-lg md:text-xl"
-                                        onClick={() => remove(p.id)}
+                                        onClick={() => remove(p.menuId)}
                                     />
                                 </div>
                             </div>
@@ -417,7 +387,7 @@ function Pos() {
                                     {item.quantity}
                                 </td>
                                 <td className="capitalize text-end px-3">
-                                    {formatCurrency.format(item.cost)}
+                                    {formatCurrency.format(item.menuPrice)}
                                 </td>
                             </tr>
                         ))}
