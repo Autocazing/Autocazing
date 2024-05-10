@@ -1,5 +1,4 @@
 from pydantic import BaseSettings
-from functools import lru_cache
 
 class Settings(BaseSettings):   # env 파일에 작성한 내용을 읽어옴
     MYSQL_HOST: str
@@ -11,6 +10,5 @@ class Settings(BaseSettings):   # env 파일에 작성한 내용을 읽어옴
     class Config:
         env_file = ".env"
 
-@lru_cache
 def get_setting():
     return Settings()
