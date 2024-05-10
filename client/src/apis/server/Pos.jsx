@@ -5,9 +5,9 @@ export const getMenu = (success, fail) => {
 
     axiosInstance
         .get("menus", {
-            headers: {
-                Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰을 포함시킵니다.
-            },
+            // headers: {
+            //     Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰을 포함시킵니다.
+            // },
         })
         .then(success)
         .catch(fail);

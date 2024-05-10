@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MdRestaurantMenu } from "react-icons/md";
-import { GiTakeMyMoney } from "react-icons/gi";
-import { FaRegMoneyBillAlt } from "react-icons/fa";
+// import { MdRestaurantMenu } from "react-icons/md";
+// import { GiTakeMyMoney } from "react-icons/gi";
+// import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { TbTrash } from "react-icons/tb";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 
 import { getMenu } from "../../apis/server/Pos";
 
@@ -52,7 +52,6 @@ function Pos() {
 
             setCart(newCart);
         } else {
-            console.log("여기가 찍히니?");
             let newProd = products.filter((p) => p.menuId === productId);
             newProd[0].quantity = 1;
             setTotal(total + newProd[0].menuPrice);
@@ -115,12 +114,13 @@ function Pos() {
         currency: "KRW",
     });
 
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    });
+    // const handlePrint = useReactToPrint({
+    //     content: () => componentRef.current,
+    // });
 
-    const printBill = () => {
-        handlePrint();
+    const order = () => {
+        console.log(cart);
+        // handlePrint();
     };
 
     useEffect(() => {
@@ -349,16 +349,16 @@ function Pos() {
                     {/* print bill  */}
                     {cart.length > 0 && (
                         <button
-                            onClick={printBill}
+                            onClick={order}
                             className="w-full mt-4 bg-green-400 rounded py-1 font-bold text-gray-700"
                         >
-                            Print bill
+                            주문하기
                         </button>
                     )}
                 </aside>
             </div>
 
-            <div
+            {/* <div
                 className=" bg-white hidden print:block mt-16 print:px-6 w-full"
                 ref={componentRef}
             >
@@ -409,7 +409,7 @@ function Pos() {
                         served by Sospeter
                     </p>
                 </div>
-            </div>
+            </div> */}
         </section>
     );
 }
