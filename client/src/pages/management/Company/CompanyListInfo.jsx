@@ -2,8 +2,10 @@ import modifyIcon from "../../../images/orderlist/modify.svg";
 import deleteIcon from "../../../images/orderlist/delete.svg";
 import { useState } from "react";
 import { CompanyDeleteApi } from "../../../apis/server/CompanyApi";
+import CompanyManagementModal from "./CompanyManagementModal";
 
 const CompanyListInfo = ({ company, isLastItem }) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const deleteCompany = CompanyDeleteApi(company.venderId);
 
     const handleDelete = () => {
@@ -38,7 +40,10 @@ const CompanyListInfo = ({ company, isLastItem }) => {
             </div>
 
             <div className="items-center justify-center text-center p-2.5 sm:flex xl:p-5">
-                <button className="mr-2 sm:ml-8">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="mr-2 sm:ml-8"
+                >
                     <img
                         className="w-5 h-5 sm:w-auto sm:h-auto"
                         src={modifyIcon}
@@ -52,6 +57,13 @@ const CompanyListInfo = ({ company, isLastItem }) => {
                         alt="Delete"
                     />
                 </button>
+                {modalIsOpen && (
+                    <CompanyManagementModal
+                        isOpen={modalIsOpen}
+                        onClose={() => setModalIsOpen(false)}
+                        initialValue={company}
+                    />
+                )}
             </div>
         </div>
     );

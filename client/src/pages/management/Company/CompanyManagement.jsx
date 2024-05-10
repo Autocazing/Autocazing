@@ -34,6 +34,7 @@ const CompanyManagement = () => {
                 <CompanyManagementModal
                     isOpen={modalIsOpen}
                     onClose={() => setModalIsOpen(false)}
+                    initialValue={[]}
                 />
             )}
         </>
