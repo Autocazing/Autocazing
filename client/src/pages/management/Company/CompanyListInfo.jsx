@@ -1,7 +1,15 @@
 import modifyIcon from "../../../images/orderlist/modify.svg";
 import deleteIcon from "../../../images/orderlist/delete.svg";
+import { useState } from "react";
+import { CompanyDeleteApi } from "../../../apis/server/CompanyApi";
 
 const CompanyListInfo = ({ company, isLastItem }) => {
+    const deleteCompany = CompanyDeleteApi(company.venderId);
+
+    const handleDelete = () => {
+        deleteCompany.mutate();
+    };
+
     return (
         <div
             className={`grid grid-cols-4 sm:grid-cols-4 ${
@@ -37,7 +45,7 @@ const CompanyListInfo = ({ company, isLastItem }) => {
                         alt="Modify"
                     />
                 </button>
-                <button>
+                <button onClick={handleDelete}>
                     <img
                         className="w-5 h-5 sm:w-auto sm:h-auto"
                         src={deleteIcon}
