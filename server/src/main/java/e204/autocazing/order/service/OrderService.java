@@ -66,19 +66,25 @@ public class OrderService {
         public void addOrder(PostOrderDto postOrderDto) {
 
             OrderEntity order = new OrderEntity();
-            order.setOrderSpecific(postOrderDto.getOrderSpecifics().stream()
-                    .map(post -> new OrderSpecific(post.getMenuId(), post.getMenuQuantity(), post.getMenuPrice()))
-                    .collect(Collectors.toList()));
+            List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
+                    .map(detail -> {
+                        MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
+                        if (menu == null) {
+                            throw new IllegalStateException("Menu not found: " + detail.getMenuId());
+                        }
+                        return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), menu.getMenuPrice());
+                    })
+                    .toList();
 
             // 재료와 재고 처리 로직
             postOrderDto.getOrderSpecifics().forEach(detail -> {
-                MenuEntity menu = menuRepository.findById(detail.getMenuId())
-                        .orElseThrow(() -> new RuntimeException("Menu not found with id " + detail.getMenuId()));
+                MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
                 menu.getMenuIngredients().forEach(ingredient -> {
                     stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getMenuQuantity());
                 });
             });
 
+            order.setOrderSpecific(orderSpecifics);
             orderRepository.save(order);
     }
 
