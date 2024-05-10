@@ -261,7 +261,10 @@ function Pos() {
 
                     <div>
                         {cart?.map((p) => (
-                            <div className="product flex flex-col md:flex-row justify-between items-center bg-slate-200 px-1 rounded-xl  gap-y-2 pb-3 my-2">
+                            <div
+                                key={p.menuId}
+                                className="product flex flex-col md:flex-row justify-between items-center bg-slate-200 px-1 rounded-xl  gap-y-2 pb-3 my-2"
+                            >
                                 <div className="flex py-2 px-1 items-center">
                                     <div className="h-16 w-16 hidden lg:inline-block">
                                         <img
