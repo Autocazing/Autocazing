@@ -2,38 +2,52 @@ spring:
   cloud:
     gateway:
       default-filters:
+        #        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
         - name: GlobalFilter
           args:
             baseMessage: Spring Cloud Gateway Global Filter
             preLogger: true
             postLogger: true
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "http://localhost:8080"
+              - "https://k10e204.p.ssafy.io"
+            allowCredentials: true
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            exposedHeaders: "token"
       routes:
         - id: inventory-service
           uri: lb://inventory-service
           predicates:
-            - Path=/api/menus/**,/api/stock/**,/api/ingredients/**
-              ,/api/restock/**,/api/sales/**,/api/orders/**,/api/vendors/**
+            - Path=/api/menus/**,/api/stocks/**,/api/ingredients/**
+              ,/api/restocks/**,/api/sales/**,/api/orders/**,/api/venders/**
+              ,/api/restock-specifics/**,/api/ingredient-scales/**
           filters:
             - CustomFilter
             - AuthorizationHeaderFilter
         - id: alert-service
           uri: lb://alert-service
           predicates:
-            - Path=/api/alerts/**
+            - Path=/api/alerts/**, /api/alert-service/**
           filters:
             - CustomFilter
             - AuthorizationHeaderFilter
         - id: solution-service
           uri: lb://solution-service
           predicates:
-            - Path=/api/reports/**
+            - Path=/api/reports/**, /api/solution-service/**
           filters:
             - CustomFilter
             - AuthorizationHeaderFilter
         - id: auth-server
           uri: lb://auth-server
           predicates:
-            - Path=/api/users/**
+            - Path=/api/users/**, /api/auth-server/**
             - Method=POST
           filters:
             - CustomFilter
@@ -45,7 +59,6 @@ spring:
           filters:
             - CustomFilter
             - AuthorizationHeaderFilter
-
         #swagger 관련
         - id: inventory-swagger
           uri: lb://inventory-service
