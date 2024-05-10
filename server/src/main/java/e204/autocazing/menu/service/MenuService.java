@@ -36,7 +36,6 @@ public class MenuService {
     @Transactional
     public void createMenu(PostMenuDto postMenuDto) {
         MenuEntity menu = new MenuEntity();
-        menu.setMenuName(postMenuDto.getMenuName());
         menu.setMenuPrice(postMenuDto.getMenuPrice());
         menu.setOnEvent(postMenuDto.getOnEvent());
         menu.setDiscountRate(postMenuDto.getDiscountRate());

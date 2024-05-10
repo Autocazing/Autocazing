@@ -12,7 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostOrderSpecificDto {
 
-    private String menuName;
+    private Integer menuId;
     private int menuQuantity;
+
 
 }

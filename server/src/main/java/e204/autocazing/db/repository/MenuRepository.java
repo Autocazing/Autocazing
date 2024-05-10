@@ -38,7 +38,7 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Integer> {
             +"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
     List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate, Integer menuId);
 
-    MenuEntity findByMenuName(String menuName);
 
+    MenuEntity findByMenuId(Integer menuId);
 }
 

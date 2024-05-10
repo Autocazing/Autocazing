@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSpecificDto {
-    private String menuName;
+    private Integer menuId;
     private int menuQuantity;
     private int menuPrice;
 
