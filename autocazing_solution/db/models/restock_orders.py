@@ -2,9 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
-
-
-Base = declarative_base()
+from ..base import Base
 
 class RestockStatus(PyEnum):
     WRITING = "WRITING"

@@ -1,8 +1,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
-
-Base = declarative_base()
+from ..base import Base
 
 class OrderSpecific(Base):
     __tablename__ = 'order_specifics'
