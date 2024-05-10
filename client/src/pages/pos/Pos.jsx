@@ -52,8 +52,11 @@ function Pos() {
 
             setCart(newCart);
         } else {
+            console.log("여기가 찍히니?");
             let newProd = products.filter((p) => p.menuId === productId);
             newProd[0].quantity = 1;
+            setTotal(total + newProd[0].menuPrice);
+            // console.log(newProd[0].menuPrice);
             setCart(() => [...cart, ...newProd]);
         }
     };
