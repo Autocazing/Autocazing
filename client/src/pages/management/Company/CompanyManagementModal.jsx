@@ -1,6 +1,7 @@
 import Modal from "react-modal";
-import { useState } from "react";
-import closeIcon from "../../images/icon/close.svg";
+import { React, useState } from "react";
+import closeIcon from "../../../images/icon/close.svg";
+import { CompanyPostApi } from "../../../apis/server/CompanyApi";
 
 const customStyles = {
     overlay: {
@@ -32,10 +33,14 @@ const customStyles = {
 
 const CompanyManagementModal = ({ isOpen, onClose }) => {
     const [companyPostData, setCompanyPostData] = useState({
-        companyName: "",
-        name: "",
-        email: "",
+        storeId: 1,
+        venderName: "",
+        venderManager: "",
+        venderManagerContact: "",
+        venderDescription: "",
     });
+
+    const { mutate, isLoading, isError, error } = CompanyPostApi();
 
     // 추가하기 버ㅌ느 누르면 companyPostData axios Post로 보내기
     const handleChange = (e) => {
@@ -46,6 +51,12 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
         }));
 
         // console.log(companyPostData);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDafault();
+        mutate(companyPostData);
+        onClose();
     };
     return (
         <Modal
@@ -83,8 +94,8 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="text"
-                            name="companyName"
-                            value={companyPostData.companyName}
+                            name="venderName"
+                            value={companyPostData.venderName}
                             onChange={handleChange}
                             placeholder="업체명을 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -97,8 +108,8 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="text"
-                            name="name"
-                            value={companyPostData.name}
+                            name="venderManager"
+                            value={companyPostData.venderManager}
                             onChange={handleChange}
                             placeholder="담당자 이름을 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -110,15 +121,32 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         </label>
                         <input
                             type="email"
-                            name="email"
+                            name="venderManagerContact"
                             onChange={handleChange}
-                            value={companyPostData.email}
+                            value={companyPostData.venderManagerContact}
                             placeholder="담당자 연락처를 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
 
-                    <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
+                    <div className="mb-6">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            업체 설명
+                        </label>
+                        <textarea
+                            onChange={handleChange}
+                            name="venderDescription"
+                            value={companyPostData.venderDescription}
+                            rows={6}
+                            placeholder="업체 설명을 입력해주세요."
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        ></textarea>
+                    </div>
+
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
                         추가하기
                     </button>
                 </div>
