@@ -1,5 +1,5 @@
 import { axiosInstance } from "../../utils/axios/AxiosInstance";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CompanyGetApi = () => {
     const fetchGet = () => axiosInstance.get("/venders");
@@ -12,12 +12,16 @@ const CompanyGetApi = () => {
 };
 
 const CompanyPostApi = () => {
+    const queryClient = useQueryClient();
+
     const fetchPost = (postData) => {
         return axiosInstance.post("/venders", postData);
     };
 
-    const mutation = useMutation(fetchPost, {
+    const mutation = useMutation({
+        mutationFn: fetchPost,
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetVenders"] });
             console.log("성공");
         },
         onError: (error) => {
