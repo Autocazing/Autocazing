@@ -1,5 +1,5 @@
-import modifyIcon from "../../images/orderlist/modify.svg";
-import deleteIcon from "../../images/orderlist/delete.svg";
+import modifyIcon from "../../../images/orderlist/modify.svg";
+import deleteIcon from "../../../images/orderlist/delete.svg";
 
 const CompanyList = [
     // 테스트용

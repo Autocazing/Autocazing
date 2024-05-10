@@ -1,6 +1,6 @@
-import CompanyTable from "../../components/management/CompanyTable";
 import { useState } from "react";
 import CompanyManagementModal from "./CompanyManagementModal";
+import CompanyTable from "./CompanyTable";
 
 const CompanyManagement = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);

@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import { useState } from "react";
-import closeIcon from "../../images/icon/close.svg";
+import closeIcon from "../../../images/icon/close.svg";
 
 const customStyles = {
     overlay: {
