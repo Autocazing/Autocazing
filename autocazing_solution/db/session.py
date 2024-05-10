@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from ..core.config import get_setting
-from .base import Base
+from core.config import get_setting
+from db.base import Base
 
 settings = get_setting()    # config.py에 설정해놓은 setting을 가져옴
 

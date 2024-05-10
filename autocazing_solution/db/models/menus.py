@@ -1,7 +1,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
-from ..base import Base
+from db.base import Base
 
 class Menus(Base):
     __tablename__ = 'menus'

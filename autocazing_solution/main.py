@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from .db.session import SessionLocal
-from .api import router as api_router
+from db.session import SessionLocal
+# from api import router as api_router
 
 app = FastAPI()
 
@@ -12,4 +12,4 @@ def get_db():
     finally:
         db.close()
 
-app.include_router(api_router)
+# app.include_router(api_router)
