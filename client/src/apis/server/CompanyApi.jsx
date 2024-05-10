@@ -53,4 +53,25 @@ const CompanyDeleteApi = (venderId) => {
     return mutation;
 };
 
-export { CompanyGetApi, CompanyPostApi, CompanyDeleteApi };
+const CompanyEditApi = (venderId) => {
+    const queryClient = useQueryClient();
+
+    const fetchEdit = (editData) => {
+        return axiosInstance.put(`/venders/${venderId}`, editData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchEdit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetVenders"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { CompanyGetApi, CompanyPostApi, CompanyDeleteApi, CompanyEditApi };
