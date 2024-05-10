@@ -1,5 +1,5 @@
-import CardDataStats from "../../components/CardDataState";
-import ChartOne from "../../components/ChartOne";
+import CardDataStats from "../../components/dashboard/CardDataState";
+import ChartOne from "../../components/dashboard/ChartOne";
 import DashboardServer from "../../apis/server/DashboardServer";
 const date = new Date();
 
@@ -10,9 +10,15 @@ const day = date.getDate();
 const date2 = new Date(year, month, day - 1);
 const date3 = new Date(year, month, 1);
 
-const today = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
-const yesterday = `${date2.getFullYear()}.${date2.getMonth()}.${date2.getDate()}`;
-const curmonth = `${date3.getFullYear()}.${date3.getMonth()}.${date3.getDate()} ~ ${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+const today = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+const yesterday = `${date2.getFullYear()}.${
+    date2.getMonth() + 1
+}.${date2.getDate()}`;
+const curmonth = `${date3.getFullYear()}.${
+    date3.getMonth() + 1
+}.${date3.getDate()} ~ ${date.getFullYear()}.${
+    date.getMonth() + 1
+}.${date.getDate()}`;
 
 const Dashboard = () => {
     return (
