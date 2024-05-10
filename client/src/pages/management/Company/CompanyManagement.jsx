@@ -24,12 +24,14 @@ const CompanyManagement = () => {
                 </ol>
             </div>
             <CompanyTable companyInfo={companyInfo} />
-            <button
-                onClick={() => setModalIsOpen(true)}
-                className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
-            >
-                업체추가
-            </button>
+            <div className="flex justify-end mt-6">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
+                >
+                    업체추가
+                </button>
+            </div>
             {modalIsOpen && (
                 <CompanyManagementModal
                     isOpen={modalIsOpen}
