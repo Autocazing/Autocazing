@@ -80,4 +80,10 @@ public class SaleController {
 		Integer soldNumber = saleService.getSoldNumber();
 		return ResponseEntity.ok(soldNumber);
 	}
+
+	/*@GetMapping("/avg")
+	public ResponseEntity getAvgSales(){
+		List<Map<String, Object>> sales = saleService.getAvgSales();
+		return ResponseEntity.ok(sales);
+	}*/
 }

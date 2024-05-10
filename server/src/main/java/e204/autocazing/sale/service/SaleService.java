@@ -26,15 +26,15 @@ public class SaleService {
 		LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
 
 		if(type.equals("day")){
-			LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
+			LocalDateTime currentTime = baseDate.minusDays(30);
 			saleDtoList = orderRepository.calculateDailySales(currentTime);
 		}
 		else if(type.equals("week")){
-			LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
+			LocalDateTime currentTime = baseDate.minusWeeks(12);
 			saleDtoList = orderRepository.calculateWeekSales(currentTime);
 		}
 		else if(type.equals("month")){
-			LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
+			LocalDateTime currentTime = baseDate.minusMonths(12);
 			saleDtoList = orderRepository.calculateMonthSales(currentTime);
 		}
 
@@ -50,4 +50,16 @@ public class SaleService {
 		return orderRepository.getSoldNumber(currentDay);
 
 	}
+
+	/*public List<Map<String, Object>> getAvgSales() {
+		List<Map<String, Object>> saleDtoList = new ArrayList<>();
+
+		//더미데이터 기준
+		String dateTimeString = "2024-05-08 17:00:00";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+
+		LocalDateTime currentTime = baseDate.minusMonths(1);
+		return saleDtoList;
+	}*/
 }
