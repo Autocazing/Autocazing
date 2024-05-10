@@ -9,7 +9,7 @@ import ProgressOrder from "./pages/order/ProgressOrder";
 import Order from "./pages/order/Order";
 import CafeReport from "./pages/cafeReport/CafeReport";
 import Management from "./pages/management/Management";
-import CompanyManagement from "./pages/management/CompanyManagement";
+import CompanyManagement from "./pages/management/Company/CompanyManagement";
 import MaterialManagement from "./pages/management/MaterialManagement";
 import MenuManagement from "./pages/management/MenuManagement";
 import StockManagement from "./pages/management/StockManagement";
