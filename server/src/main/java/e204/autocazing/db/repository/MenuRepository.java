@@ -1,5 +1,9 @@
 package e204.autocazing.db.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
 import e204.autocazing.db.entity.MenuEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +39,6 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Integer> {
     List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate, Integer menuId);
 
     MenuEntity findByMenuName(String menuName);
+
 }
 
