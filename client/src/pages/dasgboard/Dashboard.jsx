@@ -1,6 +1,7 @@
 import CardDataStats from "../../components/dashboard/CardDataState";
 import ChartOne from "../../components/dashboard/ChartOne";
-import DashboardServer from "../../apis/server/DashboardServer";
+import { GetSalesSold, GetSalesDay } from "../../apis/server/DashboardServer";
+
 const date = new Date();
 
 const year = date.getFullYear();
@@ -21,6 +22,19 @@ const curmonth = `${date3.getFullYear()}.${
 }.${date.getDate()}`;
 
 const Dashboard = () => {
+    const { data: data, isLoading, isError, error } = GetSalesSold();
+    {
+        // console.log(data);
+    }
+    const { data: data2 } = GetSalesDay();
+    {
+        if (data2 !== undefined) {
+            console.log(data2[0]);
+            console.log(data2[1]);
+        }
+        // console.log(data2[0]);
+        // console.log(data2[1]);
+    }
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -134,7 +148,6 @@ const Dashboard = () => {
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
                 <ChartOne />
             </div>
-            <DashboardServer />
         </div>
     );
 };
