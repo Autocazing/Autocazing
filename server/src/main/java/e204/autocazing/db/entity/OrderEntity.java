@@ -9,16 +9,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "orders")	// schema 설정 따로 x, public schema 내에 생성됨.
-
 public class OrderEntity {
     //기본키
     @Id
@@ -33,21 +30,12 @@ public class OrderEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private StoreEntity store;
+
+
     @ElementCollection
-    @CollectionTable(name = "order_specific", joinColumns = @JoinColumn(name = "order_id"))
+    @CollectionTable(name = "order_specifics", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"))
     private List<OrderSpecific> orderSpecific;
-
-    @Embeddable
-    @Getter
-    @Setter
-    public class OrderSpecific {
-        private Integer menuId;
-        private int quantity;
-        private int price;
-
-
-    }
 }
-
-
-

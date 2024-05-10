@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "store")
+@Table(name = "stores")
 public class StoreEntity {
 	//기본키
 	@Id
