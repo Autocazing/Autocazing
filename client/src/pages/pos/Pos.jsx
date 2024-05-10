@@ -79,7 +79,7 @@ function Pos() {
 
     const decrease = (productId) => {
         let decProd = products.filter((p) => p.menuId === productId);
-        console.log(decProd);
+        // console.log(decProd);
         const newCart = cart.map((p) =>
             p.menuId === productId
                 ? {
@@ -109,9 +109,9 @@ function Pos() {
         setCart(newCart);
     };
 
-    let formatCurrency = new Intl.NumberFormat("en-US", {
+    let formatCurrency = new Intl.NumberFormat("ko-KR", {
         style: "currency",
-        currency: "KES",
+        currency: "KRW",
     });
 
     const handlePrint = useReactToPrint({
@@ -125,8 +125,8 @@ function Pos() {
     useEffect(() => {
         getMenu(
             (response) => {
-                console.log("Success:", response.data);
-                console.log(response.data.length);
+                // console.log("Success:", response.data);
+                // console.log(response.data.length);
                 setProducts(response.data);
             },
             (error) => {
