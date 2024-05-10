@@ -1,6 +1,7 @@
 import Modal from "react-modal";
-import { useState } from "react";
+import { React, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
+import { CompanyPostApi } from "../../../apis/server/CompanyApi";
 
 const customStyles = {
     overlay: {
@@ -39,6 +40,8 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
         venderDescription: "",
     });
 
+    const { mutate, isLoading, isError, error } = CompanyPostApi();
+
     // 추가하기 버ㅌ느 누르면 companyPostData axios Post로 보내기
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,6 +51,12 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
         }));
 
         // console.log(companyPostData);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDafault();
+        mutate(companyPostData);
+        onClose();
     };
     return (
         <Modal
@@ -134,7 +143,10 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         ></textarea>
                     </div>
 
-                    <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
                         추가하기
                     </button>
                 </div>
