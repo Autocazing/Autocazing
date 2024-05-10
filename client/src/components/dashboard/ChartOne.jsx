@@ -138,7 +138,7 @@ const ChartOne = () => {
                         </span>
                         <div className="w-full">
                             <p className="font-semibold text-primary">
-                                Total Revenue
+                                최근 7일 매출 현황
                             </p>
                             <p className="text-sm font-medium">
                                 12.04.2022 - 12.05.2022
@@ -151,7 +151,7 @@ const ChartOne = () => {
                         </span>
                         <div className="w-full">
                             <p className="font-semibold text-secondary">
-                                Total Sales
+                                최근 1달 요일별 매출
                             </p>
                             <p className="text-sm font-medium">
                                 12.04.2022 - 12.05.2022
@@ -159,7 +159,7 @@ const ChartOne = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex w-full max-w-45 justify-end">
+                {/* <div className="flex w-full max-w-45 justify-end">
                     <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
                         <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
                             Day
@@ -171,7 +171,7 @@ const ChartOne = () => {
                             Month
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div>
