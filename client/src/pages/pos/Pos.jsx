@@ -13,18 +13,18 @@ function Pos() {
     const [cart, setCart] = useState([]);
     const [paymentMode, setPaymentMode] = useState("");
     const [products, setProducts] = useState([
-        {
-            menuName: "",
-            menuPrice: 1000,
-            quantity: 0,
-            menuId: 1,
-        },
-        {
-            menuName: "bana",
-            menuPrice: 10,
-            quantity: 0,
-            menuId: 2,
-        },
+        // {
+        //     menuName: "",
+        //     menuPrice: 1000,
+        //     quantity: 0,
+        //     menuId: 1,
+        // },
+        // {
+        //     menuName: "bana",
+        //     menuPrice: 10,
+        //     quantity: 0,
+        //     menuId: 2,
+        // },
     ]);
 
     const [total, setTotal] = useState(0);
@@ -126,6 +126,8 @@ function Pos() {
         getMenu(
             (response) => {
                 console.log("Success:", response.data);
+                console.log(response.data.length);
+                setProducts(response.data);
             },
             (error) => {
                 console.error("Error:", error);
@@ -234,7 +236,7 @@ function Pos() {
                                 </p>
                                 <p className="font-bold py-2 bg-gray-200 text-center rounded text-base">
                                     {" "}
-                                    원 {product?.menuPrice}
+                                    {product?.menuPrice} 원
                                 </p>
                             </div>
                         ))}
