@@ -54,7 +54,7 @@ public class IngredientScaleController {
             })
         )
     })
-    @PatchMapping("/{scaleId}")
+    @PutMapping("/{scaleId}")
     public ResponseEntity<IngredientScaleDto> updateIngredientScale(
         @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId,
         @RequestBody PatchIngredientScaleDto patchIngredientScaleDto) {

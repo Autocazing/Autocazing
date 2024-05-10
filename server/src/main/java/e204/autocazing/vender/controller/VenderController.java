@@ -48,7 +48,7 @@ public class VenderController {
                     )
             )
     })
-    @PatchMapping("/{venderId}")
+    @PutMapping("/{venderId}")
     public ResponseEntity updateVender(@PathVariable(name = "venderId") Integer venderId, @RequestBody PatchVenderDto patchVenderDto) {
         VenderDto venderDto = venderService.updateVender(venderId, patchVenderDto);
         return ResponseEntity.ok(venderDto);

@@ -63,7 +63,7 @@ public class IngredientController {
             })
         )
     })
-    @PatchMapping("/{ingredientId}")
+    @PutMapping("/{ingredientId}")
     public ResponseEntity<IngredientDetails> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
         IngredientDetails updateIngredient = ingredientService.updateIngredient(ingredientId, ingredientDto);
         return ResponseEntity.ok(updateIngredient);
