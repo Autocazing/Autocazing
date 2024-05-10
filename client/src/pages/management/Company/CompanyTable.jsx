@@ -16,7 +16,7 @@ const CompanyTable = ({ companyInfo }) => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-4 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
+                <div className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase sm:text-base">
                             업체명
@@ -30,6 +30,11 @@ const CompanyTable = ({ companyInfo }) => {
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-xs pt-0.5 font-medium uppercase sm:text-base sm:pt-0">
                             담당자 연락처
+                        </h5>
+                    </div>
+                    <div className="p-2.5 text-center xl:p-5">
+                        <h5 className="text-xs pt-0.5 font-medium uppercase sm:text-base sm:pt-0">
+                            업체 설명
                         </h5>
                     </div>
                     <div className=" p-2.5 text-center sm:block xl:p-5 sm:ml-8">
