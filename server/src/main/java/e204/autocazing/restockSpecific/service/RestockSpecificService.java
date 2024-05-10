@@ -40,7 +40,8 @@ public class RestockSpecificService {
         RestockOrderEntity restockOrder = restockOrderRepository.findById(postRestockSpecificDto.getRestockOrderId())
                 .orElseThrow(() -> new RuntimeException("RestockOrder not found with id: " + postRestockSpecificDto.getRestockOrderId()));
         int totalPrice = ingredient.getIngredientPrice() * postRestockSpecificDto.getIngredientQuantity();
-        restockSpecific.setIngredient(ingredient);
+
+        restockSpecific.setIngredientName(ingredient.getIngredientName());
         restockSpecific.setRestockOrder(restockOrder);
         //계산 된 값. 재료 값 * 주문 수량
         restockSpecific.setIngredientPrice(totalPrice);
@@ -67,12 +68,12 @@ public class RestockSpecificService {
     private RestockSpecificResponseDto convertToDto(RestockOrderSpecificEntity restockSpecific) {
         return RestockSpecificResponseDto.builder()
                 .restockOrderSpecificId(restockSpecific.getRestockOrderSpecificId())
-                .ingredientId(restockSpecific.getIngredient().getIngredientId())
-                .ingredientName(restockSpecific.getIngredient().getIngredientName())
+      //          .ingredientId(restockSpecific.getIngredient().getIngredientId())
+        //        .ingredientName(restockSpecific.getIngredient().getIngredientName())
                 .restockOrderId(restockSpecific.getRestockOrder().getRestockOrderId())
                 .ingredientQuantity(restockSpecific.getIngredientQuantity())
                 .ingredientPrice(restockSpecific.getIngredientPrice())
-                .venderName(restockSpecific.getIngredient().getVender().getVenderName())
+          //      .venderName(restockSpecific.getIngredient().getVender().getVenderName())
                 .status(String.valueOf(restockSpecific.getRestockOrder().getStatus()))
                 .build();
 
@@ -87,13 +88,13 @@ public class RestockSpecificService {
 
         // 수량 변경 및 가격 재계산
         restockSpecific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
-        Integer newPrice = restockSpecific.getIngredient().getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity();
-        restockSpecific.setIngredientPrice(newPrice);
+//        Integer newPrice = restockSpecific.getIngredient().getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity();
+    //    restockSpecific.setIngredientPrice(newPrice);
         restockOrderSpecificRepository.save(restockSpecific);
         RestockSpecificDto updatedRestockSpecific = new RestockSpecificDto();
 
         updatedRestockSpecific.setRestockOrderSpecificId(restockOrderSpecificId);
-        updatedRestockSpecific.setIngredientId(restockSpecific.getIngredient().getIngredientId());
+  //      updatedRestockSpecific.setIngredientId(restockSpecific.getIngredient().getIngredientId());
         updatedRestockSpecific.setRestockOrderId(restockSpecific.getRestockOrder().getRestockOrderId());
         updatedRestockSpecific.setIngredientPrice(restockSpecific.getIngredientPrice());
         updatedRestockSpecific.setIngredientQuantity(restockSpecific.getIngredientQuantity());

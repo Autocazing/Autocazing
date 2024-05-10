@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSpecific {
-    private Integer menuId;
+    private String menuName;
     private int menuQuantity;
     private int menuPrice;
 }

@@ -44,7 +44,7 @@ public class OrderService {
 
     private OrderResponseDto convertToDto(OrderEntity order) {
         List<OrderSpecificDto> orderSpecifics = order.getOrderSpecific().stream()
-                .map(specific -> new OrderSpecificDto(specific.getMenuId(), specific.getMenuQuantity(), specific.getMenuPrice()))
+                .map(specific -> new OrderSpecificDto(specific.getMenuName(), specific.getMenuQuantity(), specific.getMenuPrice()))
                 .collect(Collectors.toList());
         return new OrderResponseDto(order.getOrderId(), orderSpecifics);
     }
@@ -54,7 +54,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         List<OrderSpecificDto> orderSpecifics = orderEntity.getOrderSpecific().stream()
-                .map(specific -> new OrderSpecificDto(specific.getMenuId(), specific.getMenuQuantity(), specific.getMenuPrice()))
+                .map(specific -> new OrderSpecificDto(specific.getMenuName(), specific.getMenuQuantity(), specific.getMenuPrice()))
                 .collect(Collectors.toList());
 
         return new OrderResponseDto(orderEntity.getOrderId(), orderSpecifics);
@@ -66,19 +66,25 @@ public class OrderService {
         public void addOrder(PostOrderDto postOrderDto) {
 
             OrderEntity order = new OrderEntity();
-            order.setOrderSpecific(postOrderDto.getOrderSpecifics().stream()
-                    .map(post -> new OrderSpecific(post.getMenuId(), post.getMenuQuantity(), post.getMenuPrice()))
-                    .collect(Collectors.toList()));
+            List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
+                    .map(detail -> {
+                        MenuEntity menu = menuRepository.findByMenuName(detail.getMenuName());
+                        if (menu == null) {
+                            throw new IllegalStateException("Menu not found: " + detail.getMenuName());
+                        }
+                        return new OrderSpecific(detail.getMenuName(), detail.getMenuQuantity(), menu.getMenuPrice());
+                    })
+                    .toList();
 
             // 재료와 재고 처리 로직
             postOrderDto.getOrderSpecifics().forEach(detail -> {
-                MenuEntity menu = menuRepository.findById(detail.getMenuId())
-                        .orElseThrow(() -> new RuntimeException("Menu not found with id " + detail.getMenuId()));
+                MenuEntity menu = menuRepository.findByMenuName(detail.getMenuName());
                 menu.getMenuIngredients().forEach(ingredient -> {
                     stockService.decreaseStock(ingredient.getIngredient().getIngredientId(), ingredient.getCapacity() * detail.getMenuQuantity());
                 });
             });
 
+            order.setOrderSpecific(orderSpecifics);
             orderRepository.save(order);
     }
 

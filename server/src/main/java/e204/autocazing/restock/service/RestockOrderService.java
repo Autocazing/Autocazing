@@ -1,10 +1,8 @@
 package e204.autocazing.restock.service;
 
+import com.netflix.discovery.converters.Auto;
 import e204.autocazing.db.entity.*;
-import e204.autocazing.db.repository.RestockOrderRepository;
-import e204.autocazing.db.repository.RestockOrderSpecificRepository;
-import e204.autocazing.db.repository.StockRepository;
-import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.db.repository.*;
 import e204.autocazing.restock.dto.PostRestockDto;
 import e204.autocazing.restock.dto.RestockDetailsDto;
 import e204.autocazing.restock.dto.RestockOrderStatusDto;
@@ -29,7 +27,8 @@ public class RestockOrderService {
     private StockRepository stockRepository;
     @Autowired
     private StoreRepository storeRepository;
-
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
     // Create
     @Transactional
@@ -86,7 +85,8 @@ public class RestockOrderService {
         if(restockOrder.getStatus() == RestockOrderEntity.RestockStatus.COMPLETE){
             List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
-                IngredientEntity ingredient = specific.getIngredient();
+                String ingredientName = specific.getIngredientName();
+                IngredientEntity ingredient = ingredientRepository.findByIngredientName(ingredientName);
                 Integer quantityToAdd = specific.getIngredientQuantity();
                 // 재료에 해당하는 Stock 엔터티 찾기
                 StockEntity stock = stockRepository.findByIngredient(ingredient);
@@ -135,7 +135,8 @@ public class RestockOrderService {
         // 새로운 RestockOrderSpecific 생성 및 추가
         RestockOrderSpecificEntity restockOrderSpecific = new RestockOrderSpecificEntity();
         restockOrderSpecific.setRestockOrder(restockOrder);
-        restockOrderSpecific.setIngredient(ingredient);
+        //재료 알아내기
+        restockOrderSpecific.setIngredientName(ingredient.getIngredientName());
         restockOrderSpecific.setIngredientQuantity(quantity);
         restockOrderSpecific.setIngredientPrice(ingredient.getIngredientPrice() * quantity);
         restockOrderSpecificRepository.save(restockOrderSpecific);
@@ -158,7 +159,8 @@ public class RestockOrderService {
 
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
                 // RestockOrderSpecificEntity에서 재료 확인
-                IngredientEntity orderedIngredient = specific.getIngredient();
+                String ingredientName = specific.getIngredientName();
+                IngredientEntity orderedIngredient = ingredientRepository.findByIngredientName(ingredientName);
                 if (ingredient.equals(orderedIngredient)) {
                     //배송중인 재료가 있다면
                     deliverdCount += specific.getIngredientQuantity();

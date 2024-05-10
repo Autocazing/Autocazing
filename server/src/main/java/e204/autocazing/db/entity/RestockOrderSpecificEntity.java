@@ -23,12 +23,16 @@ public class RestockOrderSpecificEntity {
     @Column(nullable = false)
     private Integer ingredientPrice;
 
+    @Column(nullable = false)
+    private String ingredientName;
     @ManyToOne
     @JoinColumn(name = "restock_order_id", nullable = false)
     private RestockOrderEntity restockOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient_id", nullable = false)
-    private IngredientEntity ingredient;
+    //굳이 연관?
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "ingredient_id", nullable = false)
+//    private IngredientEntity ingredient;
 
 }
