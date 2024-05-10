@@ -34,9 +34,7 @@ public class VenderController {
             )
     })
     @PostMapping("")
-    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto,
-                                       @RequestHeader String token) {
-        System.out.println("access : " + token);
+    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto) {
          venderService.createVender(postVenderDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
