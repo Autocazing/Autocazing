@@ -34,7 +34,8 @@ public class OrderService {
     private RestockOrderRepository restockOrderRepository;
     @Autowired
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
-
+    @Autowired
+    private StoreRepository storeRepository;
 
     public List<OrderResponseDto> getAllOrders() {
         return orderRepository.findAll().stream()
@@ -66,6 +67,11 @@ public class OrderService {
         public void addOrder(PostOrderDto postOrderDto) {
 
             OrderEntity order = new OrderEntity();
+            StoreEntity store = storeRepository.findById(postOrderDto.getStoreId())
+                    .orElseThrow(() -> new ResourceNotFoundException("StoreId not found with id: " + postOrderDto.getStoreId()));
+            order.setStore(store);
+            System.out.println(store.getStoreName());
+
             List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
                     .map(detail -> {
                         MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
@@ -75,6 +81,7 @@ public class OrderService {
                         return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), menu.getMenuPrice());
                     })
                     .toList();
+            order.setOrderSpecific(orderSpecifics);
 
             // 재료와 재고 처리 로직
             postOrderDto.getOrderSpecifics().forEach(detail -> {
@@ -84,7 +91,7 @@ public class OrderService {
                 });
             });
 
-            order.setOrderSpecific(orderSpecifics);
+
             orderRepository.save(order);
     }
 
