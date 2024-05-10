@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -19,7 +20,10 @@ import com.e204.autocazing_auth.db.entity.StoreEntity;
 import com.e204.autocazing_auth.db.repository.StoreRepository;
 import com.e204.autocazing_auth.store.dto.StoreDto;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class StoreService implements UserDetailsService {
 	StoreRepository storeRepository;
 	BCryptPasswordEncoder passwordEncoder;
