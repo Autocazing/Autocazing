@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -168,6 +171,7 @@ public class MenuController {
             required = true,
             schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
         @RequestParam("type") String type, @RequestBody MenuSalesDto menuSalesDto){ //type : 일별 day, 주별 week, 월별 month
+        //HttpServletRequest httpServletRequest =
         List<Map<String, Object>> sales = menuService.getMenuSales(type, menuSalesDto);
         return ResponseEntity.ok(sales);
     }
