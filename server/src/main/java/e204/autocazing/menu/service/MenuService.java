@@ -167,8 +167,7 @@ public class MenuService {
         return menuDto;
     }
 
-    public List<Map<String, Object>> getMenuSales(String type, MenuSalesDto menuSalesDto) {
-        Integer menuId = menuSalesDto.getMenuId();
+    public List<Map<String, Object>> getMenuSales(String type, Integer menuId) {
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
         //더미데이터 기준
