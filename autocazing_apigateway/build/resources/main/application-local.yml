@@ -1,0 +1,64 @@
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/menus/**,/api/stock/**,/api/ingredients/**
+              ,/api/restock/**,/api/sales/**,/api/orders/**,/api/vendors/**
+          filters:
+            - CustomFilter
+            - AuthorizationHeaderFilter
+        - id: alert-service
+          uri: lb://alert-service
+          predicates:
+            - Path=/api/alerts/**
+          filters:
+            - CustomFilter
+            - AuthorizationHeaderFilter
+        - id: solution-service
+          uri: lb://solution-service
+          predicates:
+            - Path=/api/reports/**
+          filters:
+            - CustomFilter
+            - AuthorizationHeaderFilter
+        - id: auth-server
+          uri: lb://auth-server
+          predicates:
+            - Path=/api/users/**
+            - Method=POST
+          filters:
+            - CustomFilter
+            - RemoveRequestHeader=Cookie #POST 전달되는 데이터는 항상 새로운 데이터로 인식하기 위해 쿠키 헤더 삭제
+        - id: test1-service
+          uri: lb://Test1Discovery
+          predicates:
+            - Path=/test1/**
+          filters:
+            - CustomFilter
+            - AuthorizationHeaderFilter
+
+        #swagger 관련
+        - id: inventory-swagger
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory-service/**
+          filters:
+            - CustomFilter
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+token:
+  expiration_time: 86400000 #1일
+  secret: SsafyAutocazingSecretKeyForTokenSsafyAutocazingSecretKeyForToken
