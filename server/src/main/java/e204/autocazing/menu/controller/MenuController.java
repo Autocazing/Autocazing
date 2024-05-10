@@ -71,7 +71,7 @@ public class MenuController {
             })
         )
     })
-    @PatchMapping("/{menuId}")
+    @PutMapping("/{menuId}")
     public ResponseEntity updateMenu(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId
         ,@RequestBody UpdateMenuDto updateMenuDto){
         MenuDto menu = menuService.updateMenu(updateMenuDto,menuId);
