@@ -12,4 +12,8 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/api/fastapi-test")
+async def root():
+    return {"message": "Hello World"}
+
 # app.include_router(api_router)
