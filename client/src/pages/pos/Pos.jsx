@@ -312,10 +312,10 @@ function Pos() {
                         </div>
                     </div>
                     {/* payment method */}
-                    {cart.length > 0 && (
+                    {/* {cart.length > 0 && (
                         <h5 className="font-medium pt-2">Payment Method</h5>
-                    )}
-                    {cart.length > 0 && (
+                    )} */}
+                    {/* {cart.length > 0 && (
                         <div className="flex justify-center gap-4 pt-2">
                             <button
                                 style={{
@@ -344,7 +344,7 @@ function Pos() {
                                 </p>
                             </button>
                         </div>
-                    )}
+                    )} */}
                     {/* print bill  */}
                     {cart.length > 0 && (
                         <button
