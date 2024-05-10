@@ -1,5 +1,6 @@
 package e204.autocazing.order.service;
 
+import com.netflix.discovery.converters.Auto;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.ResourceNotFoundException;
@@ -35,6 +36,9 @@ public class OrderService {
     @Autowired
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
 
+    @Autowired
+    private StoreRepository storeRepository;
+
 
     public List<OrderResponseDto> getAllOrders() {
         return orderRepository.findAll().stream()
@@ -66,6 +70,9 @@ public class OrderService {
         public void addOrder(PostOrderDto postOrderDto) {
 
             OrderEntity order = new OrderEntity();
+            StoreEntity store = storeRepository.findById(postOrderDto.getStoreId())
+                    .orElseThrow(() -> new ResourceNotFoundException("StoreId not found with id: " + postOrderDto.getStoreId()));
+            order.setStore(store);
             List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
                     .map(detail -> {
                         MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
