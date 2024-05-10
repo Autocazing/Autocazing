@@ -14,7 +14,7 @@ const CompanyListInfo = ({ company, isLastItem }) => {
 
     return (
         <div
-            className={`grid grid-cols-4 sm:grid-cols-4 ${
+            className={`grid grid-cols-4 sm:grid-cols-5 ${
                 isLastItem
                     ? ""
                     : "border-b border-stroke dark:border-strokedark"
@@ -36,6 +36,11 @@ const CompanyListInfo = ({ company, isLastItem }) => {
             <div className="items-center justify-center pt-2.5 pb-2.5 text-xs sm:flex sm:text-base xl:p-5">
                 <p className="text-center text-black dark:text-white">
                     {company.venderManagerContact}
+                </p>
+            </div>
+            <div className="items-center justify-center pt-2.5 pb-2.5 text-xs sm:flex sm:text-base xl:p-5">
+                <p className="text-center text-black dark:text-white overflow-hidden text-overflow-ellipsis white-space-nowrap">
+                    {company.venderDescription}
                 </p>
             </div>
 
