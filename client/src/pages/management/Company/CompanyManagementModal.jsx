@@ -40,9 +40,9 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
         venderDescription: "",
     });
 
-    const { mutate, isLoading, isError, error } = CompanyPostApi();
+    const postCompany = CompanyPostApi();
 
-    // 추가하기 버ㅌ느 누르면 companyPostData axios Post로 보내기
+    // 추가하기 버튼 누르면 companyPostData axios Post로 보내기
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCompanyPostData((prevState) => ({
@@ -54,8 +54,7 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDafault();
-        mutate(companyPostData);
+        postCompany.mutate(companyPostData);
         onClose();
     };
     return (
