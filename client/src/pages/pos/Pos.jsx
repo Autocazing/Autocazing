@@ -33,10 +33,8 @@ function Pos() {
 
     const addToCart = (productId) => {
         const found = cart.some((el) => el.menuId === productId);
-
         if (found) {
             let newProd = products.filter((p) => p.menuId === productId);
-
             const newCart = cart.map((p) =>
                 p.menuId === productId
                     ? {
@@ -271,7 +269,7 @@ function Pos() {
                                     </div>
                                     <div className="ml-1 px-1">
                                         <p className="text-xs md:text-sm font-bold text-gray-500 py-2">
-                                            {p.name}
+                                            {p.menuName}
                                         </p>
                                         <p className="font-semibold text-sm  md:text-base">
                                             {formatCurrency.format(p.menuPrice)}
@@ -380,10 +378,10 @@ function Pos() {
                         {cart?.map((item) => (
                             <tr
                                 className="text-xs font-medium text-black border-b border-black"
-                                key={item.name}
+                                key={item.menuName}
                             >
                                 <td className="mx-16 break-all pl-2 py-4 text-start">
-                                    {item.name}
+                                    {item.menuName}
                                 </td>
                                 <td className="text-end px-2">
                                     {item.quantity}
