@@ -2,12 +2,12 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from core.config import get_setting
-from db.models.ingredients import Ingredients
-from db.models.menus import Menus
-from db.models.orders import OrderSpecific, Orders
-from db.models.restock_orders import RestockOrderSpecific, RestockOrders
+from db.mysql.models.ingredients import Ingredients
+from db.mysql.models.menus import Menus
+from db.mysql.models.orders import OrderSpecific, Orders
+from db.mysql.models.restock_orders import RestockOrderSpecific, RestockOrders
 
-from db.base import Base
+from db.mysql.base import Base
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
