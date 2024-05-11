@@ -6,13 +6,13 @@ from py_eureka_client import eureka_client
 app = FastAPI()
 
 # Eureka 서버 URL, FastAPI 애플리케이션의 호스트 & 포트 정보
-eureka_server = "http://your-eureka-server-host:port/eureka/"
-app_host = "app_host_address"
-app_port = 8000
+eureka_server = "http://discovery-server:8761/eureka"
+app_host = "solution-service"
+app_port = 8088
 
 # Eureka에 등록
 eureka_client.init_registry_client(eureka_server=eureka_server,
-                                   app_name="fastapi-service",
+                                   app_name="solution-service",
                                    instance_port=app_port,
                                    instance_host=app_host)
 
@@ -24,8 +24,12 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/fastapi-test")
+@app.get("/api/fastapi-test")
 async def root():
     return {"message": "Hello World"}
+
+@app.on_event("shutdown")
+def shutdown_event():
+    eureka_client.stop()
 
 # app.include_router(api_router)
