@@ -29,7 +29,7 @@ public class RestockOrderSpecificEntity {
     @Column(nullable = false)
     private Integer ingredientId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restock_order_id", nullable = false)
     private RestockOrderEntity restockOrder;
 

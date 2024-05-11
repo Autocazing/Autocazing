@@ -7,11 +7,13 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
 import e204.autocazing.ingredient.service.IngredientService;
+import e204.autocazing.restock.dto.RestockOrderSpecificDetailDto;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -82,29 +84,22 @@ public class RestockSpecificService {
 
     // Update
     @Transactional
-    public RestockSpecificDto updateRestockOrderSpecific(Integer restockOrderSpecificId, UpdateRestockSpecificDto updatedRestockOrderSpecific) {
-        RestockOrderSpecificEntity restockSpecific = restockOrderSpecificRepository.findById(restockOrderSpecificId)
-                .orElseThrow(() -> new RuntimeException("RestockOrderSpecific not found"));
+    public RestockSpecificResponseDto updateRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId, UpdateRestockSpecificDto updatedRestockOrderSpecific) {
 
-        // 수량 변경 및 가격 재계산
-        restockSpecific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
-//        Integer newPrice = restockSpecific.getIngredient().getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity();
-    //    restockSpecific.setIngredientPrice(newPrice);
-        restockOrderSpecificRepository.save(restockSpecific);
-        RestockSpecificDto updatedRestockSpecific = new RestockSpecificDto();
+        RestockOrderSpecificEntity specific =restockOrderSpecificRepository.findByRestockOrderRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId)
+                .orElseThrow(() -> new EntityNotFoundException("Specific not found with given IDs"));
 
-        updatedRestockSpecific.setRestockOrderSpecificId(restockOrderSpecificId);
-  //      updatedRestockSpecific.setIngredientId(restockSpecific.getIngredient().getIngredientId());
-        updatedRestockSpecific.setRestockOrderId(restockSpecific.getRestockOrder().getRestockOrderId());
-        updatedRestockSpecific.setIngredientPrice(restockSpecific.getIngredientPrice());
-        updatedRestockSpecific.setIngredientQuantity(restockSpecific.getIngredientQuantity());
+        // 업데이트 로직
+        specific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
+        specific.setIngredientPrice(specific.getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity());
 
-        return updatedRestockSpecific;
+        restockOrderSpecificRepository.save(specific);
+        return convertToDto(specific);
     }
 
     // Delete
-    @Transactional
-    public void deleteRestockOrderSpecific(Integer restockOrderSpecificId) {
-        restockOrderSpecificRepository.deleteById(restockOrderSpecificId);
-    }
+//    @Transactional
+//    public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
+//        restockOrderSpecificRepository.deleteByRestockRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
+//    }
 }

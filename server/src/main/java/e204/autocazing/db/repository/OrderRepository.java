@@ -8,6 +8,7 @@ import java.util.Map;
 import e204.autocazing.db.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,24 +18,24 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 		+ "WHERE o.createdAt >= :startDate "
 		+ "GROUP BY DATE(o.createdAt) "
 		+ "ORDER BY DATE(o.createdAt)")
-	List<Map<String, Object>> calculateDailySales(LocalDateTime startDate);
+	List<Map<String, Object>> calculateDailySales(@Param("startDate") LocalDateTime startDate);
 
 	@Query(value = "SELECT new map(WEEK(o.createdAt) as week, YEAR(o.createdAt) as year, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
 		+"FROM OrderEntity o JOIN o.orderSpecific os "
 		+"WHERE o.createdAt >= :startDate "
 		+"GROUP BY WEEK(o.createdAt), YEAR(o.createdAt) "
 		+"ORDER BY YEAR(o.createdAt), WEEK(o.createdAt)")
-	List<Map<String, Object>> calculateWeekSales(LocalDateTime startDate);
+	List<Map<String, Object>> calculateWeekSales(@Param("startDate") LocalDateTime startDate);
 
 	@Query(value = "SELECT new map(MONTH(o.createdAt) as month, YEAR(o.createdAt) as year, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
 		+"FROM OrderEntity o JOIN o.orderSpecific os "
 		+"WHERE o.createdAt >= :startDate "
 		+"GROUP BY MONTH(o.createdAt), YEAR(o.createdAt) "
 		+"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
-	List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate);
+	List<Map<String, Object>> calculateMonthSales(@Param("startDate") LocalDateTime startDate);
 
 	@Query(value = "SELECT SUM(os.menuQuantity) as totalSales "
 		+"FROM OrderEntity o JOIN o.orderSpecific os "
 		+"WHERE DATE(o.createdAt) = :today ")
-	Integer getSoldNumber(LocalDate today);
+	Integer getSoldNumber(@Param("today") LocalDate today);
 }

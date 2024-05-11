@@ -3,6 +3,9 @@ package e204.autocazing.restock.controller;
 import e204.autocazing.db.entity.RestockOrderEntity;
 import e204.autocazing.restock.dto.*;
 import e204.autocazing.restock.service.RestockOrderService;
+import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
+import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
+import e204.autocazing.restockSpecific.service.RestockSpecificService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +24,8 @@ import java.util.List;
 public class RestockController {
     @Autowired
     private RestockOrderService restockOrderService;
+    @Autowired
+    private RestockSpecificService restockSpecificService;
 
     @Operation(summary = "장바구니 생성 요청", description = "장바구니 생성 요청을 수행하는 API입니다. Backend에서 호출(Front 호출 X).")
     @ApiResponses({
@@ -86,10 +91,36 @@ public class RestockController {
     }
 
 
+    // 장바구니 내 재료 추가
+    @Operation(summary = "장바구니 내 재료주문추가", description = "장바구니에서 수동으로 재료주문을 추가 ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "재료 추가 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AddSpecificResponse.class)
+                    )
+            )
+    })
     //수동 발주재료추가
     @PostMapping("/{restockOrderId}/add")
     public ResponseEntity addIngredientToRestockOrder(@PathVariable Integer restockOrderId,@RequestBody AddSpecificRequest addDto) {
         AddSpecificResponse addSpecific = restockOrderService.addSpecific(addDto);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
+
+    //발주 재료 수정
+    @PutMapping("/{restockOrderId}/specifics/{specificId}")
+    public ResponseEntity updateRestockOrderSpecific(@PathVariable Integer restockOrderId,
+                                                     @PathVariable Integer specificId,
+                                                     @RequestBody UpdateRestockSpecificDto updateRestockSpecificDto){
+        RestockSpecificResponseDto restockSpecificResponseDto = restockSpecificService.updateRestockOrderSpecific(restockOrderId,specificId,updateRestockSpecificDto);
+        return ResponseEntity.ok(restockSpecificResponseDto);
+    }
+
+    //발주 재료 삭제
+//    @DeleteMapping("/{restockOrderId}/specifics/{specificId}")
+//    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderId,
+//                                                           @PathVariable Integer specificId) {
+//        restockSpecificService.deleteRestockOrderSpecific(restockOrderId,spei);
+//        return ResponseEntity.ok().build();
+//    }
 }

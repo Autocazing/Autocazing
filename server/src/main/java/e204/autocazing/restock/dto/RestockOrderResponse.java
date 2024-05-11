@@ -21,6 +21,7 @@ public class RestockOrderResponse {
     private RestockOrderEntity.RestockStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private StoreEntity store;
-    private List<UpdatedRestockSpecificDto> restockOrderSpecific;
+    private Integer storeId;
+    //이건 상세조회때?
+//    private List<RestockOrderSpecificDetailDto> restockOrderSpecific;
 }
