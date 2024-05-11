@@ -1,0 +1,13 @@
+.fc-toolbar-title {
+    font-weight: 600;
+}
+
+.fc-event-main {
+    font-weight: 600;
+    text-align: center !important;
+    background-color: theme("colors.primary") !important;
+}
+
+.fc-button {
+    background-color: theme("colors.primary") !important;
+}

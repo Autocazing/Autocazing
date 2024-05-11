@@ -3,10 +3,8 @@ server:
 
 spring:
   application:
-    name: autocazing_apigateway
-eureka:
-  client:
-    registerWithEureka: false
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    name: api-gateway-server
+  profiles:
+    active: ${profile}
+  config:
+    import: optional:configserver:http://config-server:8888
