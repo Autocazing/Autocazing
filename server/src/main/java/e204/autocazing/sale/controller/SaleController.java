@@ -57,11 +57,10 @@ public class SaleController {
 		@Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
 			required = true,
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
-		@RequestParam("type") String type){ //type : 일별 day, 주별 week, 월별 month
+		@RequestParam("type") String type) { //type : 일별 day, 주별 week, 월별 month
 		List<Map<String, Object>> sales = saleService.getSales(type);
 		return ResponseEntity.ok(sales);
 	}
-
 
 	@Operation(summary = "금일 판매 잔 수 조회 요청", description = "오늘 몇 잔 판매했는지를 조회하는 API입니다. ")
 	@ApiResponses({
@@ -76,14 +75,33 @@ public class SaleController {
 		)
 	})
 	@GetMapping("/sold")
-	public ResponseEntity getSoldNumber(){
+	public ResponseEntity getSoldNumber() {
 		Integer soldNumber = saleService.getSoldNumber();
 		return ResponseEntity.ok(soldNumber);
 	}
 
-	/*@GetMapping("/avg")
-	public ResponseEntity getAvgSales(){
-		List<Map<String, Object>> sales = saleService.getAvgSales();
+	@Operation(summary = "요일별 평균 매출 요청", description = "요청일로부터 한 달 전까지 매출 데이터 기반 요일 별 평균 매출 조회 API입니다. ")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "Sales data retrieved successfully",
+			content = @Content(mediaType = "application/json",
+				examples = {
+					@ExampleObject(
+						value = "{\"Monday\": 29392.14285714286,\n"
+							+ "    \"Thursday\": 31351.634146341465,\n"
+							+ "    \"Friday\": 31750.06358381503,\n"
+							+ "    \"Sunday\": 32922.87804878049,\n"
+							+ "    \"Wednesday\": 31548.51595744681,\n"
+							+ "    \"Tuesday\": 31635.365853658535,\n"
+							+ "    \"Saturday\": 32592.672514619884}"
+					)
+				}
+			)
+		)
+
+	})
+	@GetMapping("/avg")
+	public ResponseEntity getAvgSales() {
+		Map<String, Double> sales = saleService.getAvgSales();
 		return ResponseEntity.ok(sales);
-	}*/
+	}
 }
