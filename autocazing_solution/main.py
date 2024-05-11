@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from db.session import SessionLocal
+from db.mysql.session import SessionLocal
 from py_eureka_client import eureka_client
 # from api import router as api_router
 

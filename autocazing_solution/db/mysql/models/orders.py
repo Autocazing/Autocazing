@@ -1,7 +1,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from db.base import Base
+from db.mysql.base import Base
 
 class OrderSpecific(Base):
     __tablename__ = 'order_specifics'
