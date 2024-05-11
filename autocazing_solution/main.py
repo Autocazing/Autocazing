@@ -5,18 +5,14 @@ from py_eureka_client import eureka_client
 
 app = FastAPI()
 
-# Eureka 서버 URL, FastAPI 애플리케이션의 호스트 & 포트 정보
-eureka_server = "http://discovery-server:8761/eureka"
-app_host = "solution-service"
-app_port = 8088
-
-# Eureka에 등록
-eureka_client.init(eureka_server=eureka_server,
-                                   app_name="solution-service",
-                                   instance_port=app_port,
-                                   instance_host=app_host)
-
-eureka_client.start()
+@app.on_event("startup")
+async def startup_event():
+    await eureka_client.init_async(
+        eureka_server="http://discovery-server:8761/eureka",
+        app_name="solution-service",
+        instance_port=8088,
+        instance_host="solution-service"
+)
 
 # Dependency
 def get_db():
@@ -31,7 +27,7 @@ async def root():
     return {"message": "Hello World"}
 
 @app.on_event("shutdown")
-def shutdown_event():
+async def shutdown_event():
     eureka_client.stop()
 
 # app.include_router(api_router)
