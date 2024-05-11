@@ -11,10 +11,12 @@ app_host = "solution-service"
 app_port = 8088
 
 # Eureka에 등록
-eureka_client.init_registry_client(eureka_server=eureka_server,
+eureka_client.init(eureka_server=eureka_server,
                                    app_name="solution-service",
                                    instance_port=app_port,
                                    instance_host=app_host)
+
+eureka_client.start()
 
 # Dependency
 def get_db():
