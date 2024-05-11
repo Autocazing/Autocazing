@@ -3,7 +3,7 @@ from db.session import SessionLocal
 from py_eureka_client import eureka_client
 # from api import router as api_router
 
-app = FastAPI()
+app = FastAPI(docs_url='/api/solution-service/docs', openapi_url='/api/solution-service/openapi.json')
 
 @app.on_event("startup")
 async def startup_event():
