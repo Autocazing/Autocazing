@@ -37,4 +37,20 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 		+"FROM OrderEntity o JOIN o.orderSpecific os "
 		+"WHERE DATE(o.createdAt) = :today ")
 	Integer getSoldNumber(LocalDate today);
+
+	// @Query(value = "SELECT dayOfWeek, AVG(totalSales) as averageSales "
+	// 	+ "FROM ( "
+	// 	+ "SELECT DAYNAME(o.createdAt) as dayOfWeek, os.menuQuantity * os.menuPrice as totalSales "
+	// 	+ "OrderEntity o "
+	// 	+ "JOIN orderSpecifics os ON o.orderId = os.orderId "
+	// 	+ "WHERE o.createdAt BETWEEN :startDate AND :endDate "
+	// 	+ ") as dailySales "
+	// 	+ "GROUP BY dayOfWeek "
+	// 	+ "ORDER BY FIELD(dayOfWeek, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+	// List<Map<String, Object>> getAvgSales(LocalDateTime startDate, LocalDateTime endDate);
+
+	@Query(value = "SELECT DAYNAME(o.createdAt) as dayOfWeek, os.menuQuantity * os.menuPrice as totalSales "
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE o.createdAt BETWEEN :startDate AND :endDate ")
+	List<Map<String, Object>> getAvgSales(LocalDateTime startDate, LocalDateTime endDate);
 }
