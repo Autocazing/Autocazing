@@ -1,17 +1,14 @@
 package e204.autocazing.restock.controller;
 
 import e204.autocazing.db.entity.RestockOrderEntity;
-import e204.autocazing.restock.dto.PostRestockDto;
-import e204.autocazing.restock.dto.RestockDetailsDto;
-import e204.autocazing.restock.dto.RestockOrderStatusDto;
-import e204.autocazing.restock.dto.UpdateRestockDto;
+import e204.autocazing.restock.dto.*;
 import e204.autocazing.restock.service.RestockOrderService;
-import e204.autocazing.stock.dto.PostStockDto;
-import e204.autocazing.stock.dto.StockDetailsDto;
+import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
+import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
+import e204.autocazing.restockSpecific.service.RestockSpecificService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,8 +24,10 @@ import java.util.List;
 public class RestockController {
     @Autowired
     private RestockOrderService restockOrderService;
+    @Autowired
+    private RestockSpecificService restockSpecificService;
 
-    @Operation(summary = "장바구니 생성 요청", description = "장바구니 생성 요청을 수행하는 API입니다. Backend에서 호출.")
+    @Operation(summary = "장바구니 생성 요청", description = "장바구니 생성 요청을 수행하는 API입니다. Backend에서 호출(Front 호출 X).")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "장바구니 생성 성공",
                     content = @Content(mediaType = "application/json",
@@ -46,17 +45,17 @@ public class RestockController {
     @Operation(summary = "발주리스트 전체 조회", description = "발주리스트를  status 에 따라 전체조회하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주리스트 전체 조회 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockDetailsDto.class)))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestockOrderResponse.class)))
 
             )
     })
     @GetMapping("")
     public ResponseEntity getAllRestockOrders(@RequestParam(value = "status", required = false)
-                                                  @Schema(description = "발주 상태 필터",
-                                                          example = "WRITING, ORDERED,ON_DELIVERY,ARRIVED,COMPLETE" // 예시를 보여주는 용도
+                                                  @Schema(description = "발주 상태 필터 status 를 리스트로 보내면됩니다. defalut는 아무것도없을때",
+                                                          example = "/api/restockOrders?status=ORDERED&status=ON_DELIVERY&status=ARRIVED" // 예시를 보여주는 용도
                                                           ) // 가능한 ENUM 값들
-                                                  List<RestockOrderStatusDto> status) {
-        List<RestockDetailsDto> restocks = restockOrderService.findAllRestockOrders(status);
+                                                  List<RestockOrderEntity.RestockStatus> status) {
+        List<RestockOrderResponse> restocks = restockOrderService.findAllRestockOrders(status);
         return ResponseEntity.ok(restocks);
     }
 
@@ -66,47 +65,62 @@ public class RestockController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주 상세조회 성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = RestockDetailsDto.class)
+                            schema = @Schema(implementation = RestockOrderDetailsDto.class)
                     )
             )
     })
     @GetMapping("/{restockOrderId}")
     public ResponseEntity getRestockOrderById(@PathVariable(name = "restockOrderId") Integer restockOrderId) {
-        RestockDetailsDto restockDetailsDto =restockOrderService.findRestockOrderById(restockOrderId);
-        return ResponseEntity.ok(restockDetailsDto);
+        RestockOrderDetailsDto restockOrderDetailsDto =restockOrderService.findRestockOrderById(restockOrderId);
+        return ResponseEntity.ok(restockOrderDetailsDto);
     }
 
-    // 재고 수정
-    @Operation(summary = "발주리스트 수정", description = "발주리스트 수정을 수행하는 API입니다.")
+    // 발주 하기 및 새로운 장바구니 생성.
+    @Operation(summary = "발주하기 및 새로운 장바구니 생성 / 발주완료", description = "발주하기-> 'status':'ORDERED' // status:'COMPLETE' 일때 발주완료(재고반영) ")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "발주리스트 수정 성공",
+            @ApiResponse(responseCode = "200", description = "발주하기 성공 , 새로운 장바구니 생성",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = RestockDetailsDto.class)
+                            schema = @Schema(implementation = UpdatedRestockDto.class)
                     )
             )
     })
     @PutMapping("/{restockOrderId}")
     public ResponseEntity updateRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId, @RequestBody UpdateRestockDto updateRestockDto) {
-        RestockDetailsDto restockDetails = restockOrderService.updateRestockOrder(restockOrderId, updateRestockDto);
+        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto);
         return ResponseEntity.ok(restockDetails);
     }
 
-    // 재고 삭제
-    @Operation(summary = "발주 삭제", description = "발주 삭제 요청을 수행하는 API입니다.")
+
+    // 장바구니 내 재료 추가
+    @Operation(summary = "장바구니 내 재료주문추가", description = "장바구니에서 수동으로 재료주문을 추가 ")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "발주 삭제 성공",
-                    content = @Content(examples = {
-                            @ExampleObject(
-                                    name = "Restock 삭제 ",
-                                    summary = "Restock 삭제 body의 예시",
-                                    value = " "
-                            )
-                    })
+            @ApiResponse(responseCode = "200", description = "재료 추가 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AddSpecificResponse.class)
+                    )
             )
     })
-    @DeleteMapping("/{restockOrderId}")
-    public ResponseEntity deleteRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId) {
-        restockOrderService.deleteRestockOrder(restockOrderId);
-        return ResponseEntity.ok().build();
+    //수동 발주재료추가
+    @PostMapping("/{restockOrderId}/add")
+    public ResponseEntity addIngredientToRestockOrder(@PathVariable Integer restockOrderId,@RequestBody AddSpecificRequest addDto) {
+        AddSpecificResponse addSpecific = restockOrderService.addSpecific(addDto);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
+
+    //발주 재료 수정
+    @PutMapping("/{restockOrderId}/specifics/{specificId}")
+    public ResponseEntity updateRestockOrderSpecific(@PathVariable Integer restockOrderId,
+                                                     @PathVariable Integer specificId,
+                                                     @RequestBody UpdateRestockSpecificDto updateRestockSpecificDto){
+        RestockSpecificResponseDto restockSpecificResponseDto = restockSpecificService.updateRestockOrderSpecific(restockOrderId,specificId,updateRestockSpecificDto);
+        return ResponseEntity.ok(restockSpecificResponseDto);
+    }
+
+    //발주 재료 삭제
+//    @DeleteMapping("/{restockOrderId}/specifics/{specificId}")
+//    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderId,
+//                                                           @PathVariable Integer specificId) {
+//        restockSpecificService.deleteRestockOrderSpecific(restockOrderId,spei);
+//        return ResponseEntity.ok().build();
+//    }
 }

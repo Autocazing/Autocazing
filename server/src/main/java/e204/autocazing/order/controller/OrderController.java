@@ -70,7 +70,7 @@ public class OrderController {
             //주문 받기 및 재고 검사로 주문 받을 수 있는 지 검사 + 재고 재료 사용한만큼 줄이기.
             orderService.addOrder(postOrderDto);
             // 발주 검사 및 발주추가
-//            orderService.checkAndAddRestockOrderSpecifics();
+            orderService.checkAndAddRestockOrderSpecifics();
             return ResponseEntity.ok(HttpStatus.CREATED);
 
     }
