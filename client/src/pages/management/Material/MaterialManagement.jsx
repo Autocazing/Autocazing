@@ -1,4 +1,4 @@
-import MaterialTable from "../../components/management/MaterialTable";
+import MaterialTable from "./MaterialTable";
 import { useState } from "react";
 import MaterialManagementModal from "./MaterialManagementModal";
 

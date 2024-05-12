@@ -1,6 +1,3 @@
-import modifyIcon from "../../images/orderlist/modify.svg";
-import deleteIcon from "../../images/orderlist/delete.svg";
-
 const MaterialList = [
     // 테스트용
     {
