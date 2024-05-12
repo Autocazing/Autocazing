@@ -2,7 +2,11 @@ import Modal from "react-modal";
 import { useEffect, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
 import { CompanyGetApi } from "../../../apis/server/CompanyApi";
-import { MaterialScaleGetApi } from "../../../apis/server/MaterialApi";
+import {
+    MaterialScaleGetApi,
+    MaterialPostApi,
+    MaterialScalePostApi,
+} from "../../../apis/server/MaterialApi";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -45,6 +49,9 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     });
 
     const [isDirectInput, setIsDirectInput] = useState(false);
+
+    const postMaterial = MaterialPostApi();
+    const postMaterialScale = MaterialScalePostApi();
     const {
         data: companyInfo,
         isLoading: companyLoading,
@@ -58,23 +65,30 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         error: scaleErrorInfo,
     } = MaterialScaleGetApi();
 
-    useEffect(() => {
-        console.log(materialPostData);
-    }, [materialPostData]);
-
+    // API 호출 결과를 기다리는 중에 조건부 렌더링을 하지 않도록 합니다.
     if (companyLoading || scaleLoading) {
         return <div>Loading...</div>; // 로딩 상태 처리
     }
 
-    if (companyError) {
+    if (companyError || scaleError) {
         return (
-            <div>Error loading company data: {companyErrorInfo.message}</div>
-        ); // 회사 데이터 로딩 에러 처리
+            <div>
+                {companyError
+                    ? `Error loading company data: ${companyErrorInfo.message}`
+                    : ""}
+                {scaleError
+                    ? `Error loading scale data: ${scaleErrorInfo.message}`
+                    : ""}
+            </div>
+        ); // 에러 상태 처리
     }
 
-    if (scaleError) {
-        return <div>Error loading scale data: {scaleErrorInfo.message}</div>; // 단위 스케일 데이터 로딩 에러 처리
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        postMaterial.mutate(materialPostData);
+        postMaterialScale.mutate(materialPostData.scale);
+        onClose();
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -313,7 +327,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     </button>
                 ) : (
                     <button
-                        onClick={handleEdit}
+                        // onClick={handleEdit}
                         className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                     >
                         수정하기
