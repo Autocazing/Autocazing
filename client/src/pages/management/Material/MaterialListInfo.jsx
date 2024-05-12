@@ -1,8 +1,11 @@
 import modifyIcon from "../../../images/orderlist/modify.svg";
 import deleteIcon from "../../../images/orderlist/delete.svg";
 import { MaterialDeleteApi } from "../../../apis/server/MaterialApi";
+import { useState } from "react";
+import MaterialManagementModal from "./MaterialManagementModal";
 
 const MaterialListInfo = ({ material, isLastItem }) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const deleteMaterial = MaterialDeleteApi(material.ingredientId);
 
     const handleDelete = () => {
@@ -69,6 +72,13 @@ const MaterialListInfo = ({ material, isLastItem }) => {
                         className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
                     />
                 </button>
+                {modalIsOpen && (
+                    <MaterialManagementModal
+                        isOpen={modalIsOpen}
+                        onClose={() => setModalIsOpen(false)}
+                        initialValue={material}
+                    />
+                )}
             </div>
         </div>
     );
