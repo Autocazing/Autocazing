@@ -1,6 +1,7 @@
 import CardDataStats from "../../components/dashboard/CardDataState";
 import ChartOne from "../../components/dashboard/ChartOne";
 import { GetSalesSold, GetSalesDay } from "../../apis/server/DashboardServer";
+import { useEffect, useState } from "react";
 
 const date = new Date();
 
@@ -22,25 +23,32 @@ const curmonth = `${date3.getFullYear()}.${
 }.${date.getDate()}`;
 
 const Dashboard = () => {
-    const { data: data, isLoading, isError, error } = GetSalesSold();
-    {
-        // console.log(data);
-    }
-    const { data: data2 } = GetSalesDay();
-    {
-        if (data2 !== undefined) {
-            console.log(data2[0]);
-            console.log(data2[1]);
+    const [todaySold, setTodaySold] = useState(0);
+    const yesterdaySold = useState();
+
+    const { data: SalesSold } = GetSalesSold();
+
+    const { data: SalesDay } = GetSalesDay();
+
+    useEffect(() => {
+        if (SalesDay !== undefined) {
+            if (SalesDay.length >= 2) {
+                console.log(SalesDay);
+                // console.log(SalesDay[SalesDay.length - 1].totalSales);
+                setTodaySold(
+                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+                );
+            }
+            // console.log(SalesDay[0]);
+            // console.log(SalesDay[1]);
         }
-        // console.log(data2[0]);
-        // console.log(data2[1]);
-    }
+    }, [SalesDay]);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
                 <CardDataStats
                     title="금일 매출 현황"
-                    total="314,320"
+                    total={todaySold}
                     isNum={true}
                     Date={today}
                 >
