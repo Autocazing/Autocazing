@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from db.session import SessionLocal
 from py_eureka_client import eureka_client
 import asyncio
-from messaging.kafka_instance import consumer
+from messaging.kafka_instance import producer, consumer
 from api.monthly_sales.monthly_sales_router import monthly_sales_router
 from messaging.kafka_cosume_logic import consume_messages
 
@@ -30,6 +30,7 @@ def get_db():
 
 @app.get("/api/fastapi-test")
 async def root():
+    producer.send('test', value={"id":"test on python", "data":"{\"id\":\"test on python\",\"message\":\"test message python\"}"})
     return {"message": "Hello World"}
 
 @app.on_event("shutdown")
