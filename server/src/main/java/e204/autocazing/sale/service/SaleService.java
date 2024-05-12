@@ -1,5 +1,6 @@
 package e204.autocazing.sale.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,23 +21,28 @@ public class SaleService {
 	private OrderRepository orderRepository;
 	public List<Map<String, Object>> getSales(String type) {
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
+		LocalDateTime currentTime = LocalDateTime.now();
 
-		//더미데이터 기준
-		// String dateTimeString = "2024-05-08 17:00:00";
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		// LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+		Map<String, Object> todaySales = new HashMap<>();
+		todaySales.put("date", LocalDate.from(currentTime));
+		todaySales.put("totalSales", 0);
 
 		if(type.equals("day")){
-			LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
-			saleDtoList = orderRepository.calculateDailySales(currentTime);
+			LocalDateTime startTime = currentTime.minusDays(30);
+			saleDtoList = orderRepository.calculateDailySales(startTime);
+
+			Date sqlLastSales = (Date)saleDtoList.get(saleDtoList.size()-1).get("date");
+			LocalDate lastSales = sqlLastSales.toLocalDate();
+			if(!lastSales.equals(currentTime.toLocalDate()))
+				saleDtoList.add(todaySales);
 		}
 		else if(type.equals("week")){
-			LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
-			saleDtoList = orderRepository.calculateWeekSales(currentTime);
+			LocalDateTime startTime = currentTime.minusWeeks(12);
+			saleDtoList = orderRepository.calculateWeekSales(startTime);
 		}
 		else if(type.equals("month")){
-			LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
-			saleDtoList = orderRepository.calculateMonthSales(currentTime);
+			LocalDateTime startTime = currentTime.minusMonths(12);
+			saleDtoList = orderRepository.calculateMonthSales(startTime);
 		}
 
 		return saleDtoList;
