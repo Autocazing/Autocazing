@@ -1,6 +1,10 @@
 import CardDataStats from "../../components/dashboard/CardDataState";
 import ChartOne from "../../components/dashboard/ChartOne";
-import { GetSalesSold, GetSalesDay } from "../../apis/server/DashboardServer";
+import {
+    GetSalesSold,
+    GetSalesDay,
+    GetSalesMonth,
+} from "../../apis/server/DashboardServer";
 import { useEffect, useState } from "react";
 
 const date = new Date();
@@ -25,13 +29,32 @@ const curmonth = `${date3.getFullYear()}.${
 const Dashboard = () => {
     const [todaySold, setTodaySold] = useState(0);
     const [yesterdaySold, setYesterdaySold] = useState(0);
+    const [thisMonthSold, setThisMonthSold] = useState(0);
     const [visited, setVisited] = useState(0);
 
     const { data: SalesSold } = GetSalesSold();
 
     const { data: SalesDay } = GetSalesDay();
 
+    const { data: SalesMonth } = GetSalesMonth();
+
     useEffect(() => {
+        if (SalesMonth !== undefined) {
+            if (SalesMonth.length !== 0) {
+                console.log(SalesMonth[SalesMonth.length - 1].totalSales);
+                setThisMonthSold(
+                    SalesMonth[
+                        SalesMonth.length - 1
+                    ].totalSales.toLocaleString(),
+                );
+            }
+            // console.log(SalesSold.length);
+            // console.log(SalesSold);
+        }
+    }, [SalesMonth]);
+
+    useEffect(() => {
+        // console.log(GetSalesMonth);
         if (SalesSold !== undefined) {
             if (SalesSold.length !== 0) {
                 setVisited(SalesSold.toLocaleString());
@@ -114,7 +137,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="당월 매출"
-                    total="6,130,340"
+                    total={thisMonthSold}
                     isNum={true}
                     Date={curmonth}
                 >
@@ -137,7 +160,7 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="금일 방문 인원"
+                    title="금일 판매 잔 수"
                     total={visited}
                     isNum={false}
                     Date={today}
