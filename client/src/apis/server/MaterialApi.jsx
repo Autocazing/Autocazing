@@ -11,4 +11,15 @@ const MaterialGetApi = () => {
     });
 };
 
-export { MaterialGetApi };
+// 단위
+
+const MaterialScaleGetApi = () => {
+    const fetchGet = () => axiosInstance.get("/ingredients-scales");
+
+    return useQuery({
+        queryKey: ["GetIngredientScale"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+export { MaterialGetApi, MaterialScaleGetApi };
