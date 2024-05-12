@@ -24,7 +24,7 @@ const curmonth = `${date3.getFullYear()}.${
 
 const Dashboard = () => {
     const [todaySold, setTodaySold] = useState(0);
-    const yesterdaySold = useState();
+    const [yesterdaySold, setYesterdaySold] = useState();
 
     const { data: SalesSold } = GetSalesSold();
 
@@ -37,6 +37,9 @@ const Dashboard = () => {
                 // console.log(SalesDay[SalesDay.length - 1].totalSales);
                 setTodaySold(
                     SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+                );
+                setYesterdaySold(
+                    SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
                 );
             }
             // console.log(SalesDay[0]);
@@ -72,7 +75,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="전일 매출"
-                    total="263,100"
+                    total={yesterdaySold}
                     isNum={true}
                     Date={yesterday}
                 >
