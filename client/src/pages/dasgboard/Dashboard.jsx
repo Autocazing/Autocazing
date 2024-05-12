@@ -1,6 +1,12 @@
-import CardDataStats from "../../components/CardDataState";
-import ChartOne from "../../components/ChartOne";
-import DashboardServer from "../../apis/server/DashboardServer";
+import CardDataStats from "../../components/dashboard/CardDataState";
+import ChartOne from "../../components/dashboard/ChartOne";
+import {
+    GetSalesSold,
+    GetSalesDay,
+    GetSalesMonth,
+} from "../../apis/server/DashboardServer";
+import { useEffect, useState } from "react";
+
 const date = new Date();
 
 const year = date.getFullYear();
@@ -10,17 +16,76 @@ const day = date.getDate();
 const date2 = new Date(year, month, day - 1);
 const date3 = new Date(year, month, 1);
 
-const today = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
-const yesterday = `${date2.getFullYear()}.${date2.getMonth()}.${date2.getDate()}`;
-const curmonth = `${date3.getFullYear()}.${date3.getMonth()}.${date3.getDate()} ~ ${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+const today = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+const yesterday = `${date2.getFullYear()}.${
+    date2.getMonth() + 1
+}.${date2.getDate()}`;
+const curmonth = `${date3.getFullYear()}.${
+    date3.getMonth() + 1
+}.${date3.getDate()} ~ ${date.getFullYear()}.${
+    date.getMonth() + 1
+}.${date.getDate()}`;
 
 const Dashboard = () => {
+    const [todaySold, setTodaySold] = useState(0);
+    const [yesterdaySold, setYesterdaySold] = useState(0);
+    const [thisMonthSold, setThisMonthSold] = useState(0);
+    const [visited, setVisited] = useState(0);
+
+    const { data: SalesSold } = GetSalesSold();
+
+    const { data: SalesDay } = GetSalesDay();
+
+    const { data: SalesMonth } = GetSalesMonth();
+
+    useEffect(() => {
+        if (SalesMonth !== undefined) {
+            if (SalesMonth.length !== 0) {
+                console.log(SalesMonth[SalesMonth.length - 1].totalSales);
+                setThisMonthSold(
+                    SalesMonth[
+                        SalesMonth.length - 1
+                    ].totalSales.toLocaleString(),
+                );
+            }
+            // console.log(SalesSold.length);
+            // console.log(SalesSold);
+        }
+    }, [SalesMonth]);
+
+    useEffect(() => {
+        // console.log(GetSalesMonth);
+        if (SalesSold !== undefined) {
+            if (SalesSold.length !== 0) {
+                setVisited(SalesSold.toLocaleString());
+            }
+            // console.log(SalesSold.length);
+            // console.log(SalesSold);
+        }
+    }, [SalesSold]);
+
+    useEffect(() => {
+        if (SalesDay !== undefined) {
+            if (SalesDay.length >= 2) {
+                setTodaySold(
+                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+                );
+                setYesterdaySold(
+                    SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
+                );
+            } else if (SalesDay.length == 1) {
+                setTodaySold(
+                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+                );
+            }
+        }
+    }, [SalesDay]);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
                 <CardDataStats
                     title="금일 매출 현황"
-                    total="314,320"
+                    total={todaySold}
                     isNum={true}
                     Date={today}
                 >
@@ -44,7 +109,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="전일 매출"
-                    total="263,100"
+                    total={yesterdaySold}
                     isNum={true}
                     Date={yesterday}
                 >
@@ -72,7 +137,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="당월 매출"
-                    total="6,130,340"
+                    total={thisMonthSold}
                     isNum={true}
                     Date={curmonth}
                 >
@@ -95,8 +160,8 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="금일 방문 인원"
-                    total="122"
+                    title="금일 판매 잔 수"
+                    total={visited}
                     isNum={false}
                     Date={today}
                     rate="100"
@@ -128,7 +193,6 @@ const Dashboard = () => {
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
                 <ChartOne />
             </div>
-            <DashboardServer />
         </div>
     );
 };

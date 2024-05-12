@@ -1,19 +1,34 @@
+import { axiosInstance } from "../../utils/axios/AxiosInstance";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-const DashboardServer = () => {
-    console.log("하위");
+const GetSalesSold = () => {
+    const fetchGet = () => axiosInstance.get("/sales/sold");
 
-    const fetchPost = () => {
-        return axios.get("http://localhost:3004/posts");
-    };
-
-    const { isLoading, data, isError, error } = useQuery({
-        queryKey: ["posts"],
-        queryFn: fetchPost,
+    return useQuery({
+        queryKey: ["GetSales"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
     });
-    console.log("ddd", data, isLoading);
-    console.log("error", isError, error);
 };
 
-export default DashboardServer;
+const GetSalesDay = () => {
+    const fetchGet = () => axiosInstance.get("/sales?type=day");
+
+    return useQuery({
+        queryKey: ["GetSalesDay"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+
+const GetSalesMonth = () => {
+    const fetchGet = () => axiosInstance.get("/sales?type=month");
+
+    return useQuery({
+        queryKey: ["GetSalesMonth"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+
+export { GetSalesSold, GetSalesDay, GetSalesMonth };
