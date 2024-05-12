@@ -1,32 +1,9 @@
-const MaterialList = [
-    // 테스트용
-    {
-        materialname: "서울 우유",
-        price: "2000",
-        amount: "1",
-        minnum: 2,
-        delivertime: 2,
-        companyname: "싸피상사",
-    },
-    {
-        materialname: "연유",
-        price: "4000",
-        amount: "1",
-        minnum: 1,
-        delivertime: 3,
-        companyname: "쿠팡",
-    },
-    {
-        materialname: "원두",
-        price: "10000",
-        amount: "2",
-        minnum: 3,
-        delivertime: 1,
-        companyname: "지호 원두",
-    },
-];
+import MaterialListInfo from "./MaterialListInfo";
 
-const MaterialTable = () => {
+const MaterialTable = ({ materialInfo }) => {
+    if (!materialInfo || materialInfo.length === 0) {
+        return <div>No company data available.</div>;
+    }
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
@@ -77,68 +54,16 @@ const MaterialTable = () => {
                     </div>
                 </div>
 
-                {MaterialList.map((material, key) => (
-                    <div
-                        className={`grid grid-cols-7 sm:grid-cols-7 text-xs sm:text-base ${
-                            key === MaterialList.length - 1
-                                ? ""
-                                : "border-b border-stroke dark:border-strokedark"
-                        }`}
-                        key={key}
-                    >
-                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.materialname}
-                            </p>
-                        </div>
+                {/* {MaterialList.map((material, key) => (
+                   
+                ))} */}
 
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.price}
-                            </p>
-                        </div>
-
-                        <div className=" flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.amount}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.minnum}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.delivertime}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {material.companyname}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
-                            <button className="mr-2">
-                                <img
-                                    src={modifyIcon}
-                                    alt="Modify"
-                                    className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
-                                />
-                            </button>
-                            <button>
-                                <img
-                                    src={deleteIcon}
-                                    alt="delete"
-                                    className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
-                                />
-                            </button>
-                        </div>
-                    </div>
+                {materialInfo.map((material, index) => (
+                    <MaterialListInfo
+                        key={material.venderId}
+                        material={material}
+                        isLastItem={index === materialInfo.length - 1}
+                    />
                 ))}
             </div>
         </div>
