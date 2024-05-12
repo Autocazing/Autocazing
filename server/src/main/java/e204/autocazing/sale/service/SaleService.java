@@ -1,8 +1,11 @@
 package e204.autocazing.sale.service;
 
+import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,26 +23,62 @@ public class SaleService {
 	private OrderRepository orderRepository;
 	public List<Map<String, Object>> getSales(String type) {
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
-
-		//더미데이터 기준
-		// String dateTimeString = "2024-05-08 17:00:00";
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		// LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+		LocalDateTime currentTime = LocalDateTime.now();
 
 		if(type.equals("day")){
-			LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
-			saleDtoList = orderRepository.calculateDailySales(currentTime);
+			LocalDateTime startTime = currentTime.minusDays(30);
+			saleDtoList = orderRepository.calculateDailySales(startTime);
+
+			Map<String, Object> todaySales = new HashMap<>();
+			todaySales.put("date", LocalDate.from(currentTime));
+			todaySales.put("totalSales", 0);
+
+			Date sqlLastSales = (Date)saleDtoList.get(saleDtoList.size()-1).get("date");
+			LocalDate lastSales = sqlLastSales.toLocalDate();
+			if(saleDtoList.isEmpty()||!lastSales.equals(currentTime.toLocalDate()))
+				saleDtoList.add(todaySales);
 		}
 		else if(type.equals("week")){
-			LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
-			saleDtoList = orderRepository.calculateWeekSales(currentTime);
+			LocalDateTime startTime = currentTime.minusWeeks(12);
+			saleDtoList = orderRepository.calculateWeekSales(startTime);
+
+			int currentYear = currentTime.getYear();
+			int currentWeek = currentTime.get(WeekFields.ISO.weekOfWeekBasedYear());
+
+			if(saleDtoList.isEmpty() || !isCurrentWeekPresent(saleDtoList, currentWeek, currentYear)) {
+				Map<String, Object> thisWeekSales = new HashMap<>();
+				thisWeekSales.put("week", currentWeek);
+				thisWeekSales.put("year", currentYear);
+				thisWeekSales.put("totalSales", 0);
+				saleDtoList.add(thisWeekSales);
+			}
 		}
 		else if(type.equals("month")){
-			LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
-			saleDtoList = orderRepository.calculateMonthSales(currentTime);
-		}
+			LocalDateTime startTime = currentTime.minusMonths(12);
+			saleDtoList = orderRepository.calculateMonthSales(startTime);
 
+			int currentYear = currentTime.getYear();
+			int currentMonth = currentTime.getMonthValue();
+
+			if(saleDtoList.isEmpty() || !isCurrentMonthPresent(saleDtoList, currentMonth, currentYear)) {
+				Map<String, Object> thisMonthSales = new HashMap<>();
+				thisMonthSales.put("month", currentMonth);
+				thisMonthSales.put("year", currentYear);
+				thisMonthSales.put("totalSales", 0);
+				saleDtoList.add(thisMonthSales);
+			}
+		}
 		return saleDtoList;
+	}
+
+	private boolean isCurrentMonthPresent(List<Map<String, Object>> saleDtoList, int currentMonth, int currentYear) {
+		return saleDtoList.stream()
+			.anyMatch(item -> (int) item.get("month") == currentMonth && (int) item.get("year") == currentYear);
+	}
+
+	private boolean isCurrentWeekPresent(List<Map<String, Object>> saleDtoList, int currentWeek, int currentYear) {
+		return saleDtoList.stream()
+			.anyMatch(item -> (int) item.get("week") == currentWeek && (int) item.get("year") == currentYear);
 	}
 
 	public Integer getSoldNumber() {
@@ -69,4 +108,6 @@ public class SaleService {
 
 		return salesAvgByDay;
 	}
+	
+	
 }
