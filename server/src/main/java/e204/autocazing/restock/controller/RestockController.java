@@ -117,10 +117,10 @@ public class RestockController {
     }
 
     //발주 재료 삭제
-//    @DeleteMapping("/{restockOrderId}/specifics/{specificId}")
-//    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderId,
-//                                                           @PathVariable Integer specificId) {
-//        restockSpecificService.deleteRestockOrderSpecific(restockOrderId,spei);
-//        return ResponseEntity.ok().build();
-//    }
+    @DeleteMapping("/{restockOrderId}/specifics/{restockOrderSpecificId}")
+    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderId,
+                                                           @PathVariable Integer restockOrderSpecificId) {
+        restockSpecificService.deleteRestockOrderSpecific(restockOrderId,restockOrderSpecificId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -19,16 +19,16 @@ public class VenderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer venderId;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 10)
     private String venderName;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 10)
     private String venderManager;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 15)
     private String venderManagerContact;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 50)
     private String venderDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)

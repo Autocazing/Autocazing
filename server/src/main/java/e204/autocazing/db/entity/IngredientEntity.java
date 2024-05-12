@@ -22,7 +22,7 @@ public class IngredientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ingredientId;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 20)
     private String ingredientName;
 
     @Column(nullable = false)

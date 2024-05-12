@@ -89,17 +89,20 @@ public class RestockSpecificService {
         RestockOrderSpecificEntity specific =restockOrderSpecificRepository.findByRestockOrderRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId)
                 .orElseThrow(() -> new EntityNotFoundException("Specific not found with given IDs"));
 
+        IngredientEntity ingredientEntity =ingredientRepository.findById(specific.getIngredientId())
+                .orElseThrow(() -> new EntityNotFoundException("Ingredient not found with ingredientId" + specific.getIngredientId()));
+
         // 업데이트 로직
         specific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
-        specific.setIngredientPrice(specific.getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity());
+        specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity());
 
         restockOrderSpecificRepository.save(specific);
         return convertToDto(specific);
     }
 
-    // Delete
-//    @Transactional
-//    public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
-//        restockOrderSpecificRepository.deleteByRestockRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
-//    }
+     //Delete
+    @Transactional
+    public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
+        restockOrderSpecificRepository.deleteByRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
+    }
 }
