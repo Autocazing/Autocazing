@@ -1,20 +1,12 @@
 package e204.autocazing.ingredient.dto;
 
-import e204.autocazing.db.entity.IngredientScaleEntity;
-import lombok.*;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class IngredientDetails {
+public class IngredientResponseDto {
     private Integer ingredientId;
     private String ingredientName;
     private String venderName;
     private int ingredientPrice;
     private Integer ingredientCapacity;
-    private ScaleDto scale;
+    private String unit;
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;

@@ -31,7 +31,8 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     // 재료 등록
-    @Operation(summary = "재료 등록 요청", description = "재료를 등록 했을 때 동작을 수행하는 API입니다.")
+    @Operation(summary = "재료 등록 요청", description = "재료를 등록 했을 때 동작을 수행하는 API입니다. " +
+            "                                       단위 직접입력 => ScaleId=0 으로 주면 백에서 저장함.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "재료 등록 성공")
     })
@@ -85,19 +86,19 @@ public class IngredientController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "재료 목록 조회 성공",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = IngredientDetails.class)), examples = {
-                @ExampleObject(
-                    name = "재료 목록 조회 body",
-                    summary = "재료 목록 조회 body의 예시",
-                    value = "[{\"ingredientId\": 1,\n"
-                        + "    \"venderName\": 동민상사,\n"
-                        + "    \"ingredientName\": \"milk\",\n"
-                        + "    \"ingredientPrice\": 5000,\n"
-                        + "    \"ingredientCapacity\": 5,\n"
-                        + "    \"scaleId\": 1,\n"
-                        + "    \"minimumCount\": 15,\n"
-                        + "    \"deliveryTime\": 1,\n"
-                        + "    \"orderCount\": 10}]"
-                )
+//                @ExampleObject(
+//                    name = "재료 목록 조회 body",
+//                    summary = "재료 목록 조회 body의 예시",
+//                    value = "[{\"ingredientId\": 1,\n"
+//                        + "    \"venderName\": 동민상사,\n"
+//                        + "    \"ingredientName\": \"milk\",\n"
+//                        + "    \"ingredientPrice\": 5000,\n"
+//                        + "    \"ingredientCapacity\": 5,\n"
+//                        + "    \"scaleId\": 1,\n"
+//                        + "    \"minimumCount\": 15,\n"
+//                        + "    \"deliveryTime\": 1,\n"
+//                        + "    \"orderCount\": 10}]"
+//                )
             })
         )
     })
