@@ -7,6 +7,7 @@ import e204.autocazing.ingredient.dto.IngredientDto;
 import e204.autocazing.ingredient.service.IngredientService;
 import e204.autocazing.db.entity.IngredientEntity;
 import e204.autocazing.scale.dto.IngredientScaleDto;
+import e204.autocazing.stock.dto.StockDetailsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -45,24 +46,11 @@ public class IngredientController {
     // 재료 수정
     @Operation(summary = "재료 수정 요청", description = "재료 수정을 수행하는 API입니다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "재료 수정 성공",
-            content = @Content(examples = {
-                @ExampleObject(
-                    name = "재료 수정 반환 body",
-                    summary = "재료 수정 반환 body의 예시",
-                    value = "{\"ingredientId\": 1,\n"
-                        + "    \"storeId\": 1,\n"
-                        + "    \"venderId\": 1,\n"
-                        + "    \"ingredientName\": \"milk\",\n"
-                        + "    \"ingredientPrice\": 5000,\n"
-                        + "    \"ingredientCapacity\": 5,\n"
-                        + "    \"scaleId\": 1,\n"
-                        + "    \"minimumCount\": 15,\n"
-                        + "    \"deliveryTime\": 1,\n"
-                        + "    \"orderCount\": 10}"
-                )
-            })
-        )
+            @ApiResponse(responseCode = "200", description = "재료 수정 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = IngredientDetails.class)
+                    )
+            )
     })
     @PutMapping("/{ingredientId}")
     public ResponseEntity<IngredientDetails> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
