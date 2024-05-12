@@ -15,7 +15,7 @@ async def startup_event():
         app_name="solution-service",
         instance_port=8088,
         instance_host="solution-service"
-)
+    )
 
 # Dependency
 def get_db():
