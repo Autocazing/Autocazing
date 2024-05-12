@@ -33,14 +33,16 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (SalesSold !== undefined) {
-            console.log(SalesSold);
-            setVisited(SalesSold);
+            if (SalesSold.length !== 0) {
+                setVisited(SalesSold);
+            }
+            // console.log(SalesSold.length);
+            // console.log(SalesSold);
         }
     }, [SalesSold]);
 
     useEffect(() => {
         if (SalesDay !== undefined) {
-            console.log(SalesDay);
             if (SalesDay.length >= 2) {
                 setTodaySold(
                     SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
