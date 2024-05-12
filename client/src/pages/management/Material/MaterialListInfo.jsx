@@ -1,7 +1,13 @@
 import modifyIcon from "../../../images/orderlist/modify.svg";
 import deleteIcon from "../../../images/orderlist/delete.svg";
+import { MaterialDeleteApi } from "../../../apis/server/MaterialApi";
 
 const MaterialListInfo = ({ material, isLastItem }) => {
+    const deleteMaterial = MaterialDeleteApi(material.ingredientId);
+
+    const handleDelete = () => {
+        deleteMaterial.mutate();
+    };
     return (
         <div
             className={`grid grid-cols-7 sm:grid-cols-7 text-xs sm:text-base ${
@@ -56,7 +62,7 @@ const MaterialListInfo = ({ material, isLastItem }) => {
                         className="w-3.5 h-3.5 sm:w-auto sm:h-auto"
                     />
                 </button>
-                <button>
+                <button onClick={handleDelete}>
                     <img
                         src={deleteIcon}
                         alt="delete"
