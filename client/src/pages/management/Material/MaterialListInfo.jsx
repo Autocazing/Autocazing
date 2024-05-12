@@ -26,6 +26,7 @@ const MaterialListInfo = ({ material, isLastItem }) => {
             <div className=" flex items-center justify-center p-2.5 xl:p-5">
                 <p className="text-black dark:text-white">
                     {material.ingredientCapacity}
+                    {material.scale.unit}
                 </p>
             </div>
 
@@ -37,7 +38,7 @@ const MaterialListInfo = ({ material, isLastItem }) => {
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
                 <p className="text-black dark:text-white">
-                    {material.deliveryTime}
+                    {material.deliveryTime}일
                 </p>
             </div>
 
