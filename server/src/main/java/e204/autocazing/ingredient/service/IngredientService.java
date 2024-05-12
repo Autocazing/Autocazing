@@ -138,6 +138,7 @@ public class IngredientService {
         scaleDto.setUnit(entity.getScale().getUnit());
         return IngredientDetails.builder()
                 .ingredientId(entity.getIngredientId())
+                .venderId(entity.getVender().getVenderId())
                 .venderName(entity.getVender().getVenderName())
                 .scale(scaleDto)
                 .ingredientName(entity.getIngredientName())

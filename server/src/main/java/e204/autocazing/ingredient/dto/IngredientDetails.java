@@ -11,6 +11,7 @@ import lombok.*;
 public class IngredientDetails {
     private Integer ingredientId;
     private String ingredientName;
+    private Integer venderId;
     private String venderName;
     private int ingredientPrice;
     private Integer ingredientCapacity;
