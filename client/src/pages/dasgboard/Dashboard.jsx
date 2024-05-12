@@ -34,7 +34,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (SalesSold !== undefined) {
             if (SalesSold.length !== 0) {
-                setVisited(SalesSold);
+                setVisited(SalesSold.toLocaleString());
             }
             // console.log(SalesSold.length);
             // console.log(SalesSold);
