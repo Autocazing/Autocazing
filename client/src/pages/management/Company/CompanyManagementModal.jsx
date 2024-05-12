@@ -1,7 +1,10 @@
 import Modal from "react-modal";
 import { React, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
-import { CompanyPostApi } from "../../../apis/server/CompanyApi";
+import {
+    CompanyEditApi,
+    CompanyPostApi,
+} from "../../../apis/server/CompanyApi";
 
 const customStyles = {
     overlay: {
@@ -31,16 +34,19 @@ const customStyles = {
     },
 };
 
-const CompanyManagementModal = ({ isOpen, onClose }) => {
+const CompanyManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [companyPostData, setCompanyPostData] = useState({
         storeId: 1,
-        venderName: "",
-        venderManager: "",
-        venderManagerContact: "",
-        venderDescription: "",
+        venderName: initialValue.venderName || "",
+        venderManager: initialValue.venderManager || "",
+        venderManagerContact: initialValue.venderManagerContact || "",
+        venderDescription: initialValue.venderDescription || "",
     });
 
+    //console.log(initialValue);
+
     const postCompany = CompanyPostApi();
+    const editCompany = CompanyEditApi(initialValue.venderId);
 
     // 추가하기 버튼 누르면 companyPostData axios Post로 보내기
     const handleChange = (e) => {
@@ -50,11 +56,16 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
             [name]: value,
         }));
 
-        // console.log(companyPostData);
+        //console.log(companyPostData);
     };
 
     const handleSubmit = (e) => {
         postCompany.mutate(companyPostData);
+        onClose();
+    };
+
+    const handleEdit = (e) => {
+        editCompany.mutate(companyPostData);
         onClose();
     };
     return (
@@ -142,12 +153,21 @@ const CompanyManagementModal = ({ isOpen, onClose }) => {
                         ></textarea>
                     </div>
 
-                    <button
-                        onClick={handleSubmit}
-                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                    >
-                        추가하기
-                    </button>
+                    {Object.keys(initialValue).length === 0 ? (
+                        <button
+                            onClick={handleSubmit}
+                            className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                        >
+                            추가하기
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleEdit}
+                            className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                        >
+                            수정하기
+                        </button>
+                    )}
                 </div>
             </form>
         </Modal>
