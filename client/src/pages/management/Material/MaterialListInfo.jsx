@@ -58,7 +58,10 @@ const MaterialListInfo = ({ material, isLastItem }) => {
             </div>
 
             <div className="flex items-center text-center justify-center p-2.5 xl:p-5">
-                <button className="mr-2">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="mr-2 sm:ml-8"
+                >
                     <img
                         src={modifyIcon}
                         alt="Modify"
