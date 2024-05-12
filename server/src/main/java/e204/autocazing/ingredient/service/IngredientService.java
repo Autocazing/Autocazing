@@ -92,9 +92,9 @@ public class IngredientService {
         if(patchIngredientDto.getImageUrl() != null){
             ingredientEntity.setImageUrl(patchIngredientDto.getImageUrl());
         }
-        if(patchIngredientDto.getScaleId() != null){
-            IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScaleId())
-                    .orElseThrow(() -> new RuntimeException("ingredientScaleId not found with id " + patchIngredientDto.getScaleId()));
+        if(patchIngredientDto.getScale() != null){
+            IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScale().getScaleId())
+                    .orElseThrow(() -> new RuntimeException("ingredientScaleId not found with id " + patchIngredientDto.getScale().getScaleId()));
             ingredientEntity.setScale(scaleEntity);
         }
         if(patchIngredientDto.getVenderId() != null){
