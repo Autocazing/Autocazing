@@ -7,7 +7,7 @@ const GetSalesSold = () => {
     return useQuery({
         queryKey: ["GetSales"],
         queryFn: fetchGet,
-        select: (data) => data,
+        select: (data) => data.data,
     });
 };
 

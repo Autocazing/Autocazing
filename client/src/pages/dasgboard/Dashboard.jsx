@@ -24,26 +24,35 @@ const curmonth = `${date3.getFullYear()}.${
 
 const Dashboard = () => {
     const [todaySold, setTodaySold] = useState(0);
-    const [yesterdaySold, setYesterdaySold] = useState();
+    const [yesterdaySold, setYesterdaySold] = useState(0);
+    const [visited, setVisited] = useState(0);
 
     const { data: SalesSold } = GetSalesSold();
 
     const { data: SalesDay } = GetSalesDay();
 
     useEffect(() => {
+        if (SalesSold !== undefined) {
+            console.log(SalesSold);
+            setVisited(SalesSold);
+        }
+    }, [SalesSold]);
+
+    useEffect(() => {
         if (SalesDay !== undefined) {
+            console.log(SalesDay);
             if (SalesDay.length >= 2) {
-                console.log(SalesDay);
-                // console.log(SalesDay[SalesDay.length - 1].totalSales);
                 setTodaySold(
                     SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
                 );
                 setYesterdaySold(
                     SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
                 );
+            } else if (SalesDay.length == 1) {
+                setTodaySold(
+                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+                );
             }
-            // console.log(SalesDay[0]);
-            // console.log(SalesDay[1]);
         }
     }, [SalesDay]);
     return (
@@ -127,7 +136,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="금일 방문 인원"
-                    total="122"
+                    total={visited}
                     isNum={false}
                     Date={today}
                     rate="100"
