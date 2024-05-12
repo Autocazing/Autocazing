@@ -50,6 +50,27 @@ const MaterialDeleteApi = (ingredientId) => {
     return mutation;
 };
 
+const MaterialEditApi = (ingredientId) => {
+    const queryClient = useQueryClient();
+
+    const fetchEdit = (editData) => {
+        return axiosInstance.put(`/ingredients/${venderId}`, editData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchEdit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetIngredient"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
 // 단위
 
 const MaterialScaleGetApi = () => {
@@ -89,4 +110,5 @@ export {
     MaterialScalePostApi,
     MaterialPostApi,
     MaterialDeleteApi,
+    MaterialEditApi,
 };
