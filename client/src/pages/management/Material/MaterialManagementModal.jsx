@@ -304,9 +304,21 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     </select>
                 </div>
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
-                    추가하기
-                </button>
+                {Object.keys(initialValue).length === 0 ? (
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        추가하기
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleEdit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        수정하기
+                    </button>
+                )}
             </div>
         </Modal>
     );

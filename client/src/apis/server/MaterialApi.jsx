@@ -11,6 +11,27 @@ const MaterialGetApi = () => {
     });
 };
 
+const MaterialPostApi = () => {
+    const queryClient = useQueryClient();
+
+    const fetchPost = (postData) => {
+        return axiosInstance.post("/ingredients", postData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchPost,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetIngredient"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
 // 단위
 
 const MaterialScaleGetApi = () => {
@@ -22,4 +43,31 @@ const MaterialScaleGetApi = () => {
         select: (data) => data.data,
     });
 };
-export { MaterialGetApi, MaterialScaleGetApi };
+
+const MaterialScalePostApi = () => {
+    const queryClient = useQueryClient();
+
+    const fetchPost = (postData) => {
+        return axiosInstance.post("/ingredient-scales", postData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchPost,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetIngredientScale"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export {
+    MaterialGetApi,
+    MaterialScaleGetApi,
+    MaterialScalePostApi,
+    MaterialPostApi,
+};
