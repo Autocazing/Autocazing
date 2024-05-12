@@ -11,6 +11,7 @@ import e204.autocazing.db.repository.VenderRepository;
 import e204.autocazing.ingredient.dto.IngredientDetails;
 import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
+import e204.autocazing.ingredient.dto.ScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,10 +132,14 @@ public class IngredientService {
 
     //Entity -> Dto 로 변환
     private IngredientDetails fromEntity(IngredientEntity entity) {
+
+        ScaleDto scaleDto = new ScaleDto();
+        scaleDto.setScaleId(entity.getScale().getScaleId());
+        scaleDto.setUnit(entity.getScale().getUnit());
         return IngredientDetails.builder()
                 .ingredientId(entity.getIngredientId())
                 .venderName(entity.getVender().getVenderName())
-                .unit(entity.getScale().getUnit())
+                .scale(scaleDto)
                 .ingredientName(entity.getIngredientName())
                 .ingredientPrice(entity.getIngredientPrice())
                 .ingredientCapacity(entity.getIngredientCapacity())

@@ -46,10 +46,9 @@ public class RestockOrderService {
         } else {
             orders = restockOrderRepository.findByStatusIn(status);
         }
-        //발주ENtity 리트에 넣기 set하기
+        //발주Entity 리트에 넣기 set하기
         return orders.stream().map(this::mapToRestockOrderResponse).collect(Collectors.toList());
     }
-
 
     private RestockOrderResponse mapToRestockOrderResponse(RestockOrderEntity entity) {
         RestockOrderResponse response = new RestockOrderResponse();
@@ -59,24 +58,10 @@ public class RestockOrderService {
         response.setUpdatedAt(entity.getUpdatedAt());
         response.setStoreId(entity.getStore().getStoreId());
         return response;
-//        List<RestockOrderSpecificEntity> specifics = entity.getRestockOrderSpecific().stream()
-//                .map(this::mapToRestockOrderSpecificDto)
-//                .collect(Collectors.toList());
-//        response.setRestockOrderSpecific(specifics);
-//
-//        return response;
     }
-    //발주의 List<RestockOrderSpecificDto> Set하기
-//    private RestockOrderSpecificEntity mapToRestockOrderSpecificDto(RestockOrderSpecificEntity specificEntity) {
-//        UpdatedRestockSpecificDto specificDto = new UpdatedRestockSpecificDto();
-//        specificDto.setIngredientName(specificEntity.getIngredientName());
-//        specificDto.setIngredientPrice(specificEntity.getIngredientPrice());
-//        specificDto.setIngredientQuantity(specificEntity.getIngredientQuantity());
-//        return specificDto;
-//    }
 
 
-//    // 발주 상세조회
+    // 발주 상세조회
     public RestockOrderDetailsDto findRestockOrderById(Integer restockOrderId) {
          RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
             .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
