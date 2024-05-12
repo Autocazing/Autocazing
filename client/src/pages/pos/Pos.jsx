@@ -6,7 +6,7 @@ import { TbTrash } from "react-icons/tb";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 // import { useReactToPrint } from "react-to-print";
 
-import { getMenu } from "../../apis/server/Pos";
+import { GetMenu } from "../../apis/server/Pos";
 
 function Pos() {
     const componentRef = useRef();
@@ -30,6 +30,8 @@ function Pos() {
     const [total, setTotal] = useState(0);
 
     const [show, setShow] = useState(0);
+
+    const { data: Menu } = GetMenu();
 
     const addToCart = (productId) => {
         const found = cart.some((el) => el.menuId === productId);
@@ -124,17 +126,10 @@ function Pos() {
     };
 
     useEffect(() => {
-        getMenu(
-            (response) => {
-                // console.log("Success:", response.data);
-                // console.log(response.data.length);
-                setProducts(response.data);
-            },
-            (error) => {
-                console.error("Error:", error);
-            },
-        );
-    }, []);
+        if (Menu !== undefined) {
+            setProducts(Menu);
+        }
+    }, [Menu]);
 
     return (
         <section className="w-full p-4 bg-gray-200 h-screen overflow-auto">

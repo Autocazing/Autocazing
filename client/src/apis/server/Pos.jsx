@@ -1,14 +1,14 @@
 import { axiosInstance } from "../../utils/axios/AxiosInstance";
+import { useQuery } from "@tanstack/react-query";
 
-export const getMenu = (success, fail) => {
-    // const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰을 가져옵니다.
+const GetMenu = () => {
+    const fetchGet = () => axiosInstance.get("/menus");
 
-    axiosInstance
-        .get("menus", {
-            // headers: {
-            //     Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰을 포함시킵니다.
-            // },
-        })
-        .then(success)
-        .catch(fail);
+    return useQuery({
+        queryKey: ["getMenu"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
 };
+
+export { GetMenu };
