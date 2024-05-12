@@ -54,7 +54,7 @@ const MaterialEditApi = (ingredientId) => {
     const queryClient = useQueryClient();
 
     const fetchEdit = (editData) => {
-        return axiosInstance.put(`/ingredients/${venderId}`, editData);
+        return axiosInstance.put(`/ingredients/${ingredientId}`, editData);
     };
 
     const mutation = useMutation({

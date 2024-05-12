@@ -6,6 +6,7 @@ import {
     MaterialScaleGetApi,
     MaterialPostApi,
     MaterialScalePostApi,
+    MaterialEditApi,
 } from "../../../apis/server/MaterialApi";
 const customStyles = {
     overlay: {
@@ -37,7 +38,7 @@ const customStyles = {
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [materialPostData, setMaterialPostData] = useState({
         storeId: 1,
-        venderId: initialValue.venderID || 0,
+        venderId: initialValue.venderId || 0,
         ingredientName: initialValue.ingredientName || "",
         ingredientPrice: initialValue.ingredientPrice || 0,
         ingredientCapacity: initialValue.ingredientCapacity || 0,
@@ -52,6 +53,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const postMaterial = MaterialPostApi();
     const postMaterialScale = MaterialScalePostApi();
+    const editMaterial = MaterialEditApi(initialValue.ingredientId);
     const {
         data: companyInfo,
         isLoading: companyLoading,
@@ -84,9 +86,13 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
         postMaterial.mutate(materialPostData);
         postMaterialScale.mutate(materialPostData.scale);
+        onClose();
+    };
+
+    const handleEdit = (e) => {
+        editMaterial.mutate(materialPostData);
         onClose();
     };
 
@@ -327,7 +333,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     </button>
                 ) : (
                     <button
-                        // onClick={handleEdit}
+                        onClick={handleEdit}
                         className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                     >
                         수정하기
