@@ -5,8 +5,10 @@ import nocheck from "../../../images/orderlist/nocheck.svg";
 
 import { useState } from "react";
 import { MenuDeleteApi } from "../../../apis/server/MenuApi";
+import MenuManagementModal from "./MenuManagementModal";
 
 const MenuListInfo = ({ menu, isLastItem }) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const deleteMenu = MenuDeleteApi(menu.menuId);
 
     const handleDelete = () => {
@@ -48,12 +50,22 @@ const MenuListInfo = ({ menu, isLastItem }) => {
             </div>
 
             <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
-                <button className="mr-2">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="mr-2 sm:ml-8"
+                >
                     <img src={modifyIcon} alt="Modify" />
                 </button>
                 <button onClick={handleDelete}>
                     <img src={deleteIcon} alt="delete" />
                 </button>
+                {modalIsOpen && (
+                    <MenuManagementModal
+                        isOpen={modalIsOpen}
+                        onClose={() => setModalIsOpen(false)}
+                        initialValue={menu}
+                    />
+                )}
             </div>
         </div>
     );

@@ -71,4 +71,4 @@ const MenuEditApi = (menuId) => {
     return mutation;
 };
 
-export { MenuGetApi, MenuDeleteApi, MenuPostApi };
+export { MenuGetApi, MenuDeleteApi, MenuPostApi, MenuEditApi };
