@@ -19,12 +19,14 @@ const MaterialManagement = () => {
                 </ol>
             </div>
             <MaterialTable materialInfo={materialInfo} />
-            <button
-                onClick={() => setModalIsOpen(true)}
-                className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
-            >
-                재료추가
-            </button>
+            <div className="flex justify-end mt-6">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
+                >
+                    재료추가
+                </button>
+            </div>
 
             {modalIsOpen && (
                 <MaterialManagementModal
