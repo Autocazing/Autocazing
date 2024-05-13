@@ -35,9 +35,13 @@ public class SaleService {
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
+			System.out.println("storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
-			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
 
+			//System.out.println("Initial data from DB: " + saleDtoList);
+
+			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
+			//System.out.println("after: " + saleDtoList);
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
