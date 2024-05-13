@@ -71,13 +71,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		Key secretKey = Keys.hmacShaKeyFor(env.getProperty("token.secret").getBytes(StandardCharsets.UTF_8));
 
 		String token = Jwts.builder()
-			.setSubject(userDetails.getStoreId().toString())
+			.setSubject(userDetails.getLoginId())
 			.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("token.expiration_time"))))
 			.signWith(secretKey, SignatureAlgorithm.HS512)
 			.compact();
 
 		response.addHeader("token", token);
 		response.addHeader("loginId", userDetails.getLoginId());
+
 	}
 
 	@Override
