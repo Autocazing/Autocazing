@@ -108,6 +108,5 @@ public class SaleService {
 
 		return salesAvgByDay;
 	}
-	
-	
+
 }

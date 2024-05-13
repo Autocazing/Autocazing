@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/sales")
@@ -57,7 +58,9 @@ public class SaleController {
 		@Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
 			required = true,
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
-		@RequestParam("type") String type) { //type : 일별 day, 주별 week, 월별 month
+		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
+		String loginId = httpServletRequest.getHeader("loginId");
+		System.out.println("loginId : "+ loginId);
 		List<Map<String, Object>> sales = saleService.getSales(type);
 		return ResponseEntity.ok(sales);
 	}
