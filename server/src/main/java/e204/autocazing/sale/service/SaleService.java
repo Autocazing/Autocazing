@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import e204.autocazing.db.repository.OrderRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SaleService {
 
 	@Autowired
@@ -30,12 +32,12 @@ public class SaleService {
 	public List<Map<String, Object>> getSales(String type, String loginId) {
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 		LocalDateTime currentTime = LocalDateTime.now();
-
+		log.info("SaleService_loginId : "+loginId);
 		Integer storeId = storeRepository.findByLoginId(loginId);
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
-			System.out.println("storeId : "+storeId);
+			log.info("SaleService_storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
 			//System.out.println("Initial data from DB: " + saleDtoList);
