@@ -60,7 +60,7 @@ const MaterialTable = ({ materialInfo }) => {
 
                 {materialInfo.map((material, index) => (
                     <MaterialListInfo
-                        key={material.venderId}
+                        key={index}
                         material={material}
                         isLastItem={index === materialInfo.length - 1}
                     />

@@ -38,7 +38,7 @@ const customStyles = {
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [materialPostData, setMaterialPostData] = useState({
         storeId: 1,
-        venderId: initialValue.venderId || 0,
+        venderId: initialValue.venderId || 1, // vendorid 0은 아예 없는 값이여서 default값 1로 수정함
         ingredientName: initialValue.ingredientName || "",
         ingredientPrice: initialValue.ingredientPrice || 0,
         ingredientCapacity: initialValue.ingredientCapacity || 0,
@@ -89,10 +89,13 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         postMaterial.mutate(materialPostData);
         postMaterialScale.mutate(materialPostData.scale);
         onClose();
+        console.log(materialPostData);
+        console.log(materialPostData.scale);
     };
 
     const handleEdit = (e) => {
         editMaterial.mutate(materialPostData);
+        console.log(materialPostData);
         onClose();
     };
 
@@ -110,6 +113,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                 [name]: value,
             }));
         }
+
+        console.log(value);
     };
 
     // const handleInputChange = (event) => {
