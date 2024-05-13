@@ -1,6 +1,5 @@
 from influxdb import InfluxDBClient
 
-
 class InfluxDBConnection:
     def __init__(self, token: str):
         self.token = token
