@@ -13,6 +13,7 @@ import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.ScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
+import e204.autocazing.scale.service.IngredientScaleService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class IngredientService {
     private VenderRepository venderRepository;
     @Autowired
     private IngredientScaleRepository scaleRepository;
+    @Autowired
+    private IngredientScaleService ingredientScaleService;
+
     public void createIngredient(PostIngredientDto postIngredientDto) {
         IngredientEntity ingredient = new IngredientEntity();
         ingredient.setIngredientName(postIngredientDto.getIngredientName());
@@ -94,12 +98,10 @@ public class IngredientService {
         }
         if(patchIngredientDto.getScale() != null){
             //단위 직접 입력
-            if(patchIngredientDto.getScale().getScaleId() == 0){
-                //IngredientScale DB에 새로운 데이터 추가
-                IngredientScaleEntity scaleEntity = new IngredientScaleEntity();
-                scaleEntity.setUnit(patchIngredientDto.getScale().getUnit());
-                scaleRepository.save(scaleEntity);
-                ingredientEntity.setScale(scaleEntity);
+            if(patchIngredientDto.getScale().getScaleId() == 0) {
+                PostIngredientScaleDto postIngredientScaleDto = new PostIngredientScaleDto();
+                postIngredientScaleDto.setUnit(patchIngredientDto.getScale().getUnit());
+                ingredientScaleService.createIngredientScale(postIngredientScaleDto);
             }
             else{
                 IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScale().getScaleId())

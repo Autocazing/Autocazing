@@ -111,13 +111,14 @@ public class MenuController {
     @Operation(summary = "메뉴 목록 조회 요청", description = "메뉴 목록 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "메뉴 목록 조회 성공",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDto.class)), examples = {
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDetailsDto.class)), examples = {
                 @ExampleObject(
                     name = "메뉴 목록 조회 body",
                     summary = "메뉴 목록 조회 body의 예시",
                     value = "[{\"menuId\": 1, \n"
                         + "\"menuName\": \"latte\",\n"
                         + "  \"menuPrice\": 5500,\n"
+                        + "\"imageUrl\": \"ASJKDLHJkasd.com\",\n"
                         + "  \"onEvent\": false,\n"
                         + "  \"discountRate\": 30,\n"
                         + "  \"ingredients\": [\n"

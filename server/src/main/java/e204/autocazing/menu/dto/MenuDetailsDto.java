@@ -20,6 +20,6 @@ public class MenuDetailsDto {
     private Integer discountRate;
     private List<IngredientoDto> ingredientoDtoList;
     private Integer storeId;
-    private String imgaeUrl;
+    private String imageUrl;
 
 }
