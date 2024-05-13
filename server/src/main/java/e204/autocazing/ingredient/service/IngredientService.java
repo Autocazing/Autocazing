@@ -93,9 +93,20 @@ public class IngredientService {
             ingredientEntity.setImageUrl(patchIngredientDto.getImageUrl());
         }
         if(patchIngredientDto.getScale() != null){
-            IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScale().getScaleId())
-                    .orElseThrow(() -> new RuntimeException("ingredientScaleId not found with id " + patchIngredientDto.getScale().getScaleId()));
-            ingredientEntity.setScale(scaleEntity);
+            //단위 직접 입력
+            if(patchIngredientDto.getScale().getScaleId() == 0){
+                //IngredientScale DB에 새로운 데이터 추가
+                IngredientScaleEntity scaleEntity = new IngredientScaleEntity();
+                scaleEntity.setUnit(patchIngredientDto.getScale().getUnit());
+                scaleRepository.save(scaleEntity);
+                ingredientEntity.setScale(scaleEntity);
+            }
+            else{
+                IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScale().getScaleId())
+                        .orElseThrow(() -> new RuntimeException("ingredientScaleId not found with id " + patchIngredientDto.getScale().getScaleId()));
+                ingredientEntity.setScale(scaleEntity);
+            }
+
         }
         if(patchIngredientDto.getVenderId() != null){
             VenderEntity venderEntity = venderRepository.findById(patchIngredientDto.getVenderId())
