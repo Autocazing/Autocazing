@@ -223,7 +223,23 @@ function Pos() {
                                 </p>
                                 <p className="font-bold py-2 bg-gray-200 text-center rounded text-base">
                                     {" "}
-                                    {product?.menuPrice} 원
+                                    {product.onEvent ? (
+                                        <>
+                                            <span className="line-through text-gray-500">
+                                                {product?.menuPrice} 원
+                                            </span>
+                                            <br />
+                                            <span className="text-red-500">
+                                                {product?.menuPrice *
+                                                    (1 -
+                                                        product.discountRate /
+                                                            100)}{" "}
+                                                원
+                                            </span>
+                                        </>
+                                    ) : (
+                                        `${product?.menuPrice} 원`
+                                    )}
                                 </p>
                             </div>
                         ))}
