@@ -21,9 +21,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("api/sales")
+@Slf4j
 public class SaleController {
 
 	@Autowired
@@ -61,7 +63,7 @@ public class SaleController {
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
 		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
 		String loginId = httpServletRequest.getHeader("loginId");
-
+		log.info("saleController_loginId : "+loginId);
 		List<Map<String, Object>> sales = saleService.getSales(type, loginId);
 		return ResponseEntity.ok(sales);
 	}
