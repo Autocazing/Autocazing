@@ -202,13 +202,13 @@ public class MenuService {
         Integer storeId = storeRepository.findByLoginId(loginId);
 
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now().plusHours(9);
 
         if(type.equals("day")){
             LocalDateTime startTime = currentTime.minusDays(30);
             saleDtoList = menuRepository.calculateDailySales(startTime, menuId, storeId);
 
-            fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
+            fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
             Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
                 @Override
                 public int compare(Map<String, Object> o1, Map<String, Object> o2) {
