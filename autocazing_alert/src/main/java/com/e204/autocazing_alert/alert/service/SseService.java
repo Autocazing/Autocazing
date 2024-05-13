@@ -18,10 +18,14 @@ public class SseService {
 
     //Emitter 객체 생성 후 연결이 오나료되거나 타임아웃될때 리스트에서 제거
     //Long.MAX_VALUE 는 사실상 무한대
-    public SseEmitter createEmitter(String loginId) {
+    public SseEmitter createEmitter(String loginId) throws IOException {
 
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         this.emitters.put(loginId,emitter);
+        emitter.send(SseEmitter.event()
+                .name("connect")         // 해당 이벤트의 이름 지정
+                .data("connected!"));    // 503 에러 방지를 위한 더미 데이터
+
 
         emitter.onCompletion(() -> this.emitters.remove(loginId));
         emitter.onTimeout(() -> this.emitters.remove(loginId));
@@ -39,7 +43,7 @@ public class SseService {
                 alertEntity.setContent(message);
                 alertEntity.setCompleted(false);
                 alertEntity.setLoginId(loginId);
-
+                alertRepository.save(alertEntity);
             } catch (IOException e) {
                 emitter.completeWithError(e);
             }

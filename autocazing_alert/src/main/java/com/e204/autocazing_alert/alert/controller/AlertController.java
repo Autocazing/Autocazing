@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/alert")
+@RequestMapping("/api/alerts")
 public class AlertController {
     @Autowired
     private SseService sseService;
@@ -38,12 +39,13 @@ public class AlertController {
             )
     })
     //클라이언트에서 알림 수신하기 위해 연결해야함.
-    @GetMapping("")
-    public SseEmitter subscribe(HttpServletRequest httpServletRequest) {
+    @GetMapping("/connect")
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest httpServletRequest) throws IOException {
         String loginId = httpServletRequest.getHeader("loginId");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println("loginId" + loginId);
-        return sseService.createEmitter(loginId);
+        System.out.println("loginId: " + loginId);
+
+        return ResponseEntity.ok(sseService.createEmitter(loginId));
     }
 
     @Operation(summary = "로그인한 계정의 알림 전체 조회", description = "알림을 조회하는 API입니다.")
@@ -71,7 +73,7 @@ public class AlertController {
     })
     //테스트용 알림
     @GetMapping("/test")
-    public ResponseEntity TestAlertService(@RequestParam String topic,  HttpServletRequest httpServletRequest){
+    public ResponseEntity TestAlertService(@RequestParam(name = "topic") String topic,  HttpServletRequest httpServletRequest){
         String loginId = httpServletRequest.getHeader("loginId");
         if(topic.equals("restock")){
             sseService.sendRestockNotification(loginId,"발주 알림 전송" );
