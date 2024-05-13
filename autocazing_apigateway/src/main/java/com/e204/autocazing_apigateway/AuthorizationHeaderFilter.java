@@ -54,6 +54,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 			ServerHttpRequest includeLoginIdRequest = exchange.getRequest()
 				.mutate().header("loginId", loginId).build();
 
+
 			return chain.filter(exchange.mutate().request(includeLoginIdRequest).build());
 		});
 	}
