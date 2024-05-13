@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "store")
+@Table(name = "stores")
 
 public class StoreEntity {
     //기본키
@@ -21,14 +21,15 @@ public class StoreEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer StoreId;
     //로그인 Id
-    @Column(nullable = false)
+    @Column(nullable = false , length = 20)
     private String loginId;
     //비밀번호
     @Column(nullable = false)
     private String password;
     //가게 이름
-    @Column(nullable = false)
+    @Column(nullable = false , length = 30)
     private String storeName;
+
     //생성 시간
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

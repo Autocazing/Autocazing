@@ -1,34 +1,16 @@
-spring :
+server:
+  port: 8087
+
+spring:
   application:
-    name:
-      alert-service
+    name: alert-service
   profiles:
     active: ${profile}
-  jpa:
-    database: mysql
-    hibernate.ddl-auto: update
-    show-sql: true
   output:
     ansi:
-      enabled: ALWAYS
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      enabled: always
   config:
     import: optional:configserver:http://config-server:8888
-
-#logging
-logging:
-  level:
-    root: info
-    org:
-      hibernate:
-        orm:
-          jdbc:
-            bind: trace
-  pattern:
-    file: "%d %-5level [%thread] %logger : %msg%n"
 
 #swagger
 springdoc:
@@ -36,9 +18,10 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   api-docs:
-    path: /api/alerts/api-docs
+    path: /api/alert-service/api-docs
   swagger-ui:
-    path: /api/alerts/docs
-    disable-swagger-default-url: true
-    operations-sorter: alpha
-    enabled: true
+    path: /api/alert-service/docs # Swagger 페이지로 접속할 경로
+    disable-swagger-default-url: true   # 기본 페이지로 리디렉션 되지 않게 하는 설정입니다
+    operations-sorter: alpha    # API를 엔드 포인트들의 알파벳 순서로 정렬
+    enabled: true   # 외부에서 접속 가능하게 하는 설정
+

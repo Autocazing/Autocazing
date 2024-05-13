@@ -19,11 +19,12 @@ public class OrderRequestDto {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderDetailDto {
         private Integer menuId; // 메뉴 ID
         private int quantity; // 메뉴 수량
-        private int price; // 메뉴 가격
+        //private int price; // 메뉴 가격
 
 
     }
