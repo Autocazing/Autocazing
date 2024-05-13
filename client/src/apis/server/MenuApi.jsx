@@ -29,4 +29,25 @@ const MenuDeleteApi = (menuId) => {
     return mutation;
 };
 
-export { MenuGetApi, MenuDeleteApi };
+const MenuPostApi = () => {
+    const queryClient = useQueryClient();
+
+    const fetchPost = (postData) => {
+        return axiosInstance.post("/menus", postData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchPost,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetMenu"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { MenuGetApi, MenuDeleteApi, MenuPostApi };
