@@ -9,6 +9,10 @@ import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { GetMenu } from "../../apis/server/Pos";
 
 function Pos() {
+    const [companyPostData, setCompanyPostData] = useState({
+        storeId: 1,
+    });
+
     const componentRef = useRef();
     const [cart, setCart] = useState([]);
     const [paymentMode, setPaymentMode] = useState("");
@@ -26,6 +30,7 @@ function Pos() {
         //     menuId: 2,
         // },
     ]);
+    const [postProducts, setPostProducts] = useState([]);
 
     const [total, setTotal] = useState(0);
 
@@ -36,13 +41,22 @@ function Pos() {
     const addToCart = (productId) => {
         const found = cart.some((el) => el.menuId === productId);
         if (found) {
-            let newProd = products.filter((p) => p.menuId === productId);
+            const newProd = products.map((p) =>
+                p.menuId === productId
+                    ? { ...p, quantity: (p.quantity += 1) }
+                    : p,
+            );
             const newCart = cart.map((p) =>
                 p.menuId === productId
                     ? {
                           ...p,
-                          quantity: (p.quantity += 1),
-                          menuPrice: p.menuPrice + newProd[0].menuPrice,
+                          quantity: newProd.find(
+                              (item) => item.menuId === productId,
+                          ).quantity,
+                          menuPrice:
+                              p.menuPrice +
+                              newProd.find((item) => item.menuId === productId)
+                                  .menuPrice,
                       }
                     : p,
             );
@@ -56,38 +70,73 @@ function Pos() {
         } else {
             let newProd = products.filter((p) => p.menuId === productId);
             newProd[0].quantity = 1;
-            setTotal(total + newProd[0].menuPrice);
+            setTotal(
+                total +
+                    newProd.find((item) => item.menuId === productId).menuPrice,
+            );
             // console.log(newProd[0].menuPrice);
             setCart(() => [...cart, ...newProd]);
         }
     };
 
     const increase = (productId) => {
-        const newCart = cart.map((p) =>
-            p.menuId === productId
-                ? {
-                      ...p,
-                      quantity: (p.quantity += 1),
-                      menuPrice: p.menuPrice + p.menuPrice,
-                  }
-                : p,
-        );
-        let sum = newCart.reduce(function (acc, obj) {
-            return acc + obj.menuPrice;
-        }, 0);
-        setTotal(sum);
-        setCart(newCart);
+        const found = cart.some((el) => el.menuId === productId);
+        if (found) {
+            const newProd = products.map((p) =>
+                p.menuId === productId
+                    ? { ...p, quantity: (p.quantity += 1) }
+                    : p,
+            );
+            const newCart = cart.map((p) =>
+                p.menuId === productId
+                    ? {
+                          ...p,
+                          quantity: newProd.find(
+                              (item) => item.menuId === productId,
+                          ).quantity,
+                          menuPrice:
+                              p.menuPrice +
+                              newProd.find((item) => item.menuId === productId)
+                                  .menuPrice,
+                      }
+                    : p,
+            );
+
+            let sum = newCart.reduce(function (acc, obj) {
+                return acc + obj.menuPrice;
+            }, 0);
+            setTotal(sum);
+
+            setCart(newCart);
+        } else {
+            let newProd = products.filter((p) => p.menuId === productId);
+            newProd[0].quantity = 1;
+            setTotal(
+                total +
+                    newProd.find((item) => item.menuId === productId).menuPrice,
+            );
+            // console.log(newProd[0].menuPrice);
+            setCart(() => [...cart, ...newProd]);
+        }
     };
 
     const decrease = (productId) => {
         let decProd = products.filter((p) => p.menuId === productId);
         // console.log(decProd);
+        const newProd = products.map((p) =>
+            p.menuId === productId ? { ...p, quantity: (p.quantity -= 1) } : p,
+        );
         const newCart = cart.map((p) =>
             p.menuId === productId
                 ? {
                       ...p,
-                      quantity: (p.quantity -= 1),
-                      menuPrice: p.menuPrice - decProd[0].menuPrice,
+                      quantity: newProd.find(
+                          (item) => item.menuId === productId,
+                      ).quantity,
+                      menuPrice:
+                          p.menuPrice +
+                          newProd.find((item) => item.menuId === productId)
+                              .menuPrice,
                   }
                 : p,
         );
@@ -102,6 +151,8 @@ function Pos() {
     };
 
     const clearAll = () => {
+        // setProducts([]);
+        setTotal(0);
         setCart([]);
         setPaymentMode(null);
     };
@@ -121,8 +172,14 @@ function Pos() {
     // });
 
     const order = () => {
-        console.log(cart);
-        // handlePrint();
+        // console.log(cart);
+        const extractedProducts = products
+            .filter((item) => item.quantity !== undefined) // quantity가 undefined가 아닌 항목만 선택
+            .map((item) => ({
+                menuId: item.menuId,
+                quantity: item.quantity,
+            }));
+        console.log("Extracted Products:", extractedProducts);
     };
 
     useEffect(() => {
