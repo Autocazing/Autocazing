@@ -174,7 +174,9 @@ function Pos() {
     const order = () => {
         // console.log(cart);
         const extractedProducts = products
-            .filter((item) => item.quantity !== undefined) // quantity가 undefined가 아닌 항목만 선택
+            .filter(
+                (item) => item.quantity !== undefined && item.quantity !== 0,
+            ) // quantity가 undefined가 아닌 항목만 선택
             .map((item) => ({
                 menuId: item.menuId,
                 quantity: item.quantity,
