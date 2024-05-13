@@ -20,7 +20,7 @@ public class MenuEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer menuId;
 
-    @Column(nullable = false , length = 20)
+    @Column(nullable = false)
     private String menuName;
     @Column(nullable = false)
     private Integer menuPrice;

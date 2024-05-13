@@ -5,6 +5,7 @@ import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

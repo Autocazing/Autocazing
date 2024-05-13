@@ -30,7 +30,7 @@ public class IngredientScaleController {
 
     @Autowired
     private IngredientScaleService ingredientScaleService;
-    
+
     //단위 추가
     @Operation(summary = "단위 생성 요청", description = "직접 단위를 추가 했을 때 동작을 수행하는 API입니다.")
     @ApiResponses({
@@ -38,7 +38,7 @@ public class IngredientScaleController {
     })
     @PostMapping("")
     public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
-//        String loginId = httpServletRequest.getHeader("loginId");
+        //        String loginId = httpServletRequest.getHeader("loginId");
         ingredientScaleService.createIngredientScale(postScaleDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -72,7 +72,7 @@ public class IngredientScaleController {
     })
     @DeleteMapping("/{scaleId}")
     public ResponseEntity<Void> deleteIngredientScale(
-            @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId, HttpServletRequest httpServletRequest) {
+        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         System.out.println("loginId : " + loginId);
         ingredientScaleService.deleteIngredientScale(scaleId);

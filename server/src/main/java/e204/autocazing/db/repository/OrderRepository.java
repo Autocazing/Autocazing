@@ -14,34 +14,34 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 	@Query(value = "SELECT new map(DATE(o.createdAt) as date, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
-			+ "FROM OrderEntity o JOIN o.orderSpecific os "
-			+ "WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
-			+ "GROUP BY DATE(o.createdAt) "
-			+ "ORDER BY DATE(o.createdAt)")
+		+ "FROM OrderEntity o JOIN o.orderSpecific os "
+		+ "WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
+		+ "GROUP BY DATE(o.createdAt) "
+		+ "ORDER BY DATE(o.createdAt)")
 	List<Map<String, Object>> calculateDailySales(LocalDateTime startDate, Integer storeId);
 
 	@Query(value = "SELECT new map(WEEK(o.createdAt) as week, YEAR(o.createdAt) as year, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
-			+"FROM OrderEntity o JOIN o.orderSpecific os "
-			+"WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
-			+"GROUP BY WEEK(o.createdAt), YEAR(o.createdAt) "
-			+"ORDER BY YEAR(o.createdAt), WEEK(o.createdAt)")
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
+		+"GROUP BY WEEK(o.createdAt), YEAR(o.createdAt) "
+		+"ORDER BY YEAR(o.createdAt), WEEK(o.createdAt)")
 	List<Map<String, Object>> calculateWeekSales(LocalDateTime startDate, Integer storeId);
 
 	@Query(value = "SELECT new map(MONTH(o.createdAt) as month, YEAR(o.createdAt) as year, SUM(os.menuQuantity * os.menuPrice) as totalSales) "
-			+"FROM OrderEntity o JOIN o.orderSpecific os "
-			+"WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
-			+"GROUP BY MONTH(o.createdAt), YEAR(o.createdAt) "
-			+"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE o.createdAt >= :startDate AND o.store.StoreId = :storeId "
+		+"GROUP BY MONTH(o.createdAt), YEAR(o.createdAt) "
+		+"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
 	List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate, Integer storeId);
 
 	@Query(value = "SELECT SUM(os.menuQuantity) as totalSales "
-			+"FROM OrderEntity o JOIN o.orderSpecific os "
-			+"WHERE DATE(o.createdAt) = :today AND o.store.StoreId = :storeId ")
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE DATE(o.createdAt) = :today AND o.store.StoreId = :storeId ")
 	Integer getSoldNumber(LocalDate today, Integer storeId);
 
 	@Query(value = "SELECT DAYNAME(o.createdAt) as dayOfWeek, os.menuQuantity * os.menuPrice as totalSales "
-			+"FROM OrderEntity o JOIN o.orderSpecific os "
-			+"WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.store.StoreId = :storeId ")
+		+"FROM OrderEntity o JOIN o.orderSpecific os "
+		+"WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.store.StoreId = :storeId ")
 	List<Map<String, Object>> getAvgSales(LocalDateTime startDate, LocalDateTime endDate, Integer storeId);
 
 }

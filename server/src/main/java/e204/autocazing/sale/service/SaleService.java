@@ -32,10 +32,10 @@ public class SaleService {
 		LocalDateTime currentTime = LocalDateTime.now();
 
 		Integer storeId = storeRepository.findByLoginId(loginId);
-		//System.out.println("storeId : "+storeId);
+
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
-			//System.out.println("storeId : "+storeId);
+			System.out.println("storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
 			//System.out.println("Initial data from DB: " + saleDtoList);
@@ -55,6 +55,7 @@ public class SaleService {
 			LocalDateTime startTime = currentTime.minusWeeks(12);
 			saleDtoList = orderRepository.calculateWeekSales(startTime, storeId);
 			fillMissingWeeks(saleDtoList, currentTime);
+
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
@@ -181,5 +182,4 @@ public class SaleService {
 
 		return salesAvgByDay;
 	}
-
 }

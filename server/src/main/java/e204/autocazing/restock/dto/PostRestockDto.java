@@ -10,10 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//장바구니 생성
 public class PostRestockDto {
     private Integer storeId;
     private RestockOrderEntity.RestockStatus status = RestockOrderEntity.RestockStatus.WRITING;
-
 
 }
