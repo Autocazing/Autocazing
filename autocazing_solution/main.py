@@ -13,7 +13,7 @@ settings = get_setting()
 # 하위 api 라우터들 main에 추가
 app.include_router(monthly_sales_router, prefix="/api/solution")
 # InfluxDB 연결 객체 생성
-influx_connection = InfluxDBConnection(token="YOUR_INFLUXDB_TOKEN")
+influx_connection = InfluxDBConnection(token=settings.INFLUX_DB_TOKEN)
 
 @app.on_event("startup")
 async def startup_event():
