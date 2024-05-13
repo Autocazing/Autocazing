@@ -1,4 +1,4 @@
-package e204.autocazing.vendor.dto;
+package e204.autocazing.vender.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostVendorDto {
-    private Integer storeId;
+public class PatchVenderDto {
+
     private String vendorName;
     private String vendorManager;
     private String vendorManagerContact;
