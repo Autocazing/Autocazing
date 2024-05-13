@@ -11,7 +11,7 @@ import CafeReport from "./pages/cafeReport/CafeReport";
 import Management from "./pages/management/Management";
 import CompanyManagement from "./pages/management/Company/CompanyManagement";
 import MaterialManagement from "./pages/management/Material/MaterialManagement";
-import MenuManagement from "./pages/management/MenuManagement";
+import MenuManagement from "./pages/management/Menu/MenuManagement";
 import StockManagement from "./pages/management/StockManagement";
 import LoginPage from "./pages/login/LoginPage";
 import Pos from "./pages/pos/Pos";
