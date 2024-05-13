@@ -1,5 +1,6 @@
 package e204.autocazing.sale.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +61,8 @@ public class SaleController {
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
 		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
 		String loginId = httpServletRequest.getHeader("loginId");
-		System.out.println("loginId : "+ loginId);
-		List<Map<String, Object>> sales = saleService.getSales(type);
+
+		List<Map<String, Object>> sales = saleService.getSales(type, loginId);
 		return ResponseEntity.ok(sales);
 	}
 
@@ -78,8 +79,11 @@ public class SaleController {
 		)
 	})
 	@GetMapping("/sold")
-	public ResponseEntity getSoldNumber() {
-		Integer soldNumber = saleService.getSoldNumber();
+	public ResponseEntity getSoldNumber(HttpServletRequest httpServletRequest) {
+		String loginId = httpServletRequest.getHeader("loginId");
+		Integer soldNumber = saleService.getSoldNumber(loginId);
+
+		if(soldNumber == null) soldNumber = 0;
 		return ResponseEntity.ok(soldNumber);
 	}
 
@@ -103,8 +107,23 @@ public class SaleController {
 
 	})
 	@GetMapping("/avg")
-	public ResponseEntity getAvgSales() {
-		Map<String, Double> sales = saleService.getAvgSales();
-		return ResponseEntity.ok(sales);
+	public ResponseEntity getAvgSales(HttpServletRequest httpServletRequest) {
+		String loginId = httpServletRequest.getHeader("loginId");
+		Map<String, Double> sales = saleService.getAvgSales(loginId);
+
+		Map<String, Double> defaultSales = new HashMap<>();
+		defaultSales.put("Monday", 0.0);
+		defaultSales.put("Tuesday", 0.0);
+		defaultSales.put("Wednesday", 0.0);
+		defaultSales.put("Thursday", 0.0);
+		defaultSales.put("Friday", 0.0);
+		defaultSales.put("Saturday", 0.0);
+		defaultSales.put("Sunday", 0.0);
+
+		for (Map.Entry<String, Double> entry : sales.entrySet()) {
+			defaultSales.put(entry.getKey(), entry.getValue());
+		}
+
+		return ResponseEntity.ok(defaultSales);
 	}
 }
