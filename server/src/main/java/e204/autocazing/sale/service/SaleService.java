@@ -40,10 +40,7 @@ public class SaleService {
 			log.info("SaleService_storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
-			//System.out.println("Initial data from DB: " + saleDtoList);
-
 			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
-			//System.out.println("after: " + saleDtoList);
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
