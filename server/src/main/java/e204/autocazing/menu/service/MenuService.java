@@ -170,11 +170,6 @@ public class MenuService {
     public List<Map<String, Object>> getMenuSales(String type, Integer menuId) {
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
-        //더미데이터 기준
-        String dateTimeString = "2024-05-08 17:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
-
         if(type.equals("day")){
             LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
             saleDtoList = menuRepository.calculateDailySales(currentTime, menuId);
