@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // import { MdRestaurantMenu } from "react-icons/md";
 // import { GiTakeMyMoney } from "react-icons/gi";
 // import { FaRegMoneyBillAlt } from "react-icons/fa";
@@ -10,32 +10,14 @@ import { GetMenu } from "../../apis/server/Pos";
 import { PostOrders } from "../../apis/server/Pos";
 
 function Pos() {
-    const postOrders = PostOrders();
-
-    const [companyPostData, setCompanyPostData] = useState({
-        storeId: 1,
-    });
-
     const [cart, setCart] = useState([]);
     const [paymentMode, setPaymentMode] = useState("");
-    const [products, setProducts] = useState([
-        // {
-        //     menuName: "",
-        //     menuPrice: 1000,
-        //     quantity: 0,
-        //     menuId: 1,
-        // },
-        // {
-        //     menuName: "bana",
-        //     menuPrice: 10,
-        //     quantity: 0,
-        //     menuId: 2,
-        // },
-    ]);
+    const [products, setProducts] = useState([]); // get/menus를 통해 받아온 전체 메뉴
 
     const [total, setTotal] = useState(0);
 
-    const { data: Menu } = GetMenu();
+    const { data: Menu } = GetMenu(); // 서버 통신용 코드(Get)
+    const postOrders = PostOrders(); //  서보 통신용 코드(Post)
 
     const handleSubmit = (extractedProducts) => {
         console.log(extractedProducts);
@@ -180,10 +162,6 @@ function Pos() {
         currency: "KRW",
     });
 
-    // const handlePrint = useReactToPrint({
-    //     content: () => componentRef.current,
-    // });
-
     const order = () => {
         const extractedProducts = cart
             .filter(
@@ -214,66 +192,7 @@ function Pos() {
                             Choose Category{" "}
                         </h2>
                     </div>
-                    {/* categories  */}
-                    {/* <div className="flex pt-5 gap-3 overflow-auto categories">
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
 
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-
-                        <button className="card rounded-lg p-3 px-4 bg-white">
-                            <MdRestaurantMenu className="h-4 mx-auto" />
-                            <p className="text-gray-700 font-bold text-sm">
-                                Breakfast
-                            </p>
-                        </button>
-                    </div> */}
-
-                    {/* header  */}
                     <div className="flex my-3 px-2 justify-between items-center">
                         <h4 className="font-semibold text-gray-600 text-sm">
                             All
@@ -382,41 +301,7 @@ function Pos() {
                             </p>
                         </div>
                     </div>
-                    {/* payment method */}
-                    {/* {cart.length > 0 && (
-                        <h5 className="font-medium pt-2">Payment Method</h5>
-                    )} */}
-                    {/* {cart.length > 0 && (
-                        <div className="flex justify-center gap-4 pt-2">
-                            <button
-                                style={{
-                                    backgroundColor:
-                                        paymentMode === "MPESA" && "red",
-                                }}
-                                onClick={() => setPaymentMode("MPESA")}
-                                className={`px-1 lg:px-4 bg-white border py-2 rounded  w-full flex flex-col lg:flex-row justify-around items-center hover:bg-slate-50`}
-                            >
-                                <FaRegMoneyBillAlt className="text-lg" />
-                                <p className="text-gray-500 font-bold text-xs uppercase">
-                                    m-pesa
-                                </p>
-                            </button>
-                            <button
-                                style={{
-                                    backgroundColor:
-                                        paymentMode === "CASH" && "red",
-                                }}
-                                onClick={() => setPaymentMode("CASH")}
-                                className={`px-1 lg:px-4 bg-white border py-2 rounded  w-full flex flex-col lg:flex-row justify-around items-center hover:bg-slate-50`}
-                            >
-                                <GiTakeMyMoney className="text-lg" />
-                                <p className="text-gray-500 font-bold text-xs uppercase ">
-                                    Cash
-                                </p>
-                            </button>
-                        </div>
-                    )} */}
-                    {/* print bill  */}
+
                     {cart.length > 0 && (
                         <button
                             onClick={order}
@@ -427,59 +312,6 @@ function Pos() {
                     )}
                 </aside>
             </div>
-
-            {/* <div
-                className=" bg-white hidden print:block mt-16 print:px-6 w-full"
-                ref={componentRef}
-            >
-                <h3 className="text-center pt-2">MMU HOTEL</h3>
-                <table className="w-full mt-5 border-collapse my-5">
-                    <thead>
-                        <tr className="text-sm font-medium bg-gray-200 uppercase text-black">
-                            <th className="whitespace-nowrap px-2 py-4 text-start">
-                                item
-                            </th>
-                            <th className="whitespace-nowrap  py-1 text-end">
-                                Qty
-                            </th>
-                            <th className="whitespace-nowrap px-2 py-1 text-end">
-                                Subtotal
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {cart?.map((item) => (
-                            <tr
-                                className="text-xs font-medium text-black border-b border-black"
-                                key={item.menuName}
-                            >
-                                <td className="mx-16 break-all pl-2 py-4 text-start">
-                                    {item.menuName}
-                                </td>
-                                <td className="text-end px-2">
-                                    {item.quantity}
-                                </td>
-                                <td className="capitalize text-end px-3">
-                                    {formatCurrency.format(item.menuPrice)}
-                                </td>
-                            </tr>
-                        ))}
-                        <tr className="text-sm rounded bg-gray-100 font-semibold text-black">
-                            <td className="py-10"></td>
-                            <td className="text-end">Total</td>
-                            <td className="capitalize text-end px-3">
-                                {formatCurrency.format(total)}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <p className="text-sm">Thank you for your business!</p>
-                    <p className="py-2 font-medium text-sm">
-                        served by Sospeter
-                    </p>
-                </div>
-            </div> */}
         </section>
     );
 }
