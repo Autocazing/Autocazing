@@ -35,7 +35,7 @@ public class IngredientScaleController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "단위 추가 성공")
     })
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
         ingredientScaleService.createIngredientScale(postScaleDto);
         return new ResponseEntity(HttpStatus.CREATED);
@@ -54,7 +54,7 @@ public class IngredientScaleController {
             })
         )
     })
-    @PutMapping("/{scaleId}")
+    @PatchMapping("/{scaleId}")
     public ResponseEntity<IngredientScaleDto> updateIngredientScale(
         @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId,
         @RequestBody PatchIngredientScaleDto patchIngredientScaleDto) {
@@ -88,7 +88,7 @@ public class IngredientScaleController {
             })
         )
     })
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<IngredientScaleDto>> getAllIngredientScales() {
         List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales();
         return ResponseEntity.ok(scales);

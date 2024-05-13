@@ -13,28 +13,28 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "Venders")
-public class VenderEntity {
+@Table(name = "Vendors")
+public class VendorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer venderId;
+    private Integer vendorId;
 
-    @Column(nullable = false , length = 10)
-    private String venderName;
+    @Column(nullable = false)
+    private String vendorName;
 
-    @Column(nullable = false , length = 10)
-    private String venderManager;
+    @Column(nullable = false)
+    private String vendorManager;
 
-    @Column(nullable = false , length = 15)
-    private String venderManagerContact;
+    @Column(nullable = false)
+    private String vendorManagerContact;
 
-    @Column(nullable = false , length = 50)
-    private String venderDescription;
+    @Column(nullable = false)
+    private String vendorDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private StoreEntity store;
 
-    @OneToMany(mappedBy = "vender")
+    @OneToMany(mappedBy = "vendor")
     private List<IngredientEntity> ingredients;
 }

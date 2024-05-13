@@ -34,9 +34,9 @@ public class MenuIngredientEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    //vender는 굳이..?
+    //vendor는 굳이..?
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "vender_id", referencedColumnName = "venderId")
-//    private VenderEntity vender;
+//    @JoinColumn(name = "vendor_id", referencedColumnName = "vendorId")
+//    private VendorEntity vendor;
 
 }

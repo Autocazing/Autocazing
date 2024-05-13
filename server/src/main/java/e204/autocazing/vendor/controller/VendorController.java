@@ -1,9 +1,12 @@
-package e204.autocazing.vender.controller;
+package e204.autocazing.vendor.controller;
 
-import e204.autocazing.vender.dto.PatchVenderDto;
-import e204.autocazing.vender.dto.PostVenderDto;
-import e204.autocazing.vender.dto.VenderDto;
-import e204.autocazing.vender.service.VenderService;
+import e204.autocazing.db.entity.VendorEntity;
+import e204.autocazing.stock.dto.PostStockDto;
+import e204.autocazing.stock.dto.StockDetailsDto;
+import e204.autocazing.vendor.dto.PatchVendorDto;
+import e204.autocazing.vendor.dto.PostVendorDto;
+import e204.autocazing.vendor.dto.VendorDto;
+import e204.autocazing.vendor.service.VendorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,23 +22,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/venders")
-public class VenderController {
+@RequestMapping("api/vendors")
+public class VendorController {
     @Autowired
-    private VenderService venderService;
+    private VendorService vendorService;
 
 
     @Operation(summary = "발주업체 등록 요청", description = "발주업체 등록요청을 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "업체 등록 성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PostVenderDto.class)
+                            schema = @Schema(implementation = PostVendorDto.class)
                     )
             )
     })
     @PostMapping("")
-    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto) {
-         venderService.createVender(postVenderDto);
+    public ResponseEntity createVendor(@RequestBody PostVendorDto postVendorDto) {
+         vendorService.createVendor(postVendorDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -44,14 +47,14 @@ public class VenderController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "업체 수정 성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = VenderDto.class)
+                            schema = @Schema(implementation = VendorDto.class)
                     )
             )
     })
-    @PutMapping("/{venderId}")
-    public ResponseEntity updateVender(@PathVariable(name = "venderId") Integer venderId, @RequestBody PatchVenderDto patchVenderDto) {
-        VenderDto venderDto = venderService.updateVender(venderId, patchVenderDto);
-        return ResponseEntity.ok(venderDto);
+    @PatchMapping("/{vendorId}")
+    public ResponseEntity updateVendor(@PathVariable(name = "vendorId") Integer vendorId, @RequestBody PatchVendorDto patchVendorDto) {
+        VendorDto vendorDto = vendorService.updateVendor(vendorId, patchVendorDto);
+        return ResponseEntity.ok(vendorDto);
     }
 
     // 재고 삭제
@@ -60,16 +63,16 @@ public class VenderController {
             @ApiResponse(responseCode = "200", description = "발주 업체 삭제 성공",
                     content = @Content(examples = {
                             @ExampleObject(
-                                    name = "Vender 삭제 ",
-                                    summary = "Vender 삭제 body의 예시",
+                                    name = "Vendor 삭제 ",
+                                    summary = "Vendor 삭제 body의 예시",
                                     value = " "
                             )
                     })
             )
     })
-    @DeleteMapping("/{venderId}")
-    public ResponseEntity deleteVender(@PathVariable(name = "venderId") Integer venderId) {
-        venderService.deleteVender(venderId);
+    @DeleteMapping("/{vendorId}")
+    public ResponseEntity deleteVendor(@PathVariable(name = "vendorId") Integer vendorId) {
+        vendorService.deleteVendor(vendorId);
         return ResponseEntity.ok().build();
     }
 
@@ -78,27 +81,27 @@ public class VenderController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주업체 상세조회 성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = VenderDto.class)
+                            schema = @Schema(implementation = VendorDto.class)
                     )
             )
     })
-    @GetMapping("/{venderId}")
-    public ResponseEntity<VenderDto> getVenderById(@PathVariable(name = "venderId") Integer venderId) {
-        VenderDto vender = venderService.getVenderById(venderId);
-        return ResponseEntity.ok(vender);
+    @GetMapping("/{vendorId}")
+    public ResponseEntity<VendorDto> getVendorById(@PathVariable(name = "vendorId") Integer vendorId) {
+        VendorDto vendor = vendorService.getVendorById(vendorId);
+        return ResponseEntity.ok(vendor);
     }
 
     // 전체 재고 조회
     @Operation(summary = "발주업체 전체 조회", description = "발주업체 전체조회를 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주업체 전체 조회 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = VenderDto.class)))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = VendorDto.class)))
 
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<VenderDto>> getAllVenders() {
-        List<VenderDto> venders = venderService.getAllVenders();
-        return ResponseEntity.ok(venders);
+    public ResponseEntity<List<VendorDto>> getAllVendors() {
+        List<VendorDto> vendors = vendorService.getAllVendors();
+        return ResponseEntity.ok(vendors);
     }
 }

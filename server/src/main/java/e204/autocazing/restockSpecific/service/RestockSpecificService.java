@@ -7,13 +7,11 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
 import e204.autocazing.ingredient.service.IngredientService;
-import e204.autocazing.restock.dto.RestockOrderSpecificDetailDto;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,8 +40,7 @@ public class RestockSpecificService {
         RestockOrderEntity restockOrder = restockOrderRepository.findById(postRestockSpecificDto.getRestockOrderId())
                 .orElseThrow(() -> new RuntimeException("RestockOrder not found with id: " + postRestockSpecificDto.getRestockOrderId()));
         int totalPrice = ingredient.getIngredientPrice() * postRestockSpecificDto.getIngredientQuantity();
-
-        restockSpecific.setIngredientName(ingredient.getIngredientName());
+        restockSpecific.setIngredient(ingredient);
         restockSpecific.setRestockOrder(restockOrder);
         //계산 된 값. 재료 값 * 주문 수량
         restockSpecific.setIngredientPrice(totalPrice);
@@ -70,12 +67,12 @@ public class RestockSpecificService {
     private RestockSpecificResponseDto convertToDto(RestockOrderSpecificEntity restockSpecific) {
         return RestockSpecificResponseDto.builder()
                 .restockOrderSpecificId(restockSpecific.getRestockOrderSpecificId())
-      //          .ingredientId(restockSpecific.getIngredient().getIngredientId())
-        //        .ingredientName(restockSpecific.getIngredient().getIngredientName())
+                .ingredientId(restockSpecific.getIngredient().getIngredientId())
+                .ingredientName(restockSpecific.getIngredient().getIngredientName())
                 .restockOrderId(restockSpecific.getRestockOrder().getRestockOrderId())
                 .ingredientQuantity(restockSpecific.getIngredientQuantity())
                 .ingredientPrice(restockSpecific.getIngredientPrice())
-          //      .venderName(restockSpecific.getIngredient().getVender().getVenderName())
+                .vendorName(restockSpecific.getIngredient().getVendor().getVendorName())
                 .status(String.valueOf(restockSpecific.getRestockOrder().getStatus()))
                 .build();
 
@@ -84,25 +81,29 @@ public class RestockSpecificService {
 
     // Update
     @Transactional
-    public RestockSpecificResponseDto updateRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId, UpdateRestockSpecificDto updatedRestockOrderSpecific) {
+    public RestockSpecificDto updateRestockOrderSpecific(Integer restockOrderSpecificId, UpdateRestockSpecificDto updatedRestockOrderSpecific) {
+        RestockOrderSpecificEntity restockSpecific = restockOrderSpecificRepository.findById(restockOrderSpecificId)
+                .orElseThrow(() -> new RuntimeException("RestockOrderSpecific not found"));
 
-        RestockOrderSpecificEntity specific =restockOrderSpecificRepository.findByRestockOrderRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId)
-                .orElseThrow(() -> new EntityNotFoundException("Specific not found with given IDs"));
+        // 수량 변경 및 가격 재계산
+        restockSpecific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
+        Integer newPrice = restockSpecific.getIngredient().getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity();
+        restockSpecific.setIngredientPrice(newPrice);
+        restockOrderSpecificRepository.save(restockSpecific);
+        RestockSpecificDto updatedRestockSpecific = new RestockSpecificDto();
 
-        IngredientEntity ingredientEntity =ingredientRepository.findById(specific.getIngredientId())
-                .orElseThrow(() -> new EntityNotFoundException("Ingredient not found with ingredientId" + specific.getIngredientId()));
+        updatedRestockSpecific.setRestockOrderSpecificId(restockOrderSpecificId);
+        updatedRestockSpecific.setIngredientId(restockSpecific.getIngredient().getIngredientId());
+        updatedRestockSpecific.setRestockOrderId(restockSpecific.getRestockOrder().getRestockOrderId());
+        updatedRestockSpecific.setIngredientPrice(restockSpecific.getIngredientPrice());
+        updatedRestockSpecific.setIngredientQuantity(restockSpecific.getIngredientQuantity());
 
-        // 업데이트 로직
-        specific.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
-        specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity());
-
-        restockOrderSpecificRepository.save(specific);
-        return convertToDto(specific);
+        return updatedRestockSpecific;
     }
 
-     //Delete
+    // Delete
     @Transactional
-    public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
-        restockOrderSpecificRepository.deleteByRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
+    public void deleteRestockOrderSpecific(Integer restockOrderSpecificId) {
+        restockOrderSpecificRepository.deleteById(restockOrderSpecificId);
     }
 }
