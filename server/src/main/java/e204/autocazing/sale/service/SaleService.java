@@ -55,7 +55,6 @@ public class SaleService {
 			LocalDateTime startTime = currentTime.minusWeeks(12);
 			saleDtoList = orderRepository.calculateWeekSales(startTime, storeId);
 			fillMissingWeeks(saleDtoList, currentTime);
-
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
