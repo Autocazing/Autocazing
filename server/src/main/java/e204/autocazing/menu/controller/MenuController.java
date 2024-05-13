@@ -133,7 +133,7 @@ public class MenuController {
     })
     @GetMapping("")
     public ResponseEntity getAllmenus(){
-        List<MenuDto> menus = menuService.findAllMenus();
+        List<MenuDetailsDto> menus = menuService.findAllMenus();
         return ResponseEntity.ok(menus);
     }
 
