@@ -21,7 +21,6 @@ const PostOrders = () => {
     const mutation = useMutation({
         mutationFn: fetchPost,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["GetVenders"] });
             console.log("성공");
         },
         onError: (error) => {

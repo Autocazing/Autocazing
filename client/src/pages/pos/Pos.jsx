@@ -7,13 +7,15 @@ import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 // import { useReactToPrint } from "react-to-print";
 
 import { GetMenu } from "../../apis/server/Pos";
+import { PostOrders } from "../../apis/server/Pos";
 
 function Pos() {
+    const postOrders = PostOrders();
+
     const [companyPostData, setCompanyPostData] = useState({
         storeId: 1,
     });
 
-    const componentRef = useRef();
     const [cart, setCart] = useState([]);
     const [paymentMode, setPaymentMode] = useState("");
     const [products, setProducts] = useState([
@@ -30,13 +32,21 @@ function Pos() {
         //     menuId: 2,
         // },
     ]);
-    const [postProducts, setPostProducts] = useState([]);
 
     const [total, setTotal] = useState(0);
 
-    const [show, setShow] = useState(0);
-
     const { data: Menu } = GetMenu();
+
+    const handleSubmit = (extractedProducts) => {
+        console.log(extractedProducts);
+        postOrders.mutate({
+            storeId: 1,
+            orderSpecifics: extractedProducts.map((product) => ({
+                menuId: product.menuId,
+                menuQuantity: product.quantity,
+            })),
+        });
+    };
 
     const addToCart = (productId) => {
         const found = cart.some((el) => el.menuId === productId);
@@ -181,6 +191,7 @@ function Pos() {
                 quantity: item.quantity,
             }));
         console.log("Extracted Products:", extractedProducts);
+        handleSubmit(extractedProducts);
     };
 
     useEffect(() => {
