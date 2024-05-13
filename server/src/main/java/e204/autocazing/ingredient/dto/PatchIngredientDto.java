@@ -14,7 +14,7 @@ public class PatchIngredientDto {
     private String ingredientName;
     private Integer ingredientPrice;
     private Integer ingredientCapacity;
-    private Integer scaleId;
+    private ScaleDto scale;
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;
