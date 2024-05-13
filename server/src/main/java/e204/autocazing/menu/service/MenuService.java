@@ -191,22 +191,21 @@ public class MenuService {
         return ingredientoDto;
     }
 
-
-
-    public List<Map<String, Object>> getMenuSales(String type, Integer menuId) {
+    public List<Map<String, Object>> getMenuSales(String type, Integer menuId, String loginId) {
+        Integer storeId = storeRepository.findByLoginId(loginId);
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
         if(type.equals("day")){
             LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
-            saleDtoList = menuRepository.calculateDailySales(currentTime, menuId);
+            saleDtoList = menuRepository.calculateDailySales(currentTime, menuId, storeId);
         }
         else if(type.equals("week")){
             LocalDateTime currentTime = LocalDateTime.now().minusWeeks(12);
-            saleDtoList = menuRepository.calculateWeekSales(currentTime, menuId);
+            saleDtoList = menuRepository.calculateWeekSales(currentTime, menuId, storeId);
         }
         else if(type.equals("month")){
             LocalDateTime currentTime = LocalDateTime.now().minusMonths(12);
-            saleDtoList = menuRepository.calculateMonthSales(currentTime, menuId);
+            saleDtoList = menuRepository.calculateMonthSales(currentTime, menuId, storeId);
         }
 
         return saleDtoList;
