@@ -31,7 +31,7 @@ const MenuListInfo = ({ menu, isLastItem }) => {
 
             <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
                 <p className=" text-center text-black dark:text-white">
-                    {`Ingredient ID: ${menu.ingredients.ingredientId}, Capacity: ${menu.ingredients.capacity}`}
+                    {/* {`Ingredient ID: ${menu.ingredients.ingredientId}, Capacity: ${menu.ingredients.capacity}`} */}
                 </p>
             </div>
 
