@@ -1,18 +1,14 @@
 package e204.autocazing.scale.service;
 
 import e204.autocazing.db.entity.IngredientScaleEntity;
-import e204.autocazing.db.entity.VendorEntity;
 import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
-import e204.autocazing.vendor.dto.VendorDto;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,9 +16,14 @@ public class IngredientScaleService {
     @Autowired
     private IngredientScaleRepository ingredientScaleRepository;
     public void createIngredientScale(PostIngredientScaleDto postScaleDto) {
-        IngredientScaleEntity postScale = new IngredientScaleEntity();
-        postScale.setUnit(postScaleDto.getUnit());
-        ingredientScaleRepository.save(postScale);
+        // DB에서 해당 Unit이 있는지 확인
+        IngredientScaleEntity existingScale = ingredientScaleRepository.findByUnit(postScaleDto.getUnit());
+        // 해당 Unit이 없으면 새로운 Entity 생성 및 저장
+        if (existingScale == null) {
+            IngredientScaleEntity newScale = new IngredientScaleEntity();
+            newScale.setUnit(postScaleDto.getUnit());
+            ingredientScaleRepository.save(newScale);
+        }
     }
 
     public IngredientScaleDto updateIngredientScale(Integer scaleId, PatchIngredientScaleDto patchIngredientScaleDto) {

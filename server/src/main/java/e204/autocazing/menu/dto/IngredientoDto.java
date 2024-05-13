@@ -1,4 +1,4 @@
-package e204.autocazing.order.dto;
+package e204.autocazing.menu.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderSpecificDto {
-    private Integer menuId;
-    private int menuQuantity;
-    private int menuPrice;
+public class IngredientoDto {
 
+    private Integer ingredientId;
+    private String ingredientName;
+    private Integer capacity;
 }

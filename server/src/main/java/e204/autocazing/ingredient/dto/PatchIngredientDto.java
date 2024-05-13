@@ -10,11 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PatchIngredientDto {
-    private Integer vendorId;
+    private Integer venderId;
     private String ingredientName;
     private Integer ingredientPrice;
     private Integer ingredientCapacity;
-    private Integer scaleId;
+    private ScaleDto scale;
     private Integer minimumCount;
     private Integer deliveryTime;
     private Integer orderCount;

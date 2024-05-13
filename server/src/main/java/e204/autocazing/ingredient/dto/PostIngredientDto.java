@@ -13,7 +13,7 @@ public class PostIngredientDto {
 
     private Integer storeId;
 
-    private Integer vendorId;
+    private Integer venderId;
 
     private String ingredientName;
 
@@ -21,8 +21,9 @@ public class PostIngredientDto {
 
     private Integer ingredientCapacity;
 
-    private Integer scaleId;
+    private ScaleDto scale;
 
+//    private Integer scaleId;
     private Integer minimumCount;
 
     private Integer deliveryTime;

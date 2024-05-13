@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,9 @@ public class IngredientScaleController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "단위 추가 성공")
     })
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
+//        String loginId = httpServletRequest.getHeader("loginId");
         ingredientScaleService.createIngredientScale(postScaleDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -54,7 +56,7 @@ public class IngredientScaleController {
             })
         )
     })
-    @PatchMapping("/{scaleId}")
+    @PutMapping("/{scaleId}")
     public ResponseEntity<IngredientScaleDto> updateIngredientScale(
         @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId,
         @RequestBody PatchIngredientScaleDto patchIngredientScaleDto) {
@@ -70,7 +72,9 @@ public class IngredientScaleController {
     })
     @DeleteMapping("/{scaleId}")
     public ResponseEntity<Void> deleteIngredientScale(
-        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId) {
+            @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        System.out.println("loginId : " + loginId);
         ingredientScaleService.deleteIngredientScale(scaleId);
         return ResponseEntity.ok().build();
     }
@@ -88,8 +92,11 @@ public class IngredientScaleController {
             })
         )
     })
-    @GetMapping
-    public ResponseEntity<List<IngredientScaleDto>> getAllIngredientScales() {
+    @GetMapping("")
+    public ResponseEntity<List<IngredientScaleDto>> getAllIngredientScales(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println("loginId : " + loginId);
         List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales();
         return ResponseEntity.ok(scales);
     }

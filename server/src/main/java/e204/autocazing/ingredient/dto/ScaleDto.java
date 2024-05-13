@@ -1,5 +1,6 @@
-package e204.autocazing.order.dto;
+package e204.autocazing.ingredient.dto;
 
+import jakarta.validation.GroupSequence;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderSpecificDto {
-    private Integer menuId;
-    private int menuQuantity;
-    private int menuPrice;
+public class ScaleDto {
 
+    private Integer scaleId;
+    private String unit;
 }

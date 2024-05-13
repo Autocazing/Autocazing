@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,15 +27,21 @@ public class StockService {
     private RestockOrderService restockOrderService;
 
 
-    public void createStock(PostStockDto postStockDto) {
-        IngredientEntity ingredient = ingredientRepository.findById(postStockDto.getIngredientId())
-                .orElseThrow(() -> new RuntimeException("Not found ingredient ID"));
+    @Transactional
+    public void createStock(List<PostStockDto> postStockDtos) {
 
-        StockEntity stock = new StockEntity();
-        stock.setQuantity(postStockDto.getQuantity());
-        stock.setExpirationDate(postStockDto.getExpirationDate());
-        stock.setIngredient(ingredient);
-        stockRepository.save(stock);
+        for(PostStockDto postStockDto : postStockDtos){
+            IngredientEntity ingredient = ingredientRepository.findById(postStockDto.getIngredientId())
+                    .orElseThrow(() -> new RuntimeException("Not found ingredient ID"));
+            StockEntity stock = new StockEntity();
+            stock.setQuantity(postStockDto.getQuantity());
+            stock.setExpirationDate(postStockDto.getExpirationDate());
+            stock.setIngredient(ingredient);
+            stockRepository.save(stock);
+
+        }
+
+
     }
 
     // 전체 재고 조회
@@ -45,7 +52,7 @@ public class StockService {
 
 
         for (StockEntity stock : stocks) {
-            int deliveringCount = restockOrderService.isdelivering(stock.getIngredient());
+            int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
             StockDetailsDto stockDetails = new StockDetailsDto();
             stockDetails.setStockId(stock.getStockId());
             stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
@@ -61,7 +68,7 @@ public class StockService {
     public StockDetailsDto findStockById(Integer stockId) {
         StockEntity stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new RuntimeException("Stock not found"));
-        int deliveringCount = restockOrderService.isdelivering(stock.getIngredient());
+        int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
         System.out.println("@@StockService deliveringCount : " + deliveringCount);
         StockDetailsDto stockDetails = new StockDetailsDto();
         stockDetails.setStockId(stock.getStockId());
@@ -139,5 +146,31 @@ public class StockService {
             }
         }
     }
+
+    //유통기한 지난 상품 삭제
+    @Transactional
+    public void removeExpiredStocks() {
+        LocalDate today = LocalDate.now();
+        stockRepository.deleteByExpirationDateBefore(today);
+    }
+
+    //유통기한 임박 상품 발주로직(총재고 - 임박상품 <= 재료.minimumCount)
+    @Transactional
+    public void checkAndOrderNearExpiryProducts() {
+        List<IngredientEntity> ingredients = ingredientRepository.findAll();
+        LocalDate today = LocalDate.now();
+
+        ingredients.forEach(ingredient -> {
+            LocalDate expireDay = today.plusDays(ingredient.getDeliveryTime()); // 배송기한 포함 계산
+            int totalQuantity = stockRepository.sumQuantityByIngredient(ingredient.getIngredientId());
+            int expiredQuantity = stockRepository.countByIngredientAndExpirationDateBefore(ingredient.getIngredientId(), expireDay);
+            int quantity = totalQuantity - expiredQuantity;
+
+            if (quantity <= ingredient.getMinimumCount()) {
+                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
+            }
+        });
+    }
+
 
 }

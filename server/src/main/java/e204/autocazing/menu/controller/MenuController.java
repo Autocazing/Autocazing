@@ -74,7 +74,7 @@ public class MenuController {
             })
         )
     })
-    @PatchMapping("/{menuId}")
+    @PutMapping("/{menuId}")
     public ResponseEntity updateMenu(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId
         ,@RequestBody UpdateMenuDto updateMenuDto){
         MenuDto menu = menuService.updateMenu(updateMenuDto,menuId);
@@ -114,13 +114,14 @@ public class MenuController {
     @Operation(summary = "메뉴 목록 조회 요청", description = "메뉴 목록 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "메뉴 목록 조회 성공",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDto.class)), examples = {
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDetailsDto.class)), examples = {
                 @ExampleObject(
                     name = "메뉴 목록 조회 body",
                     summary = "메뉴 목록 조회 body의 예시",
                     value = "[{\"menuId\": 1, \n"
                         + "\"menuName\": \"latte\",\n"
                         + "  \"menuPrice\": 5500,\n"
+                        + "\"imageUrl\": \"ASJKDLHJkasd.com\",\n"
                         + "  \"onEvent\": false,\n"
                         + "  \"discountRate\": 30,\n"
                         + "  \"ingredients\": [\n"
@@ -136,7 +137,7 @@ public class MenuController {
     })
     @GetMapping("")
     public ResponseEntity getAllmenus(){
-        List<MenuDto> menus = menuService.findAllMenus();
+        List<MenuDetailsDto> menus = menuService.findAllMenus();
         return ResponseEntity.ok(menus);
     }
 
@@ -165,14 +166,16 @@ public class MenuController {
             )
         )
     })
-    @GetMapping("/sales")
+    @GetMapping("/{menuId}/sales")
     public ResponseEntity getMenuSales(
         @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
             required = true,
             schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
-        @RequestParam("type") String type, @RequestBody MenuSalesDto menuSalesDto){ //type : 일별 day, 주별 week, 월별 month
-        //HttpServletRequest httpServletRequest =
-        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuSalesDto);
+
+        @RequestParam("type") String type,
+        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId){ //type : 일별 day, 주별 week, 월별 month
+        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuId);
+
         return ResponseEntity.ok(sales);
     }
 }
