@@ -1,30 +1,64 @@
 package com.e204.autocazing_alert.alert.service;
 
+import com.e204.autocazing_alert.alert.repository.AlertRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class SseService {
-    private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+
+    @Autowired
+    private AlertRepository alertRepository;
+
     //Emitter 객체 생성 후 연결이 오나료되거나 타임아웃될때 리스트에서 제거
     //Long.MAX_VALUE 는 사실상 무한대
-    public SseEmitter createEmitter() {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        this.emitters.add(emitter);
+    public SseEmitter createEmitter(String loginId) {
 
-        emitter.onCompletion(() -> this.emitters.remove(emitter));
-        emitter.onTimeout(() -> this.emitters.remove(emitter));
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        this.emitters.put(loginId,emitter);
+
+        emitter.onCompletion(() -> this.emitters.remove(loginId));
+        emitter.onTimeout(() -> this.emitters.remove(loginId));
 
         return emitter;
     }
 
-    public void sendNotificationToAll(String message) {
-        for (SseEmitter emitter : this.emitters) {
+    //발주 시 보내는 알림
+    public void sendRestockNotification(String loginId,String message) {
+        SseEmitter emitter = emitters.get(loginId);
+        if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("notification").data(message));
+                emitter.send(SseEmitter.event().name("restock").data(message));
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }
+    }
+
+
+    //배송 상태 변경시 보내는 알림
+    public void sendDeliveringNotification(String loginId, String message) {
+        SseEmitter emitter = emitters.get(loginId);
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("delivering").data(message));
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }
+    }
+
+    //매출 변경(메뉴 팔았을때) 보내는 알림
+    public void sendSalesNotification(String loginId, String message) {
+        SseEmitter emitter = emitters.get(loginId);
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("sales").data(message));
             } catch (IOException e) {
                 emitter.completeWithError(e);
             }

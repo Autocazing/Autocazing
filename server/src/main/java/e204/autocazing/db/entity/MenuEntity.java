@@ -1,12 +1,14 @@
 package e204.autocazing.db.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,9 +40,11 @@ public class MenuEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private boolean soldOut;
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuIngredientEntity> menuIngredients;
-
 
     //가게와 연관
     @ManyToOne(fetch = FetchType.LAZY)
