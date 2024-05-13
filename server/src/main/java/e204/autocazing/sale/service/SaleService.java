@@ -28,10 +28,10 @@ public class SaleService {
 	private StoreRepository storeRepository;
 
 	public List<Map<String, Object>> getSales(String type, String loginId) {
+		Integer storeId = storeRepository.findByLoginId(loginId);
+
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 		LocalDateTime currentTime = LocalDateTime.now();
-
-		Integer storeId = storeRepository.findByLoginId(loginId);
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
