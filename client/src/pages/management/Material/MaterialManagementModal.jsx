@@ -89,13 +89,10 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         postMaterial.mutate(materialPostData);
         postMaterialScale.mutate(materialPostData.scale);
         onClose();
-        console.log(materialPostData);
-        console.log(materialPostData.scale);
     };
 
     const handleEdit = (e) => {
         editMaterial.mutate(materialPostData);
-        console.log(materialPostData);
         onClose();
     };
 
