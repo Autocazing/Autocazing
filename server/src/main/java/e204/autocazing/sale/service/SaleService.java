@@ -29,11 +29,7 @@ public class SaleService {
 
 	public List<Map<String, Object>> getSales(String type, String loginId) {
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
-
-		//더미데이터 기준
-		// String dateTimeString = "2024-05-08 17:00:00";
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		// LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
+		LocalDateTime currentTime = LocalDateTime.now();
 
 		Integer storeId = storeRepository.findByLoginId(loginId);
 
@@ -92,7 +88,6 @@ public class SaleService {
 			});
 
 		}
-
 		return saleDtoList;
 	}
 	private void fillMissingDays(List<Map<String, Object>> sales, LocalDate start, LocalDate end) {
