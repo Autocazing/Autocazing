@@ -1,5 +1,6 @@
 package e204.autocazing.order.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderSpecificDto {
+public class PostOrderSpecificDto {
+
     private Integer menuId;
     private int menuQuantity;
-    private int menuPrice;
+
 
 }

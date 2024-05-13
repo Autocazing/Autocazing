@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostOrderDto {
-    private List<OrderSpecificDto> orderSpecifics;
+    private Integer storeId;
+    private List<PostOrderSpecificDto> orderSpecifics;
 
 }

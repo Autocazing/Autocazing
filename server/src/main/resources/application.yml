@@ -6,10 +6,6 @@ spring:
     name: inventory-service
   profiles:
     active: ${profile}
-  jpa:
-    database: mysql
-    hibernate.ddl-auto: update
-    show-sql: true
   output:
     ansi:
       enabled: always

@@ -1,14 +1,8 @@
 package e204.autocazing.restock.service;
 
 import e204.autocazing.db.entity.*;
-import e204.autocazing.db.repository.RestockOrderRepository;
-import e204.autocazing.db.repository.RestockOrderSpecificRepository;
-import e204.autocazing.db.repository.StockRepository;
-import e204.autocazing.db.repository.StoreRepository;
-import e204.autocazing.restock.dto.PostRestockDto;
-import e204.autocazing.restock.dto.RestockDetailsDto;
-import e204.autocazing.restock.dto.RestockOrderStatusDto;
-import e204.autocazing.restock.dto.UpdateRestockDto;
+import e204.autocazing.db.repository.*;
+import e204.autocazing.restock.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +23,11 @@ public class RestockOrderService {
     private StockRepository stockRepository;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
 
-    // Create
+    // 장바구니생성
     @Transactional
     public void createRestockOrder(PostRestockDto postRestockDto) {
         RestockOrderEntity restockOrder = new RestockOrderEntity();
@@ -42,90 +38,114 @@ public class RestockOrderService {
         restockOrderRepository.save(restockOrder);
     }
 
-    // Read All
-    public List<RestockDetailsDto> findAllRestockOrders(List<RestockOrderStatusDto> status) {
+    // 발주  조회
+    public List<RestockOrderResponse> findAllRestockOrders(List<RestockOrderEntity.RestockStatus> status) {
         List<RestockOrderEntity> orders;
         if (status == null || status.isEmpty()) {
             orders = restockOrderRepository.findAll();
         } else {
             orders = restockOrderRepository.findByStatusIn(status);
         }
-        return orders.stream()
-                .map(restock -> new RestockDetailsDto(
-                        restock.getRestockOrderId(),
-                        restock.getStatus(),
-                        restock.getCreatedAt(),
-                        restock.getUpdatedAt()))
-                .collect(Collectors.toList());
+        //발주Entity 리트에 넣기 set하기
+        return orders.stream().map(this::mapToRestockOrderResponse).collect(Collectors.toList());
+    }
+
+    private RestockOrderResponse mapToRestockOrderResponse(RestockOrderEntity entity) {
+        RestockOrderResponse response = new RestockOrderResponse();
+        response.setRestockOrderId(entity.getRestockOrderId());
+        response.setStatus(entity.getStatus());
+        response.setCreatedAt(entity.getCreatedAt());
+        response.setUpdatedAt(entity.getUpdatedAt());
+        response.setStoreId(entity.getStore().getStoreId());
+        return response;
     }
 
 
-    // Read Single
-    public RestockDetailsDto findRestockOrderById(Integer restockOrderId) {
-        RestockOrderEntity restock = restockOrderRepository.findById(restockOrderId)
-                .orElseThrow(() -> new RuntimeException("Restock order not found"));
-        RestockDetailsDto restockDetailsDto = new RestockDetailsDto();
-        restockDetailsDto.setRestockOrderId(restockOrderId);
-        restockDetailsDto.setStatus(restock.getStatus());
-        restockDetailsDto.setCreatedAt(restock.getCreatedAt());
-        restockDetailsDto.setUpdatedAt(restock.getUpdatedAt());
-        return restockDetailsDto;
+    // 발주 상세조회
+    public RestockOrderDetailsDto findRestockOrderById(Integer restockOrderId) {
+         RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
+            .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
+
+        RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
+        restockOrderDetailsDto.setRestockOrderId(restockOrderEntity.getRestockOrderId());
+        restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
+            .map(this::convertToSpecificDetailDto)
+            .collect(Collectors.toList()));
+        return restockOrderDetailsDto;
     }
 
-    // RestockOrder수정
-    //RestockOrder status 가 WRITING 에서 변경된게 감지될때, 새로운 RestockOrder 생성.
+    private RestockOrderSpecificDetailDto convertToSpecificDetailDto(RestockOrderSpecificEntity specific) {
+        RestockOrderSpecificDetailDto detailDto = new RestockOrderSpecificDetailDto();
+        IngredientEntity ingredientEntity = ingredientRepository.findById(specific.getIngredientId())
+                .orElseThrow(() -> new RuntimeException("ingredientId  not found :" +specific.getIngredientId() ));
+
+        detailDto.setRestockOrderSpecificId(specific.getRestockOrderSpecificId());
+        detailDto.setIngredientName(specific.getIngredientName());
+        detailDto.setIngredientQuanrtity(specific.getIngredientQuantity());
+        detailDto.setIngredientPrice(specific.getIngredientPrice().doubleValue());
+        detailDto.setVenderName(ingredientEntity.getVender().getVenderName());
+        detailDto.setDeliveryTime(ingredientEntity.getDeliveryTime());
+        return detailDto;
+    }
+
+    //status 상태변경
     @Transactional
-    public RestockDetailsDto updateRestockOrder(Integer restockOrderId, UpdateRestockDto updateRestockDto) {
+    public UpdatedRestockDto updateRestockOrderStatus(Integer restockOrderId, UpdateRestockDto updateRestockDto) {
         RestockOrderEntity restockOrder = restockOrderRepository.findById(restockOrderId)
                 .orElseThrow(() -> new RuntimeException("Restock order not found"));
 
-        RestockOrderEntity.RestockStatus previousStatus = restockOrder.getStatus(); // 기존 상태 저장
+        //이전 상태 저장
+        RestockOrderEntity.RestockStatus previousStatus = restockOrder.getStatus();
+        //새로운 상태 세팅,저장
         restockOrder.setStatus(updateRestockDto.getStatus());
         restockOrderRepository.save(restockOrder);
-        //발주 상태가 완료 되면 재고에 해당 발주물품 추가
-        if(restockOrder.getStatus() == RestockOrderEntity.RestockStatus.COMPLETE){
-            List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
-            for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
-                IngredientEntity ingredient = specific.getIngredient();
-                Integer quantityToAdd = specific.getIngredientQuantity();
-                // 재료에 해당하는 Stock 엔터티 찾기
-                StockEntity stock = stockRepository.findByIngredient(ingredient);
-                if (stock == null) {
-                    // Stock에 해당 재료가 없는 경우 새로 생성
-                    stock = new StockEntity();
-                    stock.setIngredient(ingredient);
-                    stock.setQuantity(quantityToAdd);
-                    // 유통 기한은 임시로 1년.
-                    stock.setExpirationDate(LocalDate.now().plusYears(1));
-                } else {
-                    // Stock에 해당 재료가 있는 경우 수량 추가
-                    stock.setQuantity(stock.getQuantity() + quantityToAdd);
-                }
-                // Stock 저장
-                stockRepository.save(stock);
-            }
+
+        //발주 status == COMPLETE (재고 반영)
+        if (restockOrder.getStatus() == RestockOrderEntity.RestockStatus.COMPLETE) {
+            updateStockWithCompleteOrder(restockOrderId);
         }
 
-        // 상태가 WRITING에서 변경되었을 때 새로운 RestockOrder 생성
+        //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
         if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() != RestockOrderEntity.RestockStatus.WRITING) {
-            PostRestockDto postRestockDto = new PostRestockDto();
-            createRestockOrder(postRestockDto);
+            //todo storeId 넣어야됨.
+            //새로운 장바구니 만들기
+            createNewRestockOrder();
+            //todo
+            //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
         }
-
-        RestockDetailsDto restockDetailsDto = new RestockDetailsDto();
-        restockDetailsDto.setRestockOrderId(restockOrderId);
-        restockDetailsDto.setCreatedAt(restockOrder.getCreatedAt());
-        restockDetailsDto.setUpdatedAt(restockOrder.getUpdatedAt());
-        restockDetailsDto.setStatus(restockOrder.getStatus());
-        return restockDetailsDto;
+        UpdatedRestockDto updatedRestockDto = new UpdatedRestockDto();
+        updatedRestockDto.setRestockOrderId(restockOrderId);
+        updatedRestockDto.setCreatedAt(restockOrder.getCreatedAt());
+        updatedRestockDto.setUpdatedAt(restockOrder.getUpdatedAt());
+        updatedRestockDto.setStatus(restockOrder.getStatus());
+        return updatedRestockDto;
     }
 
-    // Delete
+    //발주완료 재고반영
     @Transactional
-    public void deleteRestockOrder(Integer restockOrderId) {
-        restockOrderRepository.deleteById(restockOrderId);
+    public void updateStockWithCompleteOrder(Integer restockOrderId) {
+        List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
+        for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
+            IngredientEntity ingredient = ingredientRepository.findByIngredientName(specific.getIngredientName());
+            StockEntity stock = stockRepository.findByIngredient(ingredient);
+            if (stock == null) {
+                stock = new StockEntity();
+                stock.setIngredient(ingredient);
+                stock.setQuantity(specific.getIngredientQuantity());
+                stock.setExpirationDate(LocalDate.now().plusYears(1));
+            } else {
+                stock.setQuantity(stock.getQuantity() + specific.getIngredientQuantity());
+            }
+            stockRepository.save(stock);
+        }
+    }
+    //새로운 장바구니 만들기
+    private void createNewRestockOrder() {
+        PostRestockDto postRestockDto = new PostRestockDto();
+        createRestockOrder(postRestockDto);
     }
 
+    //주문 후 발주할 재료 추가
     @Transactional
     public void addRestockOrderSpecific(IngredientEntity ingredient, int quantity) {
         // WRITING 상태의 가장 최신 RestockOrder 조회
@@ -135,14 +155,15 @@ public class RestockOrderService {
         // 새로운 RestockOrderSpecific 생성 및 추가
         RestockOrderSpecificEntity restockOrderSpecific = new RestockOrderSpecificEntity();
         restockOrderSpecific.setRestockOrder(restockOrder);
-        restockOrderSpecific.setIngredient(ingredient);
+        //재료 알아내기
+        restockOrderSpecific.setIngredientName(ingredient.getIngredientName());
         restockOrderSpecific.setIngredientQuantity(quantity);
         restockOrderSpecific.setIngredientPrice(ingredient.getIngredientPrice() * quantity);
         restockOrderSpecificRepository.save(restockOrderSpecific);
     }
 
-    //배송중인지 체크하기 이게 Order 도메인에 있는게 맞나?
-    public int isdelivering(IngredientEntity ingredient) {
+    //배송중인지 체크하기 (재고에서 배송중인 재료수량 체크하기 위함)
+    public int isDelivering(IngredientEntity ingredient) {
         int deliverdCount = 0 ;
         //완료처리 안된 발주목록 가져오기.
         // RestockOrderRepository 호출
@@ -158,7 +179,8 @@ public class RestockOrderService {
 
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
                 // RestockOrderSpecificEntity에서 재료 확인
-                IngredientEntity orderedIngredient = specific.getIngredient();
+                String ingredientName = specific.getIngredientName();
+                IngredientEntity orderedIngredient = ingredientRepository.findByIngredientName(ingredientName);
                 if (ingredient.equals(orderedIngredient)) {
                     //배송중인 재료가 있다면
                     deliverdCount += specific.getIngredientQuantity();
@@ -170,4 +192,30 @@ public class RestockOrderService {
         return deliverdCount;
 
     }
+
+    //수동 발주 추가
+    public AddSpecificResponse addSpecific(AddSpecificRequest addDto) {
+        RestockOrderEntity restockOrder = restockOrderRepository.findById(addDto.getRestockOrderId())
+                .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
+
+        RestockOrderSpecificEntity specific = new RestockOrderSpecificEntity();
+        IngredientEntity ingredientEntity = ingredientRepository.findById(addDto.getIngredientId())
+                .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
+        specific.setIngredientName(ingredientEntity.getIngredientName());
+        specific.setIngredientQuantity(addDto.getIngredientQuantity());
+        specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
+        specific.setIngredientId(ingredientEntity.getIngredientId());
+        specific.setRestockOrder(restockOrder);
+        restockOrderSpecificRepository.save(specific);
+
+        AddSpecificResponse addSpecificResponse = new AddSpecificResponse();
+        addSpecificResponse.setVenderName(ingredientEntity.getVender().getVenderName());
+        addSpecificResponse.setDeliveryTime(ingredientEntity.getDeliveryTime());
+        addSpecificResponse.setIngredientName(specific.getIngredientName());
+        addSpecificResponse.setIngredientPrice(specific.getIngredientPrice());
+        addSpecificResponse.setIngredientQuantity(specific.getIngredientQuantity());
+
+        return addSpecificResponse;
+    }
+
 }
