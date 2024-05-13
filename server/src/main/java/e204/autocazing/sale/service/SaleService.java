@@ -33,14 +33,15 @@ public class SaleService {
 		Integer storeId = storeRepository.findByLoginId(loginId);
 
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
-		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDateTime currentTime = LocalDateTime.now().plusHours(9);
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
 			log.info("SaleService_storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
-			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
+			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
+
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
@@ -154,7 +155,7 @@ public class SaleService {
 
 	public Integer getSoldNumber(String loginId) {
 		Integer storeId = storeRepository.findByLoginId(loginId);
-		LocalDate currentDay = LocalDate.from(LocalDateTime.now());
+		LocalDate currentDay = LocalDate.from(LocalDateTime.now().plusHours(9));
 		return orderRepository.getSoldNumber(currentDay, storeId);
 	}
 
@@ -162,8 +163,8 @@ public class SaleService {
 		Integer storeId = storeRepository.findByLoginId(loginId);
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
-		LocalDateTime startDate = LocalDateTime.now().minusMonths(1);
-		LocalDateTime endDate = LocalDateTime.now();
+		LocalDateTime startDate = LocalDateTime.now().plusHours(9).minusMonths(1);
+		LocalDateTime endDate = LocalDateTime.now().plusHours(9);
 		saleDtoList = orderRepository.getAvgSales(startDate, endDate, storeId);
 
 		Map<String, List<Double>> salesByDay = new HashMap<>();
