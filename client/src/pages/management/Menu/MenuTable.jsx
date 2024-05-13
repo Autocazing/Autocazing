@@ -16,7 +16,7 @@ const MenuTable = ({ menuInfo }) => {
                 className="flex flex-col overflow-auto"
                 style={{ height: "35rem" }}
             >
-                <div className="grid grid-cols-4 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
+                <div className="grid grid-cols-6 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
                             메뉴명
@@ -30,6 +30,16 @@ const MenuTable = ({ menuInfo }) => {
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
                             메뉴재료
+                        </h5>
+                    </div>
+                    <div className="p-2.5 text-center xl:p-5">
+                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                            할인적용여부
+                        </h5>
+                    </div>
+                    <div className="p-2.5 text-center xl:p-5">
+                        <h5 className="text-sm font-medium uppercase xsm:text-base">
+                            할인율(%)
                         </h5>
                     </div>
                     <div className="p-2.5 text-center sm:block xl:p-5">
