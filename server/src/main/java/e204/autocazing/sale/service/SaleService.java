@@ -7,9 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.catalina.Store;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,60 +36,120 @@ public class SaleService {
 
 		Integer storeId = storeRepository.findByLoginId(loginId);
 
-		if(type.equals("day")){
+		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
+			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
 
-			Map<String, Object> todaySales = new HashMap<>();
-			todaySales.put("date", LocalDate.from(currentTime));
-			todaySales.put("totalSales", 0);
+			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
+				@Override
+				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+					LocalDate date1 = ((Date) o1.get("date")).toLocalDate();
+					LocalDate date2 = ((Date) o2.get("date")).toLocalDate();
+					return date1.compareTo(date2);
+				}
+			});
 
-			Date sqlLastSales = (Date)saleDtoList.get(saleDtoList.size()-1).get("date");
-			LocalDate lastSales = sqlLastSales.toLocalDate();
-			if(saleDtoList.isEmpty()||!lastSales.equals(currentTime.toLocalDate()))
-				saleDtoList.add(todaySales);
-		}
-		else if(type.equals("week")){
+		} else if (type.equals("week")) {
 			LocalDateTime startTime = currentTime.minusWeeks(12);
 			saleDtoList = orderRepository.calculateWeekSales(startTime, storeId);
+			fillMissingWeeks(saleDtoList, currentTime);
 
-			int currentYear = currentTime.getYear();
-			int currentWeek = currentTime.get(WeekFields.ISO.weekOfWeekBasedYear());
+			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
+				@Override
+				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+					Integer year1 = (Integer) o1.get("year");
+					Integer week1 = (Integer) o1.get("week");
+					Integer year2 = (Integer) o2.get("year");
+					Integer week2 = (Integer) o2.get("week");
+					int yearCompare = year1.compareTo(year2);
+					if (yearCompare == 0) {
+						return week1.compareTo(week2);
+					}
+					return yearCompare;
+				}
+			});
 
-			if(saleDtoList.isEmpty() || !isCurrentWeekPresent(saleDtoList, currentWeek, currentYear)) {
-				Map<String, Object> thisWeekSales = new HashMap<>();
-				thisWeekSales.put("week", currentWeek);
-				thisWeekSales.put("year", currentYear);
-				thisWeekSales.put("totalSales", 0);
-				saleDtoList.add(thisWeekSales);
-			}
-		}
-		else if(type.equals("month")){
+		} else if (type.equals("month")) {
 			LocalDateTime startTime = currentTime.minusMonths(12);
 			saleDtoList = orderRepository.calculateMonthSales(startTime, storeId);
+			fillMissingMonths(saleDtoList, currentTime);
 
-			int currentYear = currentTime.getYear();
-			int currentMonth = currentTime.getMonthValue();
+			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
+				@Override
+				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+					Integer year1 = (Integer) o1.get("year");
+					Integer month1 = (Integer) o1.get("month");
+					Integer year2 = (Integer) o2.get("year");
+					Integer month2 = (Integer) o2.get("month");
+					int yearCompare = year1.compareTo(year2);
+					if (yearCompare == 0) {
+						return month1.compareTo(month2);
+					}
+					return yearCompare;
+				}
+			});
 
-			if(saleDtoList.isEmpty() || !isCurrentMonthPresent(saleDtoList, currentMonth, currentYear)) {
-				Map<String, Object> thisMonthSales = new HashMap<>();
-				thisMonthSales.put("month", currentMonth);
-				thisMonthSales.put("year", currentYear);
-				thisMonthSales.put("totalSales", 0);
-				saleDtoList.add(thisMonthSales);
-			}
 		}
 		return saleDtoList;
 	}
-
-	private boolean isCurrentMonthPresent(List<Map<String, Object>> saleDtoList, int currentMonth, int currentYear) {
-		return saleDtoList.stream()
-			.anyMatch(item -> (int) item.get("month") == currentMonth && (int) item.get("year") == currentYear);
+	private void fillMissingDays(List<Map<String, Object>> sales, LocalDate start, LocalDate end) {
+		Set<LocalDate> existingDates = sales.stream()
+			.map(s -> ((Date) s.get("date")).toLocalDate())
+			.collect(Collectors.toSet());
+		for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+			if (!existingDates.contains(date)) {
+				Map<String, Object> missingDay = new HashMap<>();
+				missingDay.put("date", Date.valueOf(date));
+				missingDay.put("totalSales", 0);
+				sales.add(missingDay);
+			}
+		}
 	}
 
-	private boolean isCurrentWeekPresent(List<Map<String, Object>> saleDtoList, int currentWeek, int currentYear) {
-		return saleDtoList.stream()
-			.anyMatch(item -> (int) item.get("week") == currentWeek && (int) item.get("year") == currentYear);
+	private void fillMissingWeeks(List<Map<String, Object>> sales, LocalDateTime currentTime) {
+		Set<String> existingWeeks = sales.stream()
+			.map(s -> s.get("year") + "-" + s.get("week"))
+			.collect(Collectors.toSet());
+
+		int currentYear = currentTime.getYear();
+		int currentWeek = currentTime.get(WeekFields.ISO.weekOfWeekBasedYear());
+
+		for (int i = 0; i < 12; i++) {
+			if (!existingWeeks.contains(currentYear + "-" + currentWeek)) {
+				Map<String, Object> missingWeek = new HashMap<>();
+				missingWeek.put("week", currentWeek);
+				missingWeek.put("year", currentYear);
+				missingWeek.put("totalSales", 0);
+				sales.add(missingWeek);
+			}
+			currentTime = currentTime.minusWeeks(1);
+			currentWeek = currentTime.get(WeekFields.ISO.weekOfWeekBasedYear());
+			currentYear = currentTime.getYear();
+		}
+	}
+
+
+	private void fillMissingMonths(List<Map<String, Object>> sales, LocalDateTime currentTime) {
+		Set<String> existingMonths = sales.stream()
+			.map(s -> s.get("year") + "-" + s.get("month"))
+			.collect(Collectors.toSet());
+
+		int currentYear = currentTime.getYear();
+		int currentMonth = currentTime.getMonthValue();
+
+		for (int i = 0; i < 12; i++) {
+			if (!existingMonths.contains(currentYear + "-" + currentMonth)) {
+				Map<String, Object> missingMonth = new HashMap<>();
+				missingMonth.put("month", currentMonth);
+				missingMonth.put("year", currentYear);
+				missingMonth.put("totalSales", 0);
+				sales.add(missingMonth);
+			}
+			currentTime = currentTime.minusMonths(1);
+			currentMonth = currentTime.getMonthValue();
+			currentYear = currentTime.getYear();
+		}
 	}
 
 	public Integer getSoldNumber(String loginId) {
