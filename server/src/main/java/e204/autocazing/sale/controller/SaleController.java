@@ -118,6 +118,8 @@ public class SaleController {
 
 		Map<String, Double> defaultSales = new LinkedHashMap<>();
 		DayOfWeek today = LocalDate.now().getDayOfWeek();
+		log.info("Today's DayOfWeek: " + today);
+
 
 		for (int i = 0; i < 7; i++) {
 			DayOfWeek day = today.plus(i);
