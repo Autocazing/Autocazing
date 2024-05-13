@@ -2,6 +2,7 @@ package e204.autocazing.sale.controller;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -117,12 +118,13 @@ public class SaleController {
 		Map<String, Double> sales = saleService.getAvgSales(loginId);
 
 		Map<String, Double> defaultSales = new LinkedHashMap<>();
-		DayOfWeek today = LocalDate.now().getDayOfWeek();
-		log.info("Today's DayOfWeek: " + today);
 
+		LocalDateTime nineHoursLater = LocalDateTime.now().plusHours(9);
+		DayOfWeek dayOfWeekNineHoursLater = nineHoursLater.getDayOfWeek();
+		log.info("DayOfWeek 9 hours later: " + dayOfWeekNineHoursLater);
 
 		for (int i = 0; i < 7; i++) {
-			DayOfWeek day = today.plus(i);
+			DayOfWeek day = dayOfWeekNineHoursLater.plus(i);
 			String dayName = day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase();
 			defaultSales.put(dayName, 0.0);
 		}
