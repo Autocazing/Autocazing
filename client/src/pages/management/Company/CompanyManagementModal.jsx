@@ -148,6 +148,7 @@ const CompanyManagementModal = ({ isOpen, onClose, initialValue }) => {
                             name="venderDescription"
                             value={companyPostData.venderDescription}
                             rows={6}
+                            maxLength="50"
                             placeholder="업체 설명을 입력해주세요."
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         ></textarea>
