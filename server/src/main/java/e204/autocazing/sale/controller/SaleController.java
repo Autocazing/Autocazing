@@ -1,6 +1,9 @@
 package e204.autocazing.sale.controller;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,17 +114,18 @@ public class SaleController {
 		String loginId = httpServletRequest.getHeader("loginId");
 		Map<String, Double> sales = saleService.getAvgSales(loginId);
 
-		Map<String, Double> defaultSales = new HashMap<>();
-		defaultSales.put("Monday", 0.0);
-		defaultSales.put("Tuesday", 0.0);
-		defaultSales.put("Wednesday", 0.0);
-		defaultSales.put("Thursday", 0.0);
-		defaultSales.put("Friday", 0.0);
-		defaultSales.put("Saturday", 0.0);
-		defaultSales.put("Sunday", 0.0);
+		Map<String, Double> defaultSales = new LinkedHashMap<>();
+		DayOfWeek today = LocalDate.now().getDayOfWeek();
+
+		for (int i = 0; i < 7; i++) {
+			DayOfWeek day = today.plus(i);
+			String dayName = day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase();
+			defaultSales.put(dayName, 0.0);
+		}
 
 		for (Map.Entry<String, Double> entry : sales.entrySet()) {
-			defaultSales.put(entry.getKey(), entry.getValue());
+			if (defaultSales.containsKey(entry.getKey()))
+				defaultSales.put(entry.getKey(), entry.getValue());
 		}
 
 		return ResponseEntity.ok(defaultSales);
