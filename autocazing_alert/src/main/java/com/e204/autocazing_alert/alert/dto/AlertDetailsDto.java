@@ -16,6 +16,7 @@ public class AlertDetailsDto {
 
     private Integer alertId;
     private String content;
+    private String loginId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean completed;

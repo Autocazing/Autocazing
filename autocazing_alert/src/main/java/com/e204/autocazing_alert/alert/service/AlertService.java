@@ -33,6 +33,7 @@ public class AlertService {
         alertDetails.setCreatedAt(alert.getCreatedAt());
         alertDetails.setUpdatedAt(alert.getUpdatedAt());
         alertDetails.setCompleted(alert.getCompleted());
+        alertDetails.setLoginId(alert.getLoginId());
         return alertDetails;
     }
 

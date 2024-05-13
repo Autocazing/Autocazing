@@ -1,5 +1,6 @@
 package com.e204.autocazing_alert.alert.service;
 
+import com.e204.autocazing_alert.db.AlertEntity;
 import com.e204.autocazing_alert.repository.AlertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,15 @@ public class SseService {
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("restock").data(message));
+                AlertEntity alertEntity = new AlertEntity();
+                alertEntity.setContent(message);
+                alertEntity.setCompleted(false);
+                alertEntity.setLoginId(loginId);
+
             } catch (IOException e) {
                 emitter.completeWithError(e);
             }
+
         }
     }
 

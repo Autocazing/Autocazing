@@ -17,9 +17,10 @@ public class AlertEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer alertId;
-
     @Column(nullable = false)
     private String content;
+    @Column(nullable = false)
+    private String loginId;
     @Column(nullable = false)
     private Boolean completed;
     @CreationTimestamp
