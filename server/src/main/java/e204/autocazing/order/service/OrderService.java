@@ -91,9 +91,8 @@ public class OrderService {
                     stockService.decreaseStock(menuIngredient.getIngredient().getIngredientId(), menuIngredient.getCapacity() * detail.getMenuQuantity());
                 });
             });
-
-
             orderRepository.save(order);
+
     }
 
 
