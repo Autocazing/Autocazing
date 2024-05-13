@@ -11,4 +11,22 @@ const MenuGetApi = () => {
     });
 };
 
-export { MenuGetApi };
+const MenuDeleteApi = (menuId) => {
+    const queryClient = useQueryClient();
+    const fetchDelete = () => {
+        return axiosInstance.delete(`/menus/${menuId}`);
+    };
+    const mutation = useMutation({
+        mutationFn: fetchDelete,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetMenu"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+    return mutation;
+};
+
+export { MenuGetApi, MenuDeleteApi };

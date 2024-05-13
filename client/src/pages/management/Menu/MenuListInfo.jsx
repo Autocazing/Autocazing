@@ -4,8 +4,14 @@ import checkbox from "../../../images/orderlist/checkbox.svg";
 import nocheck from "../../../images/orderlist/nocheck.svg";
 
 import { useState } from "react";
+import { MenuDeleteApi } from "../../../apis/server/MenuApi";
 
 const MenuListInfo = ({ menu, isLastItem }) => {
+    const deleteMenu = MenuDeleteApi(menu.menuId);
+
+    const handleDelete = () => {
+        deleteMenu.mutate();
+    };
     return (
         <div
             className={`grid grid-cols-6 sm:grid-cols-6 ${
@@ -45,7 +51,7 @@ const MenuListInfo = ({ menu, isLastItem }) => {
                 <button className="mr-2">
                     <img src={modifyIcon} alt="Modify" />
                 </button>
-                <button>
+                <button onClick={handleDelete}>
                     <img src={deleteIcon} alt="delete" />
                 </button>
             </div>
