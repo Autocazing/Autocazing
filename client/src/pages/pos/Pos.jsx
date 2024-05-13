@@ -46,6 +46,9 @@ function Pos() {
                 menuQuantity: product.quantity,
             })),
         });
+        setTotal(0);
+        setCart([]);
+        setPaymentMode(null);
     };
 
     const addToCart = (productId) => {
