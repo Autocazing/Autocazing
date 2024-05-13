@@ -172,8 +172,7 @@ function Pos() {
     // });
 
     const order = () => {
-        // console.log(cart);
-        const extractedProducts = products
+        const extractedProducts = cart
             .filter(
                 (item) => item.quantity !== undefined && item.quantity !== 0,
             ) // quantity가 undefined가 아닌 항목만 선택
