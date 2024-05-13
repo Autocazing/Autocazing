@@ -24,9 +24,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("api/sales")
+@Slf4j
 public class SaleController {
 
 	@Autowired
@@ -116,6 +118,8 @@ public class SaleController {
 
 		Map<String, Double> defaultSales = new LinkedHashMap<>();
 		DayOfWeek today = LocalDate.now().getDayOfWeek();
+		log.info("Today's DayOfWeek: " + today);
+
 
 		for (int i = 0; i < 7; i++) {
 			DayOfWeek day = today.plus(i);
