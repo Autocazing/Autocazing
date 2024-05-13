@@ -21,13 +21,13 @@ public class StoreEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer StoreId;
     //로그인 Id
-    @Column(nullable = false , length = 20)
+    @Column(nullable = false)
     private String loginId;
     //비밀번호
     @Column(nullable = false)
     private String password;
     //가게 이름
-    @Column(nullable = false , length = 30)
+    @Column(nullable = false)
     private String storeName;
 
     //생성 시간

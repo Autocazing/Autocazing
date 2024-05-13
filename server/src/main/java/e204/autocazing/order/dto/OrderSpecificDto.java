@@ -13,5 +13,4 @@ public class OrderSpecificDto {
     private Integer menuId;
     private int menuQuantity;
     private int menuPrice;
-
 }

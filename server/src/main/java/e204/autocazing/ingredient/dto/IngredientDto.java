@@ -11,8 +11,8 @@ public class IngredientDto {
 
     private Integer ingredientId;
     private Integer storeId;
-    private Integer venderId;
-    private String venderName;
+    private Integer vendorId;
+    private String vendorName;
     private String ingredientName;
     private int ingredientPrice;
     private Integer ingredientCapacity;

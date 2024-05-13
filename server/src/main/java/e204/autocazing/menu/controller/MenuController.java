@@ -74,7 +74,7 @@ public class MenuController {
             })
         )
     })
-    @PutMapping("/{menuId}")
+    @PatchMapping("/{menuId}")
     public ResponseEntity updateMenu(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId
         ,@RequestBody UpdateMenuDto updateMenuDto){
         MenuDto menu = menuService.updateMenu(updateMenuDto,menuId);
@@ -165,14 +165,14 @@ public class MenuController {
             )
         )
     })
-    @GetMapping("/{menuId}/sales")
+    @GetMapping("/sales")
     public ResponseEntity getMenuSales(
         @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
             required = true,
             schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
-        @RequestParam("type") String type,
-        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId){ //type : 일별 day, 주별 week, 월별 month
-        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuId);
+        @RequestParam("type") String type, @RequestBody MenuSalesDto menuSalesDto){ //type : 일별 day, 주별 week, 월별 month
+        //HttpServletRequest httpServletRequest =
+        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuSalesDto);
         return ResponseEntity.ok(sales);
     }
 }
