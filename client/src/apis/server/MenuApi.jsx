@@ -50,4 +50,25 @@ const MenuPostApi = () => {
     return mutation;
 };
 
+const MenuEditApi = (menuId) => {
+    const queryClient = useQueryClient();
+
+    const fetchEdit = (editData) => {
+        return axiosInstance.put(`/menus/${menuId}`, editData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchEdit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetMenu"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
 export { MenuGetApi, MenuDeleteApi, MenuPostApi };
