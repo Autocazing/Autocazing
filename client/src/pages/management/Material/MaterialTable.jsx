@@ -54,10 +54,6 @@ const MaterialTable = ({ materialInfo }) => {
                     </div>
                 </div>
 
-                {/* {MaterialList.map((material, key) => (
-                   
-                ))} */}
-
                 {materialInfo.map((material, index) => (
                     <MaterialListInfo
                         key={index}
