@@ -1,12 +1,50 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import EventSourcePolyfill from "event-source-polyfill";
 
 const DropdownNotification = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notifying, setNotifying] = useState(true);
+    const [alarmlist, setAlarmlist] = useState([]); // useRef 써야할지도??
+
+    const token = localStorage.getItem("accessToken");
 
     const trigger = useRef(null);
     const dropdown = useRef(null);
+
+    const EventSource = EventSourcePolyfill;
+
+    // 알림 SSE 구현
+    useEffect(() => {
+        if (token) {
+            // login 되었을 때
+            try {
+                const fetchSse = async () => {
+                    const eventSource = new EventSource(
+                        `https://k10e204.p.ssafy.io/api/alerts/???$`, // url 추가해야함
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "text/event-stream", // 이거 아닐수도 있음
+                            },
+                            withCredentials: true,
+                        },
+                    );
+
+                    eventSource.addEventListener("alarm", (event) => {
+                        const evendData = JSON.parse(event.data);
+                        console.log("Reveived event:", evendData);
+                        setAlarmlist((prevList) => [...prevList, evendData]);
+                    });
+                };
+
+                // fetchSse(); => 나중에 알람되면 수정
+            } catch (err) {
+                console.log("실시간 알람 통신 에러", err);
+                throw err;
+            }
+        }
+    }, [token]);
 
     useEffect(() => {
         const clickHandler = ({ target }) => {
@@ -82,38 +120,6 @@ const DropdownNotification = () => {
                 </div>
 
                 <ul className="flex h-auto flex-col overflow-y-auto">
-                    <li>
-                        <Link
-                            className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                            to="#"
-                        >
-                            <p className="text-sm">
-                                <span className="text-black dark:text-white">
-                                    Edit your information in a swipe
-                                </span>{" "}
-                                Sint occaecat cupidatat non proident, sunt in
-                                culpa qui officia deserunt mollit anim.
-                            </p>
-
-                            <p className="text-xs">12 May, 2025</p>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                            to="#"
-                        >
-                            <p className="text-sm">
-                                <span className="text-black dark:text-white">
-                                    It is a long established fact
-                                </span>{" "}
-                                that a reader will be distracted by the
-                                readable.
-                            </p>
-
-                            <p className="text-xs">24 Feb, 2025</p>
-                        </Link>
-                    </li>
                     <li>
                         <Link
                             className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
