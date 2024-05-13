@@ -167,7 +167,7 @@ public class MenuService {
                 .map(this::convertToMenuDetailsDto)
                 .collect(Collectors.toList());
     }
-
+    //List<MenuDetailsDto> 채우기
     private MenuDetailsDto convertToMenuDetailsDto(MenuEntity menuEntity) {
         MenuDetailsDto menuDetailsDto = new MenuDetailsDto();
         menuDetailsDto.setMenuId(menuEntity.getMenuId());
@@ -175,18 +175,19 @@ public class MenuService {
         menuDetailsDto.setMenuPrice(menuEntity.getMenuPrice());
         menuDetailsDto.setOnEvent(menuEntity.getOnEvent());
         menuDetailsDto.setDiscountRate(menuEntity.getDiscountRate());
-        menuDetailsDto.setImgaeUrl(menuEntity.getImageUrl());
+        menuDetailsDto.setImageUrl(menuEntity.getImageUrl());
         menuDetailsDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);
         menuDetailsDto.setIngredientoDtoList(menuEntity.getMenuIngredients().stream()
-                .map(MenuIngredientEntity::getIngredient)
                 .map(this::convertToIngredientoDto)
                 .collect(Collectors.toList()));
-
         return menuDetailsDto;
     }
-    private IngredientoDto convertToIngredientoDto(IngredientEntity ingredient) {
+    //전체 조회 IngredientDtoList 채우기
+    private IngredientoDto convertToIngredientoDto(MenuIngredientEntity menuIngredient) {
         IngredientoDto ingredientoDto = new IngredientoDto();
-        ingredientoDto.setIngredientName(ingredient.getIngredientName());
+        ingredientoDto.setIngredientId(menuIngredient.getIngredient().getIngredientId());
+        ingredientoDto.setIngredientName(menuIngredient.getIngredient().getIngredientName());
+        ingredientoDto.setCapacity(menuIngredient.getCapacity()); // 메뉴에 들어가는 재료의 양
         return ingredientoDto;
     }
 

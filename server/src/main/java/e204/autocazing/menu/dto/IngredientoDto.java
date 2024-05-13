@@ -11,5 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class IngredientoDto {
 
-    private String IngredientName;
+    private Integer ingredientId;
+    private String ingredientName;
+    private Integer capacity;
 }
