@@ -88,11 +88,8 @@ public class SaleController {
 	@GetMapping("/sold")
 	public ResponseEntity getSoldNumber(HttpServletRequest httpServletRequest) {
 		String loginId = httpServletRequest.getHeader("loginId");
-
-		//Map<String, Integer> soldNumbers = null;
 		Map<String, Integer> soldNumbers = saleService.getSoldNumber(loginId);
 
-		//System.out.println("!!!+"+soldNumbers);
 		return ResponseEntity.ok(soldNumbers);
 	}
 
