@@ -47,20 +47,19 @@ public class SmsUtil {
 
 			Message message = new Message();
 			message.setFrom(sendNumber);
-			message.setSubject("[" + storeName + "]의 발주 요청\n");
+			message.setSubject("[" + storeName + "] 발주 요청\n");
 			message.setTo(to);
 
 			StringBuilder text = new StringBuilder();
-			text.append("주문 목록 확인하기: ").append(restockOrderCheckLink).append("\n")
-				.append("배송 시작: ").append(deliveryStartAPI).append("\n")
-				.append("배송 완료: ").append(deliveryEndAPI).append("\n")
-				.append("주문 목록:\n");
+			text.append("[ 주문 목록 ]\n");
 
 			for (Map<String, Integer> orderItem : order.getOrderList()) {
 				for (Map.Entry<String, Integer> entry : orderItem.entrySet()) {
-					text.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+					text.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 				}
 			}
+			text.append("[ 배송 시작 ]\n").append(deliveryStartAPI).append("\n")
+				.append("[ 배송 완료 ]\n").append(deliveryEndAPI).append("\n");
 
 			message.setText(text.toString());
 
