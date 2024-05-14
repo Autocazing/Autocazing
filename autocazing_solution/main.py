@@ -36,7 +36,7 @@ async def start_kafka_consumer():
 async def startup_event():
     await asyncio.gather(
         register_with_eureka(),
-        start_kafka_consumer()
+        # start_kafka_consumer()
     )
 
 # Dependency
@@ -54,5 +54,5 @@ async def root():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    consumer.close()  # Kafka 컨슈머 종료
+    # consumer.close()  # Kafka 컨슈머 종료
     eureka_client.stop()
