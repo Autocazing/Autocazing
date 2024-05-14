@@ -63,6 +63,6 @@ public class IngredientEntity {
     @JoinColumn(name = "vender_id", nullable = false)
     private VenderEntity vender;
 
-    @OneToOne(mappedBy = "ingredient")
-    private StockEntity stock;
+//    @OneToOne(mappedBy = "ingredient")
+//    private StockEntity stock;
 }

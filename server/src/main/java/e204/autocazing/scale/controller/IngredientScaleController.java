@@ -42,6 +42,7 @@ public class IngredientScaleController {
         String loginId = httpServletRequest.getHeader("loginId");
         ingredientScaleService.createIngredientScale(postScaleDto, loginId);
         return new ResponseEntity(HttpStatus.CREATED);
+
     }
 
     // 단위 수정

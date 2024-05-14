@@ -18,6 +18,7 @@ public class StockEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockId;
+
     @Column(nullable = false)
     private Integer quantity;
     @Column(nullable = false)

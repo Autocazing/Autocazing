@@ -249,6 +249,7 @@ public class RestockOrderService {
         RestockOrderEntity restockOrder = restockOrderRepository.findById(addDto.getRestockOrderId())
                 .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
 
+        System.out.println("수동발주 1");
         RestockOrderSpecificEntity specific = new RestockOrderSpecificEntity();
         IngredientEntity ingredientEntity = ingredientRepository.findById(addDto.getIngredientId())
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
@@ -259,6 +260,7 @@ public class RestockOrderService {
         specific.setRestockOrder(restockOrder);
         restockOrderSpecificRepository.save(specific);
 
+        System.out.println( "수동발주 2");
         AddSpecificResponse addSpecificResponse = new AddSpecificResponse();
         addSpecificResponse.setVenderName(ingredientEntity.getVender().getVenderName());
         addSpecificResponse.setDeliveryTime(ingredientEntity.getDeliveryTime());
