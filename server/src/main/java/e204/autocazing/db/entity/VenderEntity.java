@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @NoArgsConstructor
@@ -37,4 +38,12 @@ public class VenderEntity {
 
     @OneToMany(mappedBy = "vender")
     private List<IngredientEntity> ingredients;
+
+    public void setStore(Optional<StoreEntity> storeOptional) {
+        if (storeOptional.isPresent()) {
+            this.store = storeOptional.get();
+        } else {
+            throw new IllegalArgumentException("StoreEntity cannot be null");
+        }
+    }
 }

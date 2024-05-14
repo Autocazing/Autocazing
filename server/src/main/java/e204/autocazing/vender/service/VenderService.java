@@ -7,10 +7,14 @@ import e204.autocazing.db.repository.VenderRepository;
 import e204.autocazing.vender.dto.PatchVenderDto;
 import e204.autocazing.vender.dto.PostVenderDto;
 import e204.autocazing.vender.dto.VenderDto;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,17 +25,20 @@ public class VenderService {
     private StoreRepository storeRepository;
 
 
-    public void createVender(PostVenderDto postVenderDto) {
+    public void createVender(PostVenderDto postVenderDto, String loginId) {
         VenderEntity venderEntity = new VenderEntity();
-        StoreEntity store = storeRepository.findById(postVenderDto.getStoreId())
-                .orElseThrow(() -> new RuntimeException("storeId not found" + postVenderDto.getStoreId()));
+        Integer storeId = storeRepository.findByLoginId(loginId);
+        Optional<StoreEntity> store = storeRepository.findById(storeId);
+
+        if (!store.isPresent())
+            throw new EntityNotFoundException("Store not found with id: " + storeId);
+
         venderEntity.setStore(store);
         venderEntity.setVenderName(postVenderDto.getVenderName());
         venderEntity.setVenderManager(postVenderDto.getVenderManager());
         venderEntity.setVenderManagerContact(postVenderDto.getVenderManagerContact());
         venderEntity.setVenderDescription(postVenderDto.getVenderDescription());
         venderRepository.save(venderEntity);
-
     }
 
     public VenderDto updateVender(Integer venderId, PatchVenderDto patchVenderDto) {
@@ -49,10 +56,15 @@ public class VenderService {
         venderRepository.deleteById(venderId);
     }
 
-    public List<VenderDto> getAllVenders() {
-        return venderRepository.findAll().stream()
-                .map(this::fromEntity)
-                .collect(Collectors.toList());
+    public List<VenderDto> getAllVenders(String loginId) {
+        Integer storeId = storeRepository.findByLoginId(loginId);
+        List<VenderEntity> venderEntityList = venderRepository.findAllByStoreId(storeId);
+
+        List<VenderDto> venderDtoList = new ArrayList<>();
+        for(VenderEntity vender : venderEntityList)
+            venderDtoList.add(fromEntity(vender));
+
+        return venderDtoList;
     }
 
     public VenderDto getVenderById(Integer venderId) {

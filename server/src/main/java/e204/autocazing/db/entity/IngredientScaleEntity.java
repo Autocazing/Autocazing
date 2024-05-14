@@ -20,4 +20,8 @@ public class IngredientScaleEntity {
     @Column(nullable = false, length = 10)
     private String unit;
 
+    @Column(nullable = false)
+    private Integer storeId;
+
+
 }
