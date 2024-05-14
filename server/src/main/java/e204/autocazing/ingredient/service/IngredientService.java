@@ -136,7 +136,9 @@ public class IngredientService {
         return fromEntity(ingredient);
     }
 
-    public List<IngredientDetails> findAllIngredients() {
+    public List<IngredientDetails> findAllIngredients(String loginId) {
+
+
         List<IngredientEntity> ingredients = ingredientRepository.findAll();
         return ingredients.stream()
                 .map(this::fromEntity)

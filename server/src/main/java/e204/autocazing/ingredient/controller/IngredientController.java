@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,8 +92,9 @@ public class IngredientController {
         )
     })
     @GetMapping
-    public ResponseEntity<List<IngredientDetails>> getAllIngredients() {
-        List<IngredientDetails> ingredients = ingredientService.findAllIngredients();
+    public ResponseEntity<List<IngredientDetails>> getAllIngredients(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<IngredientDetails> ingredients = ingredientService.findAllIngredients(loginId);
         return ResponseEntity.ok(ingredients);
     }
 
