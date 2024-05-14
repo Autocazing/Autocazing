@@ -101,11 +101,14 @@ const options = {
 };
 
 const ChartOne = ({ thisWeekSold }) => {
+    const [maxSize, setMaxSize] = useState(0);
+    // const [minSize, setMinSize] = useState(0);
+
     const [state, setState] = useState({
         series: [
             {
                 name: "Product One",
-                data: [23, 11, 22, 27, 13, 22, 37],
+                data: [0, 0, 0, 0, 0, 0, 0],
             },
 
             {
@@ -118,6 +121,7 @@ const ChartOne = ({ thisWeekSold }) => {
     useEffect(() => {
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
         if (thisWeekSold.length > 0) {
+            // console.log(thisWeekSold);
             // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
             const productOneData = thisWeekSold.map((item) => item.totalSales);
 
@@ -132,9 +136,22 @@ const ChartOne = ({ thisWeekSold }) => {
                     prevState.series[1], // Product Two는 변경하지 않습니다.
                 ],
             }));
+
+            const maxVal = Math.max(...productOneData);
+            // const minVal = Math.min(...productOneData);
+            setMaxSize(maxVal);
+            // setMinSize(minVal);
         }
-        console.log(state);
     }, [thisWeekSold]);
+
+    const updatedOptions = {
+        ...options, // 기존 옵션들 복사
+        yaxis: {
+            ...options.yaxis, // 기존 yaxis 옵션 복사
+            min: 0, // 최솟값(min)을 minSize로 업데이트
+            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+        },
+    };
 
     return (
         <div className="col-span-8 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -185,7 +202,7 @@ const ChartOne = ({ thisWeekSold }) => {
             <div>
                 <div id="chartOne" className="-ml-5">
                     <ReactApexChart
-                        options={options}
+                        options={updatedOptions}
                         series={state.series}
                         type="area"
                         height={350}
