@@ -68,7 +68,7 @@ public class SaleController {
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
 		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
 		String loginId = httpServletRequest.getHeader("loginId");
-
+		//
 		List<Map<String, Object>> sales = saleService.getSales(type, loginId);
 		return ResponseEntity.ok(sales);
 	}
