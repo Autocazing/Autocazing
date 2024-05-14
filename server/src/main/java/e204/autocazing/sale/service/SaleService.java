@@ -153,10 +153,27 @@ public class SaleService {
 		}
 	}
 
-	public Integer getSoldNumber(String loginId) {
+	public Map<String, Integer> getSoldNumber(String loginId) {
 		Integer storeId = storeRepository.findByLoginId(loginId);
-		LocalDate currentDay = LocalDate.from(LocalDateTime.now().plusHours(9));
-		return orderRepository.getSoldNumber(currentDay, storeId);
+
+		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
+		LocalDate yesterday = today.minusDays(1);
+
+		List<Map<String, Integer>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
+
+		Map<String, Integer> salesComparison = new HashMap<>();
+
+		salesComparison.put("yesterdaySold", 0);
+		salesComparison.put("todaySold", 0);
+
+		salesData.forEach(map -> {
+			map.forEach((key, value) -> {
+				if (value != null)
+					salesComparison.put(key, value);
+			});
+		});
+
+		return salesComparison;
 	}
 
 	public Map<String, Double> getAvgSales(String loginId) {
