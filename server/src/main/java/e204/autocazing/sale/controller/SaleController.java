@@ -89,7 +89,9 @@ public class SaleController {
 	public ResponseEntity getSoldNumber(HttpServletRequest httpServletRequest) {
 		String loginId = httpServletRequest.getHeader("loginId");
 
-		Map<String, Integer> soldNumbers = saleService.getSoldNumber(loginId);
+		Map<String, Integer> soldNumbers = null;
+		//Map<String, Integer> soldNumbers = saleService.getSoldNumber(loginId);
+
 		//System.out.println("!!!+"+soldNumbers);
 		return ResponseEntity.ok(soldNumbers);
 	}
@@ -100,13 +102,13 @@ public class SaleController {
 			content = @Content(mediaType = "application/json",
 				examples = {
 					@ExampleObject(
-						value = "{\"Monday\": 29392.14285714286,\n"
-							+ "    \"Tuesday\": 31635.365853658535,\n"
-							+ "    \"Wednesday\": 31548.51595744681,\n"
-							+ "    \"Thursday\": 31351.634146341465,\n"
-							+ "    \"Friday\": 31750.06358381503,\n"
-							+ "    \"Saturday\": 32592.672514619884}"
-							+ "    \"Sunday\": 32922.87804878049,\n"
+						value = "{\"1\": 29392.14285714286,\n"
+							+ "    \"2\": 31635.365853658535,\n"
+							+ "    \"3\": 31548.51595744681,\n"
+							+ "    \"4\": 31351.634146341465,\n"
+							+ "    \"5\": 31750.06358381503,\n"
+							+ "    \"6\": 32592.672514619884}"
+							+ "    \"7\": 32922.87804878049,\n"
 					)
 				}
 			)
