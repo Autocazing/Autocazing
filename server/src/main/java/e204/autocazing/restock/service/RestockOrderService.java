@@ -143,8 +143,8 @@ public class RestockOrderService {
                 Map<String, List<Map<String, Integer>>> contactOrdersMap = new HashMap<>();
                 for (Map.Entry<Integer, Integer> entry : order.entrySet()) {
                     // entry의 재료ID로 담당 업체 연락처(String) 불러오기
-                    String contact = ingredientRepository.findContactByIngredientId(entry.getKey());
-                    String ingredientName = ingredientRepository.findNameByIngredientId(entry.getKey());
+                    String contact = ingredientRepository.findContactByIngredientId(entry.getKey(), storeId);
+                    String ingredientName = ingredientRepository.findNameByIngredientId(entry.getKey(), storeId);
 
                     // 연락처를 키 값으로 하고, value는 재료 이름과 수량을 포함한 맵 리스트
                     contactOrdersMap.computeIfAbsent(contact, k -> new ArrayList<>()).add(Map.of(ingredientName, entry.getValue()));
@@ -159,7 +159,6 @@ public class RestockOrderService {
                     requestDtoList.add(requestDto);
                 }
 
-                // smsUtil.sendOne(requestDtoList, storeName);
                 smsUtil.sendOne(requestDtoList, storeName);
             }
         }
