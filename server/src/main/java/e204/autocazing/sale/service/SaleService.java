@@ -157,8 +157,9 @@ public class SaleService {
 		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
 		LocalDate yesterday = today.minusDays(1);
 
+		System.out.println("repo 접근 전 ");
 		List<Map<String, Integer>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
-
+		System.out.println("repo 접근 후 : "+ salesData);
 		Map<String, Integer> salesComparison = new HashMap<>();
 
 		salesComparison.put("yesterdaySold", 0);
