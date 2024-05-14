@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.sql import func
-from db.base import Base
+from db.mysql.base import Base
 
 class Menus(Base):
     __tablename__ = 'menus'
