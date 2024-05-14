@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from api.monthly_sales.schema.monthly_sales_response import PredictedMonthlySalesDto
+from api.monthly_sales.schema.monthly_sales_response import PredictedMonthlySalesSchema
 
 monthly_sales_router = APIRouter(prefix="/predicted-monthly-sales")
 
-@monthly_sales_router.get("", tags=["monthly_sales_router"], response_model=PredictedMonthlySalesDto)
+@monthly_sales_router.get("", tags=["monthly_sales_router"], response_model=PredictedMonthlySalesSchema)
 async def get_monthly_sales():
     
-    return PredictedMonthlySalesDto(predicted_monthly_sales=300_000)
+    return PredictedMonthlySalesSchema(predicted_monthly_sales=300_000)
