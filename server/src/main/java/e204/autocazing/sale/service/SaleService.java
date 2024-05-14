@@ -3,6 +3,7 @@ package e204.autocazing.sale.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -184,19 +185,25 @@ public class SaleService {
 		saleDtoList = orderRepository.getAvgSales(startDate, endDate, storeId);
 
 		Map<String, List<Double>> salesByDay = new HashMap<>();
-		for(Map<String, Object> record : saleDtoList) {
+		String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		for (String day : daysOfWeek) {
+			salesByDay.put(day, new ArrayList<>());
+		}
+
+		for (Map<String, Object> record : saleDtoList) {
 			String dayOfWeek = (String) record.get("dayOfWeek");
 			Double totalSales = ((Number) record.get("totalSales")).doubleValue();
-
 			salesByDay.computeIfAbsent(dayOfWeek, k -> new ArrayList<>()).add(totalSales);
 		}
 
 		Map<String, Double> salesAvgByDay = new HashMap<>();
-		salesByDay.forEach((dayOfWeek, totalSales)->{
-			salesAvgByDay.put(dayOfWeek, totalSales.stream().mapToDouble(Double::doubleValue).average().orElse(0.0));
-		});
+		for (String dayOfWeek : daysOfWeek) {
+			List<Double> totalSales = salesByDay.get(dayOfWeek);
 
+			long daysInMonth = startDate.until(endDate, ChronoUnit.DAYS);
+			long occurrences = (daysInMonth + startDate.getDayOfWeek().getValue() - 1) / 7;
+			salesAvgByDay.put(dayOfWeek, totalSales.stream().mapToDouble(Double::doubleValue).sum() / occurrences);
+		}
 		return salesAvgByDay;
 	}
-
 }

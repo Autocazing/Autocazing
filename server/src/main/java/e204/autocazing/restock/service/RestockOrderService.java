@@ -1,5 +1,6 @@
 package e204.autocazing.restock.service;
 
+import e204.autocazing.config.SmsUtil;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.restock.dto.*;
@@ -10,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +29,8 @@ public class RestockOrderService {
     private StoreRepository storeRepository;
     @Autowired
     private IngredientRepository ingredientRepository;
-
+    @Autowired
+    private SmsUtil smsUtil;
 
     // 장바구니생성
     @Transactional
@@ -114,7 +119,31 @@ public class RestockOrderService {
             createNewRestockOrder(loginId);
             //todo
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
+            if(restockOrder.getStatus() != RestockOrderEntity.RestockStatus.ORDERED) {
+                Integer storeId = storeRepository.findByLoginId(loginId);
+                Optional<StoreEntity> store = storeRepository.findById(storeId);
+                String storeName = store.get().getStoreName();
+
+                //restock order에서, order specific 접근해서 주문할 재료, 수량 저장
+                List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrder.getRestockOrderSpecific();
+
+                Map<Integer, Integer> order = new HashMap<>();
+                for(RestockOrderSpecificEntity restockOrderSpecific : restockOrderSpecificEntityList){
+                    Integer ingredientId = restockOrderSpecific.getIngredientId();
+                    Integer ingredientQuantity = restockOrderSpecific.getIngredientQuantity();
+                    if (order.containsKey(ingredientId)) {
+                        order.put(ingredientId, order.get(ingredientId) + ingredientQuantity);
+                    } else {
+                        order.put(ingredientId, ingredientQuantity);
+                    }
+
+                }
+                //재료 ID로 업체 정보 가져오기
+                //List<requestDto> : 연락처, Map(재료, 수량)
+                //smsUtil.sendOne(requestDto, storeName);
+            }
         }
+
         UpdatedRestockDto updatedRestockDto = new UpdatedRestockDto();
         updatedRestockDto.setRestockOrderId(restockOrderId);
         updatedRestockDto.setCreatedAt(restockOrder.getCreatedAt());
