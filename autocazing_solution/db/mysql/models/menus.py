@@ -12,5 +12,5 @@ class Menus(Base):
     on_event = Column(Boolean, nullable=False)
     discount_rate = Column(Integer, nullable=False)
 
-    created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False, onupdate=func.now())

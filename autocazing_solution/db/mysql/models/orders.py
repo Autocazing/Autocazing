@@ -2,6 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from db.mysql.base import Base
+import datetime
 
 class OrderSpecifics(Base):
     __tablename__ = 'order_specifics'
@@ -16,5 +17,5 @@ class Orders(Base):
     store_id = Column(Integer, nullable=False)
     order_specifics = relationship("OrderSpecifics", back_populates="orders", cascade="all, delete-orphan")
 
-    created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False, server_onupdate=func.now())

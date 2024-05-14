@@ -10,12 +10,12 @@ from db.mysql.base import Base
 class ExpirationSpecifics(Base): # 유통기한 임박 재료
     __tablename__ = 'expiration_specifics'
     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
-    ingridient_name = Column(String(length=20), nullable=False)
+    ingredient_name = Column(String(length=20), nullable=False)
 
 class OnDeliveryIngredients(Base):  # 배송 중인 재료
     __tablename__ = 'on_delivery_ingredients'
     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
-    ingridient_name = Column(String(length=20), nullable=False)
+    ingredient_name = Column(String(length=20), nullable=False)
 
 class Reports(Base):    # 리포트
     __tablename__ = 'reports'
@@ -26,6 +26,6 @@ class Reports(Base):    # 리포트
     expiration_specifics = relationship("ExpirationSpecifics", back_populates="reports", cascade="all, delete-orphan")
     on_delivery_ingredients = relationship("OnDeliveryIngredients", back_populates="reports", cascade="all, delete-orphan")
     
-    created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False, onupdate=func.now())
     

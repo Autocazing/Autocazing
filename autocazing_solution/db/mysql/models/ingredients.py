@@ -11,5 +11,5 @@ class Ingredients(Base):
     ingredient_price = Column(Integer, nullable=False)
     order_count = Column(Integer, nullable=False)
 
-    created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False, onupdate=func.now())

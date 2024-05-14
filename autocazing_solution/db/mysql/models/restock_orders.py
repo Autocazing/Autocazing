@@ -23,7 +23,7 @@ class RestockOrders(Base):
     restock_order_id = Column(Integer, primary_key=True, autoincrement=True)
     store_id = Column(Integer, nullable=false)
     restock_order_specifics = relationship("RestockOrderSpecifics", back_populates="restock_orders", cascade="all, delete-orphan")
-    status = Column(Enum(RestockStatus), default=RestockStatus.WRITING, nullable=False)
+    status = Column(Enum(RestockStatus), server_default="WRITING", nullable=False)
 
-    created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False, onupdate=func.now())
