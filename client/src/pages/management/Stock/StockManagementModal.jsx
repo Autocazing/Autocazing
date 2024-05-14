@@ -1,7 +1,9 @@
 import Modal from "react-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
 import ExcelJS from "exceljs";
+import { MaterialGetApi } from "../../../apis/server/MaterialApi";
+
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -29,15 +31,20 @@ const customStyles = {
         overflow: "auto",
     },
 };
-const StockManagementModal = ({ isOpen, onClose }) => {
+const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [stockPostData, setStockPostData] = useState([
         {
-            name: "",
-            volume: 0,
-            period: "",
-            predictOrder: 0,
+            quantity: initialValue.quantity || 0,
+            expirationDate: initialValue.expirationDate || "",
+            ingredientId: initialValue.ingredientId || 0,
         },
     ]);
+
+    useEffect(() => {
+        console.log(stockPostData);
+    }, [stockPostData]);
+
+    const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
@@ -46,6 +53,13 @@ const StockManagementModal = ({ isOpen, onClose }) => {
             [name]: type === "number" ? parseInt(value, 10) || 0 : value,
         }));
         // console.log(stockPostData);
+    };
+
+    const handleSelectChange = (e) => {
+        setStockPostData((prevState) => ({
+            ...prevState,
+            ingredientId: parseInt(e.target.value, 10),
+        }));
     };
 
     const fileselect = (e) => {
@@ -83,7 +97,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                     name,
                     period,
                     volume,
-                    predictOrder,
+                    // predictOrder,
                 };
                 // console.log(item);
 
@@ -157,9 +171,9 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         {item.period}
                                     </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         {item.predictOrder}
-                                    </td>
+                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>
@@ -185,35 +199,22 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         품목명
                     </label>
                     <select
-                        name="name"
-                        onChange={handleInputChange}
+                        name="ingredientId"
+                        onChange={handleSelectChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option
-                            value=""
-                            disabled
-                            className="text-body dark:text-bodydark"
-                        >
+                        <option value="" disabled>
                             재고 추가할 품목을 선택해주세요
                         </option>
-                        <option
-                            value="우유"
-                            className="text-body dark:text-bodydark"
-                        >
-                            우유
-                        </option>
-                        <option
-                            value="원두"
-                            className="text-body dark:text-bodydark"
-                        >
-                            원두
-                        </option>
-                        <option
-                            value="연유"
-                            className="text-body dark:text-bodydark"
-                        >
-                            연유
-                        </option>
+                        {materialInfo &&
+                            materialInfo.map((material) => (
+                                <option
+                                    key={material.ingredientId}
+                                    value={material.ingredientId}
+                                >
+                                    {material.ingredientName}
+                                </option>
+                            ))}
                     </select>
                 </div>
                 <div className="mb-4.5">
@@ -221,7 +222,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         총량
                     </label>
                     <input
-                        name="volume"
+                        name="quantity"
                         onChange={handleInputChange}
                         type="number"
                         placeholder="총량 입력"
@@ -233,13 +234,13 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         유통기한
                     </label>
                     <input
-                        name="period"
+                        name="expirationDate"
                         onChange={handleInputChange}
                         type="date"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div>
-                <div className="mb-4.5">
+                {/* <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         발주 예정 수량
                     </label>
@@ -250,7 +251,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         placeholder="발주 예정 수량 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                </div>
+                </div> */}
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
                     추가하기

@@ -16,7 +16,7 @@ const StockListInfo = ({ stock, isLastItem }) => {
                     <img src={stock.image} alt="tmp"></img>
                 </div> */}
                 <p className=" text-black dark:text-white text-cen sm:block">
-                    {/* {stock.stockName} */}
+                    {stock.ingredientName}
                 </p>
             </div>
 
