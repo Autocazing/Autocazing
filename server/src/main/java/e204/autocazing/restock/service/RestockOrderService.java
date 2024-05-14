@@ -159,7 +159,8 @@ public class RestockOrderService {
                     requestDtoList.add(requestDto);
                 }
 
-                smsUtil.sendOne(requestDtoList, storeName);
+                //시연할 때 주석 해제해야합니다!
+                //smsUtil.sendOne(requestDtoList, storeName);
             }
         }
 
