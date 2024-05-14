@@ -33,7 +33,11 @@ function Pos() {
         setPaymentMode(null);
     };
 
-    const addToCart = (productId) => {
+    const addToCart = (productId, soldOut) => {
+        if (soldOut) {
+            // 만약 상품이 soldOut이면 아무것도 하지 않음
+            return;
+        }
         const found = cart.some((el) => el.menuId === productId);
         if (found) {
             const newProd = products.map((p) =>
@@ -178,7 +182,7 @@ function Pos() {
     };
 
     useEffect(() => {
-        console.log(Menu);
+        // console.log(Menu);
         if (Menu !== undefined) {
             const updatedMenu = Menu.map((product) => ({
                 ...product,
@@ -216,10 +220,21 @@ function Pos() {
                     <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4">
                         {products?.map((product) => (
                             <div
-                                className="col-span-1 lg:py-8 bg-white rounded-md shadow-sm px-2 py-3 group hover:shadow-lg hover:scale-[102%] transition duration-300 ease-linear"
-                                onClick={() => addToCart(product.menuId)}
+                                className={`col-span-1 lg:py-8 bg-white rounded-md shadow-sm px-2 py-3 group hover:shadow-lg hover:scale-[102%] transition duration-300 ease-linear relative`}
+                                onClick={() =>
+                                    addToCart(product.menuId, product.soldOut)
+                                }
                                 key={product.menuName}
                             >
+                                {/* Sold Out 레이블 추가 */}
+                                {product.soldOut && (
+                                    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                                        <p className="text-red-500 font-bold text-2xl transform -rotate-45">
+                                            Sold Out
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="px-0 h-20 lg:h-28 rounded-lg">
                                     <img
                                         src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
