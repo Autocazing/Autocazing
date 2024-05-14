@@ -25,19 +25,10 @@ async def register_with_eureka():
     except Exception as e:
         print(f"Failed to register with Eureka: {e}")
 
-async def start_kafka_consumer():
-    try:
-        asyncio.create_task(consume_messages())
-        print("Kafka consumer started")
-    except Exception as e:
-        print(f"Failed to start Kafka consumer: {e}")
-
 @app.on_event("startup")
 async def startup_event():
-    await asyncio.gather(
-        register_with_eureka(),
-        # start_kafka_consumer()
-    )
+    register_with_eureka()
+    kafka_task = asyncio.create_task(consume_messages())
 
 # Dependency
 def get_db():
@@ -54,5 +45,5 @@ async def root():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    # consumer.close()  # Kafka 컨슈머 종료
+    consumer.close()  # Kafka 컨슈머 종료
     eureka_client.stop()
