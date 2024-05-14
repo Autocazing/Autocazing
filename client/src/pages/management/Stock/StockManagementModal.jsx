@@ -40,9 +40,11 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
         },
     ]);
 
-    // useEffect(() => {
-    //     console.log(stockPostData);
-    // }, [stockPostData]);
+    const [productNames, setProductNames] = useState({});
+
+    useEffect(() => {
+        console.log(stockPostData);
+    }, [stockPostData]);
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
 
@@ -62,56 +64,58 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
         }));
     };
 
-    const fileselect = (e) => {
-        const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
+    const handleFileSelect = (e) => {
+        const selectedFile = e.target.files[0];
 
-        // 파일 읽기
         const workbook = new ExcelJS.Workbook();
         const reader = new FileReader();
 
         reader.onload = async (e) => {
             const data = new Uint8Array(e.target.result);
-            await workbook.xlsx.load(data); // 엑셀 파일 로드
+            await workbook.xlsx.load(data);
 
             const worksheet = workbook.getWorksheet(1);
-            const newData = []; // 새로운 데이터를 저장할 배열
+            const newData = [];
+            const newProductNames = {};
 
-            // 데이터 처리
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return; // 첫 번째 행(제목 행)은 건너뜀
+                if (rowNumber === 1) return; // 첫 번째 행을 건너뜀
                 const rowData = row.values.filter((value) => value != null);
-                const [name, period2, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
+                const [name, period, volume] = rowData.slice(0, 3);
 
-                let period = period2;
+                const expirationDate =
+                    period instanceof Date
+                        ? `${period.getFullYear()}-${(period.getMonth() + 1)
+                              .toString()
+                              .padStart(2, "0")}-${period
+                              .getDate()
+                              .toString()
+                              .padStart(2, "0")}`
+                        : period;
 
-                if (period2 instanceof Date) {
-                    const year = period2.getFullYear();
-                    const month = (period2.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0");
-                    const day = period2.getDate().toString().padStart(2, "0");
-                    period = `${year}-${month}-${day}`;
+                const ingredientData = materialInfo.find(
+                    (material) => material.ingredientName === name,
+                );
+                const ingredientId = ingredientData
+                    ? ingredientData.ingredientId
+                    : null;
+
+                if (ingredientId !== null) {
+                    newData.push({
+                        ingredientId,
+                        quantity: volume,
+                        expirationDate,
+                    });
+                    newProductNames[ingredientId] = name;
                 }
-
-                const item = {
-                    name,
-                    period,
-                    volume,
-                    // predictOrder,
-                };
-                // console.log(item);
-
-                newData.push(item);
             });
 
-            setStockPostData(newData); // 모든 데이터를 한 번에 상태로 설정
+            setStockPostData(newData);
+            setProductNames(newProductNames);
         };
-        // console.log(stockPostData);
 
-        // 파일을 ArrayBuffer로 읽음
-        reader.readAsArrayBuffer(selectedfile);
+        reader.readAsArrayBuffer(selectedFile);
     };
-
     return (
         <Modal
             isOpen={isOpen}
@@ -141,8 +145,8 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                 재고추가
             </h1>
             <div className="p-6.5">
-                {stockPostData.length > 0 ? (
-                    <table className="min-w-full leading-normal">
+                {stockPostData.some((item) => item.quantity > 0) ? (
+                    <table className="min-w-full leading-normal mb-6">
                         <thead>
                             <tr>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -154,32 +158,26 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     유통기한
                                 </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    발주 예정 수량
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {stockPostData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.name}
+                                        {productNames[item.ingredientId]}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.volume}
+                                        {item.quantity}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.period}
+                                        {item.expirationDate}
                                     </td>
-                                    {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.predictOrder}
-                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p className="text-gray-800 font-semibold text-center text-lg mt-5 mb-10">
+                    <p className="text-gray-800 font-semibold text-center text-lg mt-10 mb-10">
                         영수증 파일이 있다면 파일을 넣어주세요.
                     </p>
                 )}
@@ -189,7 +187,7 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         영주증 파일
                     </label>
                     <input
-                        onChange={fileselect}
+                        onChange={handleFileSelect}
                         type="file"
                         className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
