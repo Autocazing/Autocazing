@@ -31,4 +31,7 @@ public interface StockRepository extends JpaRepository<StockEntity, Integer> {
 
     @Query("SELECT COUNT(s) FROM StockEntity s WHERE s.ingredient.id = :ingredientId AND s.expirationDate < :date")
     int countByIngredientAndExpirationDateBefore(@Param("ingredientId") Integer ingredientId,@Param("date") LocalDate date);
+
+    @Query(value = "SELECT s FROM StockEntity s WHERE s.ingredient.store.StoreId = :storeId ")
+	List<StockEntity> findAllByStoreId(Integer storeId);
 }

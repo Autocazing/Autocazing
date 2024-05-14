@@ -4,6 +4,7 @@ import e204.autocazing.db.entity.IngredientEntity;
 import e204.autocazing.db.entity.StockEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.StockRepository;
+import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.dto.PostStockDto;
 import e204.autocazing.stock.dto.StockDetailsDto;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class StockService {
     @Autowired
     private StockRepository stockRepository;
+    @Autowired
+    private StoreRepository storeRepository;
     @Autowired
     private IngredientRepository ingredientRepository;
     @Autowired
@@ -45,11 +48,12 @@ public class StockService {
     }
 
     // 전체 재고 조회
-    public List<StockDetailsDto> findAllStocks() {
-        // 전체 재고를 조회하고 StockDetailsDto 리스트로 변환합니다.
-        List<StockEntity> stocks = stockRepository.findAll();
-        List<StockDetailsDto> stockDetailsList = new ArrayList<>();
+    public List<StockDetailsDto> findAllStocks(String loginId) {
+        Integer storeId = storeRepository.findByLoginId(loginId);
 
+        // 전체 재고를 조회하고 StockDetailsDto 리스트로 변환합니다.
+        List<StockEntity> stocks = stockRepository.findAllByStoreId(storeId);
+        List<StockDetailsDto> stockDetailsList = new ArrayList<>();
 
         for (StockEntity stock : stocks) {
             int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());

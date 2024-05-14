@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +55,10 @@ public class StockController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<StockDetailsDto>> getAllStocks() {
-        List<StockDetailsDto> stocks = stockService.findAllStocks();
+    public ResponseEntity<List<StockDetailsDto>> getAllStocks(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+
+        List<StockDetailsDto> stocks = stockService.findAllStocks(loginId);
         return ResponseEntity.ok(stocks);
     }
 
