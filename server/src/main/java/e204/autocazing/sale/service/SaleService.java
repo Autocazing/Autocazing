@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import e204.autocazing.db.repository.OrderRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SaleService {
 
 	@Autowired
@@ -35,7 +37,7 @@ public class SaleService {
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
-			System.out.println("storeId : "+storeId);
+			log.info("SaleService_storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
 			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
