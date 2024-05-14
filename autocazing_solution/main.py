@@ -10,23 +10,52 @@ from db.influxdb.connection import InfluxDBConnection
 
 app = FastAPI(docs_url='/api/solution-service/docs', openapi_url='/api/solution-service/openapi.json')
 settings = get_setting()
+
 # 하위 api 라우터들 main에 추가
 app.include_router(monthly_sales_router, prefix="/api/solution")
+
 # InfluxDB 연결 객체 생성
-influx_connection = InfluxDBConnection(host=settings.INFLUXDB_HOST, port=settings.INFLUXDB_PORT,
-    username=settings.INFLUXDB_USER_NAME, password=settings.INFLUXDB_USER_PASSWORD, token=settings.INFLUXDB_USER_TOKEN)
+influx_connection = InfluxDBConnection(
+    host=settings.INFLUXDB_HOST,
+    port=settings.INFLUXDB_PORT,
+    username=settings.INFLUXDB_USER_NAME,
+    password=settings.INFLUXDB_USER_PASSWORD,
+    token=settings.INFLUXDB_USER_TOKEN
+)
+
+async def register_with_eureka():
+    try:
+        await eureka_client.init_async(
+            eureka_server="http://discovery-server:8761/eureka",
+            app_name="solution-service",
+            instance_port=8088,
+            instance_host="solution-service"
+        )
+        print("Registered with Eureka")
+    except Exception as e:
+        print(f"Failed to register with Eureka: {e}")
+
+async def connect_to_influxdb():
+    try:
+        influx_connection.connect()
+        print("Connected to InfluxDB")
+    except Exception as e:
+        print(f"Failed to connect to InfluxDB: {e}")
+
+async def start_kafka_consumer():
+    try:
+        asyncio.create_task(consume_messages())
+        print("Kafka consumer started")
+    except Exception as e:
+        print(f"Failed to start Kafka consumer: {e}")
 
 @app.on_event("startup")
 async def startup_event():
-    await eureka_client.init_async(
-        eureka_server="http://discovery-server:8761/eureka",
-        app_name="solution-service",
-        instance_port=8088,
-        instance_host="solution-service"
+    await asyncio.gather(
+        register_with_eureka(),
+        connect_to_influxdb(),
+        start_kafka_consumer()
     )
-    influx_connection.connect()
-    # print("kafka 연결")
-    # asyncio.create_task(consume_messages())    # Kafka 메시지 수신을 위한 비동기 태스크 생성
 
 # Dependency
 def get_db():
@@ -38,11 +67,11 @@ def get_db():
 
 @app.get("/api/fastapi-test")
 async def root():
-    producer.send('test', value={"id":"test on python", "data":"{\"id\":\"test on python\",\"message\":\"test message python\"}"})
+    producer.send('test', value={"id": "test on python", "data": "{\"id\":\"test on python\",\"message\":\"test message python\"}"})
     return {"message": "Hello World"}
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    # consumer.close()  # Kafka 컨슈머 종료
+    consumer.close()  # Kafka 컨슈머 종료
     influx_connection.client.close()
     eureka_client.stop()
