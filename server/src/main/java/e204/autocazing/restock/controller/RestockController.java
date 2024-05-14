@@ -7,11 +7,14 @@ import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import e204.autocazing.restockSpecific.service.RestockSpecificService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +39,10 @@ public class RestockController {
             )
     })
     @PostMapping("")
-    public ResponseEntity createRestockOrder(@RequestBody PostRestockDto postRestockDto) {
-        restockOrderService.createRestockOrder(postRestockDto);
+    public ResponseEntity createRestockOrder(@RequestBody PostRestockDto postRestockDto, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+
+        restockOrderService.createRestockOrder(postRestockDto, loginId);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
@@ -51,15 +56,14 @@ public class RestockController {
     })
     @GetMapping("")
     public ResponseEntity getAllRestockOrders(@RequestParam(value = "status", required = false)
-                                                  @Schema(description = "발주 상태 필터 status 를 리스트로 보내면됩니다. defalut는 아무것도없을때",
-                                                          example = "/api/restockOrders?status=ORDERED&status=ON_DELIVERY&status=ARRIVED" // 예시를 보여주는 용도
-                                                          ) // 가능한 ENUM 값들
-                                                  List<RestockOrderEntity.RestockStatus> status) {
-        List<RestockOrderResponse> restocks = restockOrderService.findAllRestockOrders(status);
+                                                  @Parameter(description = "발주 상태 필터 status 를 리스트로 보내면됩니다. defalut는 아무것도없을때",
+                                                      required = false,
+                                                      schema = @Schema(type = "string", allowableValues = {"","WRITING", "ORDERED", "ARRIVED", "ON_DELIVERY", "COMPLETE"})) // 가능한 ENUM 값들
+                                                  List<RestockOrderEntity.RestockStatus> status, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<RestockOrderResponse> restocks = restockOrderService.findAllRestockOrders(status, loginId);
         return ResponseEntity.ok(restocks);
     }
-
-
 
     @Operation(summary = "발주리스트 상세 조회", description = "발주리스트 상세조회를 수행하  는 API입니다.")
     @ApiResponses({
@@ -85,8 +89,10 @@ public class RestockController {
             )
     })
     @PutMapping("/{restockOrderId}")
-    public ResponseEntity updateRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId, @RequestBody UpdateRestockDto updateRestockDto) {
-        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto);
+    public ResponseEntity updateRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+        @RequestBody UpdateRestockDto updateRestockDto, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
         return ResponseEntity.ok(restockDetails);
     }
 
