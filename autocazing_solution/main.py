@@ -4,6 +4,7 @@ from db.mysql.session import mysqlSession
 from py_eureka_client import eureka_client
 from messaging.kafka_instance import producer, consumer
 from api.monthly_sales.monthly_sales_router import monthly_sales_router
+from api.report.report_router import report_router
 from messaging.kafka_cosume_logic import consume_messages
 import asyncio
 import logging
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 # 하위 api 라우터들 main에 추가
 app.include_router(monthly_sales_router, prefix="/api/solution")
+app.include_router(report_router, prefix="/api/solution")
 
 async def register_with_eureka():
     try:
@@ -30,7 +32,7 @@ async def register_with_eureka():
 @app.on_event("startup")
 async def startup_event():
     register_with_eureka()
-    asyncio.create_task(consume_messages())
+    # asyncio.create_task(consume_messages())
 
 @app.get("/api/fastapi-test")
 async def root():
@@ -39,7 +41,7 @@ async def root():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    consumer.close()  # Kafka 컨슈머 종료
+    # consumer.close()  # Kafka 컨슈머 종료
     eureka_client.stop()
 
 # Dependency injection for database session
