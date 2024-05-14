@@ -4,7 +4,6 @@ class InfluxDBConnection:
     def __init__(self, token: str):
         self.token = token
         self.client = None
-        self.connect()
 
     def connect(self):
         """Instantiate a connection to the InfluxDB."""
