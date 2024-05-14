@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "alerts")
 public class AlertEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
