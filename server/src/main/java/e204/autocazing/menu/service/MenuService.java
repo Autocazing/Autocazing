@@ -40,6 +40,7 @@ public class MenuService {
         menu.setOnEvent(postMenuDto.getOnEvent());
         menu.setDiscountRate(postMenuDto.getDiscountRate());
         menu.setImageUrl(postMenuDto.getImageUrl());
+        menu.setSoldOut(postMenuDto.getSoldOut());
         // 가게 정보 설정
         StoreEntity store = storeRepository.findById(postMenuDto.getStoreId())
                 .orElseThrow(() -> new RuntimeException("Store not found with id: " + postMenuDto.getStoreId()));
@@ -173,6 +174,7 @@ public class MenuService {
         menuDetailsDto.setMenuName(menuEntity.getMenuName());
         menuDetailsDto.setMenuPrice(menuEntity.getMenuPrice());
         menuDetailsDto.setOnEvent(menuEntity.getOnEvent());
+        menuDetailsDto.setSoldOut(menuEntity.getSoldOut());
         menuDetailsDto.setDiscountRate(menuEntity.getDiscountRate());
         menuDetailsDto.setImageUrl(menuEntity.getImageUrl());
         menuDetailsDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);

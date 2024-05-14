@@ -49,13 +49,12 @@ public class StockService {
         // 전체 재고를 조회하고 StockDetailsDto 리스트로 변환합니다.
         List<StockEntity> stocks = stockRepository.findAll();
         List<StockDetailsDto> stockDetailsList = new ArrayList<>();
-
-
         for (StockEntity stock : stocks) {
             int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
             StockDetailsDto stockDetails = new StockDetailsDto();
             stockDetails.setStockId(stock.getStockId());
             stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
+            stockDetails.setIngredientName(stock.getIngredient().getIngredientName());
             stockDetails.setExpirationDate(stock.getExpirationDate());
             stockDetails.setQuantity(stock.getQuantity());
             stockDetails.setDeliveringCount(deliveringCount);

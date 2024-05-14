@@ -41,7 +41,7 @@ public class MenuEntity {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private boolean soldOut;
+    private Boolean soldOut;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuIngredientEntity> menuIngredients;

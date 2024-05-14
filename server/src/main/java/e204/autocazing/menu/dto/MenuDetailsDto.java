@@ -17,6 +17,7 @@ public class MenuDetailsDto {
     private String menuName;
     private Integer menuPrice;
     private Boolean onEvent;
+    private Boolean soldOut;
     private Integer discountRate;
     private List<IngredientoDto> ingredientoDtoList;
     private Integer storeId;
