@@ -3,6 +3,7 @@ package com.e204.autocazing_alert.alert.service;
 
 import com.e204.autocazing_alert.alert.dto.AlertDetailsDto;
 import com.e204.autocazing_alert.db.entity.AlertEntity;
+//import com.e204.autocazing_alert.db.repository.AlertRepository;
 import com.e204.autocazing_alert.db.repository.AlertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ public class AlertService {
 
     @Autowired
     private AlertRepository alertRepository;
-
     public List<AlertDetailsDto> findAllAlert(String loginId) {
         List<AlertEntity> alertEntities =alertRepository.findByLoginId(loginId);
         return alertEntities
