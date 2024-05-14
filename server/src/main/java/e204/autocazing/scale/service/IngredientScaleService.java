@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class IngredientScaleService {
     @Autowired
     private IngredientScaleRepository ingredientScaleRepository;
@@ -55,15 +54,12 @@ public class IngredientScaleService {
         Integer storeId = storeRepository.findByLoginId(loginId);
         List<IngredientScaleEntity> ingredientScaleEntityList = ingredientScaleRepository.findAllByStoreId(storeId);
 
-        log.info("!!!!!!!ingredientEntity : "+ingredientScaleEntityList);
-
         List<IngredientScaleDto> ingredientScaleDtoList = new ArrayList<>();
 
         for(IngredientScaleEntity ingredient : ingredientScaleEntityList){
             ingredientScaleDtoList.add(fromEntity(ingredient));
         }
 
-        log.info("!!!!!!!!!!ingredientScaleDtoList : "+ingredientScaleDtoList);
         return ingredientScaleDtoList;
     }
 

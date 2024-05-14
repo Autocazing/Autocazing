@@ -29,22 +29,26 @@ public class RestockOrderService {
 
     // 장바구니생성
     @Transactional
-    public void createRestockOrder(PostRestockDto postRestockDto) {
+    public void createRestockOrder(PostRestockDto postRestockDto, String loginId) {
+        Integer storeId = storeRepository.findByLoginId(loginId);
+
         RestockOrderEntity restockOrder = new RestockOrderEntity();
         restockOrder.setStatus(postRestockDto.getStatus());
-        StoreEntity store = storeRepository.findById(postRestockDto.getStoreId())
-                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + postRestockDto.getStoreId()));
+        StoreEntity store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + storeId));
         restockOrder.setStore(store);
         restockOrderRepository.save(restockOrder);
     }
 
     // 발주  조회
-    public List<RestockOrderResponse> findAllRestockOrders(List<RestockOrderEntity.RestockStatus> status) {
+    public List<RestockOrderResponse> findAllRestockOrders(List<RestockOrderEntity.RestockStatus> status, String loginId) {
+        Integer storeId = storeRepository.findByLoginId(loginId);
+
         List<RestockOrderEntity> orders;
         if (status == null || status.isEmpty()) {
-            orders = restockOrderRepository.findAll();
+            orders = restockOrderRepository.findAllByStoreId(storeId);
         } else {
-            orders = restockOrderRepository.findByStatusIn(status);
+            orders = restockOrderRepository.findByStatusInAndStoreId(status, storeId);
         }
         //발주Entity 리트에 넣기 set하기
         return orders.stream().map(this::mapToRestockOrderResponse).collect(Collectors.toList());
@@ -56,7 +60,6 @@ public class RestockOrderService {
         response.setStatus(entity.getStatus());
         response.setCreatedAt(entity.getCreatedAt());
         response.setUpdatedAt(entity.getUpdatedAt());
-        response.setStoreId(entity.getStore().getStoreId());
         return response;
     }
 
@@ -90,7 +93,7 @@ public class RestockOrderService {
 
     //status 상태변경
     @Transactional
-    public UpdatedRestockDto updateRestockOrderStatus(Integer restockOrderId, UpdateRestockDto updateRestockDto) {
+    public UpdatedRestockDto updateRestockOrderStatus(Integer restockOrderId, UpdateRestockDto updateRestockDto, String loginId) {
         RestockOrderEntity restockOrder = restockOrderRepository.findById(restockOrderId)
                 .orElseThrow(() -> new RuntimeException("Restock order not found"));
 
@@ -107,9 +110,8 @@ public class RestockOrderService {
 
         //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
         if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() != RestockOrderEntity.RestockStatus.WRITING) {
-            //todo storeId 넣어야됨.
             //새로운 장바구니 만들기
-            createNewRestockOrder();
+            createNewRestockOrder(loginId);
             //todo
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
         }
@@ -140,9 +142,9 @@ public class RestockOrderService {
         }
     }
     //새로운 장바구니 만들기
-    private void createNewRestockOrder() {
+    private void createNewRestockOrder(String loginId) {
         PostRestockDto postRestockDto = new PostRestockDto();
-        createRestockOrder(postRestockDto);
+        createRestockOrder(postRestockDto, loginId);
     }
 
     //주문 후 발주할 재료 추가
