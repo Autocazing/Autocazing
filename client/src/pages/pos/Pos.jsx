@@ -48,16 +48,18 @@ function Pos() {
                           quantity: newProd.find(
                               (item) => item.menuId === productId,
                           ).quantity,
-                          menuPrice:
-                              p.menuPrice +
+                          realPrice:
+                              p.realPrice +
                               newProd.find((item) => item.menuId === productId)
-                                  .menuPrice,
+                                  .realPrice,
                       }
                     : p,
             );
 
             let sum = newCart.reduce(function (acc, obj) {
-                return acc + obj.menuPrice;
+                console.log(products);
+                console.log(obj);
+                return acc + obj.realPrice;
             }, 0);
             setTotal(sum);
 
@@ -67,9 +69,9 @@ function Pos() {
             newProd[0].quantity = 1;
             setTotal(
                 total +
-                    newProd.find((item) => item.menuId === productId).menuPrice,
+                    newProd.find((item) => item.menuId === productId).realPrice,
             );
-            // console.log(newProd[0].menuPrice);
+            // console.log(newProd[0].realPrice);
             setCart(() => [...cart, ...newProd]);
         }
     };
@@ -89,16 +91,16 @@ function Pos() {
                           quantity: newProd.find(
                               (item) => item.menuId === productId,
                           ).quantity,
-                          menuPrice:
-                              p.menuPrice +
+                          realPrice:
+                              p.realPrice +
                               newProd.find((item) => item.menuId === productId)
-                                  .menuPrice,
+                                  .realPrice,
                       }
                     : p,
             );
 
             let sum = newCart.reduce(function (acc, obj) {
-                return acc + obj.menuPrice;
+                return acc + obj.realPrice;
             }, 0);
             setTotal(sum);
 
@@ -108,9 +110,9 @@ function Pos() {
             newProd[0].quantity = 1;
             setTotal(
                 total +
-                    newProd.find((item) => item.menuId === productId).menuPrice,
+                    newProd.find((item) => item.menuId === productId).realPrice,
             );
-            // console.log(newProd[0].menuPrice);
+            // console.log(newProd[0].realPrice);
             setCart(() => [...cart, ...newProd]);
         }
     };
@@ -128,17 +130,17 @@ function Pos() {
                       quantity: newProd.find(
                           (item) => item.menuId === productId,
                       ).quantity,
-                      menuPrice:
-                          p.menuPrice +
+                      realPrice:
+                          p.realPrice +
                           newProd.find((item) => item.menuId === productId)
-                              .menuPrice,
+                              .realPrice,
                   }
                 : p,
         );
 
         const filtered = newCart.filter((p) => p.quantity > 0);
         let sum = filtered.reduce(function (acc, obj) {
-            return acc + obj.menuPrice;
+            return acc + obj.realPrice;
         }, 0);
         setTotal(sum);
 
@@ -176,8 +178,15 @@ function Pos() {
     };
 
     useEffect(() => {
+        console.log(Menu);
         if (Menu !== undefined) {
-            setProducts(Menu);
+            const updatedMenu = Menu.map((product) => ({
+                ...product,
+                realPrice: product.onEvent
+                    ? product.menuPrice * (1 - product.discountRate / 100)
+                    : product.menuPrice,
+            }));
+            setProducts(updatedMenu); // products 상태 업데이트
         }
     }, [Menu]);
 
@@ -223,7 +232,19 @@ function Pos() {
                                 </p>
                                 <p className="font-bold py-2 bg-gray-200 text-center rounded text-base">
                                     {" "}
-                                    {product?.menuPrice} 원
+                                    {product.onEvent ? (
+                                        <>
+                                            <span className="line-through text-gray-500">
+                                                {product?.menuPrice} 원
+                                            </span>
+                                            <br />
+                                            <span className="text-red-500">
+                                                {product?.realPrice}원
+                                            </span>
+                                        </>
+                                    ) : (
+                                        `${product?.realPrice} 원`
+                                    )}
                                 </p>
                             </div>
                         ))}
@@ -264,7 +285,7 @@ function Pos() {
                                             {p.menuName}
                                         </p>
                                         <p className="font-semibold text-sm  md:text-base">
-                                            {formatCurrency.format(p.menuPrice)}
+                                            {formatCurrency.format(p.realPrice)}
                                         </p>
                                     </div>
                                 </div>
