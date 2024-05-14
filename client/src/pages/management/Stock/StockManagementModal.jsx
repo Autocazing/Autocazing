@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
 import ExcelJS from "exceljs";
 import { MaterialGetApi } from "../../../apis/server/MaterialApi";
-import { StockPostApi } from "../../../apis/server/StockApi";
+import { StockEditApi, StockPostApi } from "../../../apis/server/StockApi";
 
 const customStyles = {
     overlay: {
@@ -49,9 +49,15 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
     const postStock = StockPostApi();
+    const editStock = StockEditApi(initialValue.stockId);
 
     const handleSubmit = (e) => {
         postStock.mutate(stockPostData);
+        onClose();
+    };
+
+    const handleEdit = (e) => {
+        editStock.mutate(stockPostData);
         onClose();
     };
 
@@ -258,12 +264,21 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </div> */}
 
-                <button
-                    onClick={handleSubmit}
-                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                >
-                    추가하기
-                </button>
+                {Object.keys(initialValue).length === 0 ? (
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        추가하기
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleEdit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        수정하기
+                    </button>
+                )}
             </div>
         </Modal>
     );
