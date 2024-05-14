@@ -10,7 +10,10 @@ class Settings(BaseSettings):   # env 파일에 작성한 내용을 읽어옴
     KAFKA_BOOTSTRAP_SERVER0: str
     KAFKA_BOOTSTRAP_SERVER1: str
     KAFKA_BOOTSTRAP_SERVER2: str
-    INFLUX_DB_TOKEN: str
+    INFLUXDB_HOST: str
+    INFLUXDB_USER_NAME: str
+    INFLUXDB_USER_PASSWORD: str
+    INFLUXDB_USER_TOKEN: str
 
     class Config:
         env_file = ".env"
