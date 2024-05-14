@@ -52,7 +52,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
 			//loginId를 request body에 넣어주기
 			ServerHttpRequest includeLoginIdRequest = exchange.getRequest()
-					.mutate().header("loginId", loginId).build();
+				.mutate().header("loginId", loginId).build();
 
 			return chain.filter(exchange.mutate().request(includeLoginIdRequest).build());
 		});
@@ -62,11 +62,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 		Key secretKey = Keys.hmacShaKeyFor(env.getProperty("token.secret").getBytes(StandardCharsets.UTF_8));
 
 		return Jwts.parserBuilder()
-				.setSigningKey(secretKey)
-				.build()
-				.parseClaimsJws(jwt)
-				.getBody()
-				.getSubject();
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(jwt)
+			.getBody()
+			.getSubject();
 	}
 
 	private boolean isJwtValid(String jwt) {
@@ -75,7 +75,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 		try {
 			byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
 			subject = Jwts.parserBuilder().setSigningKey(secretBytes).build()
-					.parseClaimsJws(jwt).getBody().getSubject();
+				.parseClaimsJws(jwt).getBody().getSubject();
 		} catch (Exception exception) {
 			returnValue = false;
 		}

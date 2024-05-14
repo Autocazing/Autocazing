@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import e204.autocazing.db.repository.OrderRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SaleService {
 
 	@Autowired
@@ -28,15 +30,17 @@ public class SaleService {
 	private StoreRepository storeRepository;
 
 	public List<Map<String, Object>> getSales(String type, String loginId) {
-		List<Map<String, Object>> saleDtoList = new ArrayList<>();
-		LocalDateTime currentTime = LocalDateTime.now();
-
 		Integer storeId = storeRepository.findByLoginId(loginId);
+
+		List<Map<String, Object>> saleDtoList = new ArrayList<>();
+		LocalDateTime currentTime = LocalDateTime.now().plusHours(9);
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
+			log.info("SaleService_storeId : "+storeId);
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
-			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
+
+			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
 
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
@@ -149,18 +153,34 @@ public class SaleService {
 		}
 	}
 
-	public Integer getSoldNumber(String loginId) {
+	public Map<String, Integer> getSoldNumber(String loginId) {
 		Integer storeId = storeRepository.findByLoginId(loginId);
-		LocalDate currentDay = LocalDate.from(LocalDateTime.now());
-		return orderRepository.getSoldNumber(currentDay, storeId);
+
+		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
+		LocalDate yesterday = today.minusDays(1);
+
+		List<Map<String, Object>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
+
+		Map<String, Integer> salesComparison = new HashMap<>();
+		salesComparison.put("yesterdaySold", 0);
+		salesComparison.put("todaySold", 0);
+
+		salesData.forEach(map -> {
+			String day = (String) map.get("day");
+			Number totalSales = (Number) map.get("totalSales");
+			if (totalSales != null)
+				salesComparison.put(day, totalSales.intValue());
+		});
+
+		return salesComparison;
 	}
 
 	public Map<String, Double> getAvgSales(String loginId) {
 		Integer storeId = storeRepository.findByLoginId(loginId);
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
-		LocalDateTime startDate = LocalDateTime.now().minusMonths(1);
-		LocalDateTime endDate = LocalDateTime.now();
+		LocalDateTime startDate = LocalDateTime.now().plusHours(9).minusMonths(1);
+		LocalDateTime endDate = LocalDateTime.now().plusHours(9);
 		saleDtoList = orderRepository.getAvgSales(startDate, endDate, storeId);
 
 		Map<String, List<Double>> salesByDay = new HashMap<>();

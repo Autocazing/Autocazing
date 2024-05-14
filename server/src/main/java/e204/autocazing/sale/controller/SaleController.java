@@ -1,6 +1,12 @@
 package e204.autocazing.sale.controller;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("api/sales")
@@ -61,18 +68,18 @@ public class SaleController {
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
 		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
 		String loginId = httpServletRequest.getHeader("loginId");
-
+		//
 		List<Map<String, Object>> sales = saleService.getSales(type, loginId);
 		return ResponseEntity.ok(sales);
 	}
 
-	@Operation(summary = "금일 판매 잔 수 조회 요청", description = "오늘 몇 잔 판매했는지를 조회하는 API입니다. ")
+	@Operation(summary = "오늘, 어제 판매 잔 수 조회 요청", description = "오늘과 어제 몇 잔 판매했는지를 조회하는 API입니다. ")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "Sales data retrieved successfully",
 			content = @Content(mediaType = "application/json",
 				examples = {
 					@ExampleObject(
-						value = "35"
+						value = "{\"yesterdaySold\": 23, \"todaySold\": 33}"
 					)
 				}
 			)
@@ -81,10 +88,9 @@ public class SaleController {
 	@GetMapping("/sold")
 	public ResponseEntity getSoldNumber(HttpServletRequest httpServletRequest) {
 		String loginId = httpServletRequest.getHeader("loginId");
-		Integer soldNumber = saleService.getSoldNumber(loginId);
+		Map<String, Integer> soldNumbers = saleService.getSoldNumber(loginId);
 
-		if(soldNumber == null) soldNumber = 0;
-		return ResponseEntity.ok(soldNumber);
+		return ResponseEntity.ok(soldNumbers);
 	}
 
 	@Operation(summary = "요일별 평균 매출 요청", description = "요청일로부터 한 달 전까지 매출 데이터 기반 요일 별 평균 매출 조회 API입니다. ")
@@ -93,13 +99,13 @@ public class SaleController {
 			content = @Content(mediaType = "application/json",
 				examples = {
 					@ExampleObject(
-						value = "{\"Monday\": 29392.14285714286,\n"
-							+ "    \"Thursday\": 31351.634146341465,\n"
-							+ "    \"Friday\": 31750.06358381503,\n"
-							+ "    \"Sunday\": 32922.87804878049,\n"
-							+ "    \"Wednesday\": 31548.51595744681,\n"
-							+ "    \"Tuesday\": 31635.365853658535,\n"
-							+ "    \"Saturday\": 32592.672514619884}"
+						value = "{\"1\": 29392.14285714286,\n"
+							+ "    \"2\": 31635.365853658535,\n"
+							+ "    \"3\": 31548.51595744681,\n"
+							+ "    \"4\": 31351.634146341465,\n"
+							+ "    \"5\": 31750.06358381503,\n"
+							+ "    \"6\": 32592.672514619884}"
+							+ "    \"7\": 32922.87804878049,\n"
 					)
 				}
 			)
@@ -111,19 +117,30 @@ public class SaleController {
 		String loginId = httpServletRequest.getHeader("loginId");
 		Map<String, Double> sales = saleService.getAvgSales(loginId);
 
-		Map<String, Double> defaultSales = new HashMap<>();
-		defaultSales.put("Monday", 0.0);
-		defaultSales.put("Tuesday", 0.0);
-		defaultSales.put("Wednesday", 0.0);
-		defaultSales.put("Thursday", 0.0);
-		defaultSales.put("Friday", 0.0);
-		defaultSales.put("Saturday", 0.0);
-		defaultSales.put("Sunday", 0.0);
+		Map<String, Double> defaultSales = new LinkedHashMap<>();
 
-		for (Map.Entry<String, Double> entry : sales.entrySet()) {
-			defaultSales.put(entry.getKey(), entry.getValue());
+		LocalDateTime nineHoursLater = LocalDateTime.now().plusHours(9);
+		DayOfWeek dayOfWeekNineHoursLater = nineHoursLater.getDayOfWeek();
+
+		for (int i = 0; i < 7; i++) {
+			DayOfWeek day = dayOfWeekNineHoursLater.minus(i);
+			String dayName = day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase();
+			defaultSales.put(dayName, 0.0);
 		}
 
-		return ResponseEntity.ok(defaultSales);
+		for (Map.Entry<String, Double> entry : sales.entrySet()) {
+			if (defaultSales.containsKey(entry.getKey()))
+				defaultSales.put(entry.getKey(), entry.getValue());
+		}
+
+		LinkedList<Map.Entry<String, Double>> list = new LinkedList<>(defaultSales.entrySet());
+		Collections.reverse(list);
+
+		Map<Integer, Double> indexedSales = new LinkedHashMap<>();
+		int index = 1;
+		for (Map.Entry<String, Double> entry : list)
+			indexedSales.put(index++, entry.getValue());
+
+		return ResponseEntity.ok(indexedSales);
 	}
 }

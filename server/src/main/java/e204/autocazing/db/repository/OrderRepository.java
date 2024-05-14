@@ -34,10 +34,15 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 			+"ORDER BY YEAR(o.createdAt), MONTH(o.createdAt)")
 	List<Map<String, Object>> calculateMonthSales(LocalDateTime startDate, Integer storeId);
 
-	@Query(value = "SELECT SUM(os.menuQuantity) as totalSales "
-			+"FROM OrderEntity o JOIN o.orderSpecific os "
-			+"WHERE DATE(o.createdAt) = :today AND o.store.StoreId = :storeId ")
-	Integer getSoldNumber(LocalDate today, Integer storeId);
+	@Query(value = "SELECT 'todaySold' as day, SUM(os.menuQuantity) as totalSales " +
+		"FROM OrderEntity o JOIN o.orderSpecific os " +
+		"WHERE DATE(o.createdAt) = :today AND o.store.StoreId = :storeId " +
+		"UNION ALL " +
+		"SELECT 'yesterdaySold' as day, SUM(os.menuQuantity) as totalSales " +
+		"FROM OrderEntity o JOIN o.orderSpecific os " +
+		"WHERE DATE(o.createdAt) = :yesterday AND o.store.StoreId = :storeId ")
+	List<Map<String, Object>> getSalesByDay(@Param("today") LocalDate today, @Param("yesterday") LocalDate yesterday, @Param("storeId") Integer storeId);
+
 
 	@Query(value = "SELECT DAYNAME(o.createdAt) as dayOfWeek, os.menuQuantity * os.menuPrice as totalSales "
 			+"FROM OrderEntity o JOIN o.orderSpecific os "
