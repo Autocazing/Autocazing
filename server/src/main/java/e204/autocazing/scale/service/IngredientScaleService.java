@@ -6,6 +6,8 @@ import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class IngredientScaleService {
     @Autowired
     private IngredientScaleRepository ingredientScaleRepository;
@@ -51,11 +54,16 @@ public class IngredientScaleService {
     public List<IngredientScaleDto> findAllIngredientScales(String loginId) {
         Integer storeId = storeRepository.findByLoginId(loginId);
         List<IngredientScaleEntity> ingredientScaleEntityList = ingredientScaleRepository.findAllByStoreId(storeId);
+
+        log.info("ingredientEntity : "+ingredientScaleEntityList);
+
         List<IngredientScaleDto> ingredientScaleDtoList = new ArrayList<>();
 
         for(IngredientScaleEntity ingredient : ingredientScaleEntityList){
             ingredientScaleDtoList.add(fromEntity(ingredient));
         }
+
+        log.info("ingredientScaleDtoList : "+ingredientScaleDtoList);
         return ingredientScaleDtoList;
     }
 
