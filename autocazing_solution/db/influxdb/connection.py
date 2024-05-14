@@ -2,7 +2,9 @@ from influxdb import InfluxDBClient
 from core.config import get_setting
 
 class InfluxDBConnection:
-    def __init__(self, username: str, password: str, token: str):
+    def __init__(self, host: str, port: int, username: str, password: str, token: str):
+        self.host = host
+        self.port = port
         self.username = username
         self.password = password
         self.token = token
@@ -10,7 +12,7 @@ class InfluxDBConnection:
 
     def connect(self):
         """Instantiate a connection to the InfluxDB."""
-        self.client = InfluxDBClient(username=self.username, password=self.password, headers={"Authorization": self.token})
+        self.client = InfluxDBClient(host=self.host, port=self.port, username=self.username, password=self.password, headers={"Authorization": self.token})
         print("Use authorization token: " + self.token)
         version = self.client.ping()
         print("Successfully connected to InfluxDB: " + version)
