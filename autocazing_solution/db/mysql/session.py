@@ -27,7 +27,7 @@ class MySQLSession:
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         
         # 개발 환경에서만 테이블 자동 생성
-        if self.settings.ENVIRONMENT == "dev":
+        if self.settings.ENVIRONMENT == "local":
             Base.metadata.create_all(self.engine)
     
     def get_db(self):
