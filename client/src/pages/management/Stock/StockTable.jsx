@@ -1,41 +1,33 @@
-import modifyIcon from "../../images/orderlist/modify.svg";
-import deleteIcon from "../../images/orderlist/delete.svg";
-import testmilk from "../../images/management/testmilk.jpg";
-
 import ExcelJS from "exceljs";
+import StockListInfo from "./StockListInfo";
 
 const StockList = [
     // 테스트용
     {
-        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 3,
         PRcount: 5,
     },
     {
-        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-29",
         amout: 7,
         PRcount: 5,
     },
     {
-        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-05-02",
         amout: 11,
         PRcount: 5,
     },
     {
-        image: testmilk,
         name: "원두(2KG)",
         expiration: "2024-04-27",
         amout: 8,
         PRcount: 3,
     },
     {
-        image: testmilk,
         name: "우유(1L)",
         expiration: "2024-04-27",
         amout: 2,
@@ -101,7 +93,10 @@ const excelsample = async () => {
     });
 };
 
-const StockTable = () => {
+const StockTable = ({ stockInfo }) => {
+    if (!stockInfo || stockInfo.length === 0) {
+        return <div>No stock data available.</div>;
+    }
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
@@ -148,51 +143,12 @@ const StockTable = () => {
                     </div>
                 </div>
 
-                {StockList.map((stock, key) => (
-                    <div
-                        className={`grid grid-cols-5 sm:grid-cols-5 ${
-                            key === StockList.length - 1
-                                ? ""
-                                : "border-b border-stroke dark:border-strokedark"
-                        }`}
-                        key={key}
-                    >
-                        <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <div className="hidden flex-shrink-0 h-1- w-10 sm:block">
-                                <img src={stock.image} alt="tmp"></img>
-                            </div>
-                            <p className=" text-black dark:text-white text-cen sm:block">
-                                {stock.name}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {stock.expiration}
-                            </p>
-                        </div>
-
-                        <div className="items-center justify-center p-2.5 sm:flex   xl:p-5">
-                            <p className="text-black dark:text-white text-center">
-                                {stock.amout}
-                            </p>
-                        </div>
-
-                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white text-center">
-                                {stock.PRcount}
-                            </p>
-                        </div>
-
-                        <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <button className="mr-2">
-                                <img src={modifyIcon} alt="Modify" />
-                            </button>
-                            <button>
-                                <img src={deleteIcon} alt="delete" />
-                            </button>
-                        </div>
-                    </div>
+                {stockInfo.map((stock, index) => (
+                    <StockListInfo
+                        key={index}
+                        stock={stock}
+                        isLastItem={index === stockInfo.length - 1}
+                    />
                 ))}
             </div>
         </div>
