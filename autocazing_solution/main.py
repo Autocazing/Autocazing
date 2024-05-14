@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from core.config import get_setting
-from db.mysql.session import SessionLocal
+from db.mysql.session import mysqlSession
 from py_eureka_client import eureka_client
 from messaging.kafka_instance import producer, consumer
 from api.monthly_sales.monthly_sales_router import monthly_sales_router
@@ -41,3 +41,7 @@ async def root():
 async def shutdown_event():
     consumer.close()  # Kafka 컨슈머 종료
     eureka_client.stop()
+
+# Dependency injection for database session
+def get_db():
+    return next(mysqlSession.get_db())

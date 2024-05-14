@@ -13,16 +13,28 @@ from db.mysql.base import Base
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-settings = get_setting()    # config.py에 설정해놓은 setting을 가져옴
+class MySQLSession:
+    def __init__(self):
+        self.settings = get_setting()
+        self.SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(
+            self.settings.MYSQL_USER,
+            self.settings.MYSQL_PASSWORD,
+            self.settings.MYSQL_HOST,
+            self.settings.MYSQL_PORT,
+            self.settings.MYSQL_DATABASE
+        )
+        self.engine = create_engine(self.SQLALCHEMY_DATABASE_URL, echo=True)
+        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        
+        # 개발 환경에서만 테이블 자동 생성
+        if self.settings.ENVIRONMENT == "local":
+            Base.metadata.create_all(self.engine)
+    
+    def get_db(self):
+        db = self.SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
 
-SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(
-    settings.MYSQL_USER,
-    settings.MYSQL_PASSWORD,
-    settings.MYSQL_HOST,
-    settings.MYSQL_PORT,
-    settings.MYSQL_DATABASE
-)
-
-db_engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)  # data base에 연결할 엔진 생성
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)  # 위의 엔진을 이용해 세션 팩토리 생성
+mysqlSession = MySQLSession()
