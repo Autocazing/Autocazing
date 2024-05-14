@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { alramConnect, login } from "../../apis/server/Users";
+import { login } from "../../apis/server/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
+import { TbLocationStar } from "react-icons/tb";
 
 const LoginPage = () => {
     const [Id, setId] = useState(""); // Id
@@ -18,16 +19,9 @@ const LoginPage = () => {
                 if (res) {
                     // console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
-                    alramConnect(
-                        (res) => {
-                            console.log("알람 연결 성송");
-                            navigate("/dashboard"); // 메인페이지 이동
-                            window.location.reload();
-                        },
-                        (err) => {
-                            console.log("연결 실패", err);
-                        },
-                    );
+                    localStorage.setItem("userId", Id);
+                    navigate("/dashboard"); // 메인페이지 이동
+                    window.location.reload();
                 }
             },
             (err) => {

@@ -8,6 +8,7 @@ const DropdownNotification = () => {
     const [alarmlist, setAlarmlist] = useState([]); // useRef 써야할지도??
 
     const token = localStorage.getItem("accessToken");
+    const userId = localStorage.getItem("userId");
 
     const trigger = useRef(null);
     const dropdown = useRef(null);
@@ -20,25 +21,22 @@ const DropdownNotification = () => {
                 const EventSource = EventSourcePolyfill;
                 const fetchSse = async () => {
                     const eventSource = new EventSource(
-                        `https://k10e204.p.ssafy.io/api/alerts/ssafy`, // url 추가해야함
+                        `https://k10e204.p.ssafy.io/api/alerts/connect?loginid=${userId}`, // url 추가해야함
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
-                                Connetction: "keep-alive",
-                                Accept: "text/event-stream",
                             },
                             withCredentials: true,
+                            heartbeatTimeout: 1500000,
                         },
                     );
 
-                    eventSource.addEventListener("alarm", (event) => {
-                        const evendData = JSON.parse(event.data);
-                        console.log("Reveived event:", evendData);
-                        setAlarmlist((prevList) => [...prevList, evendData]);
+                    eventSource.addEventListener("connect", (e) => {
+                        console.log(e);
                     });
                 };
 
-                fetchSse();
+                //fetchSse();
             } catch (err) {
                 console.log("실시간 알람 통신 에러", err);
                 throw err;
