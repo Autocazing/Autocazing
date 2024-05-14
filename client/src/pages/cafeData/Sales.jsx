@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ChartOne from "../../components/cafeData/ChartOne.jsx";
+import SalesChart from "../../components/cafeData/SalesChart.jsx";
 
 const Sales = () => {
     const [list, setList] = useState([1, 2, 3, 4, 5]);
@@ -29,7 +29,7 @@ const Sales = () => {
                 </div>
             )} */}
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <ChartOne />
+                <SalesChart />
             </div>
         </div>
     );
