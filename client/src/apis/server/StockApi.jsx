@@ -11,4 +11,25 @@ const StockGetApi = () => {
     });
 };
 
-export { StockGetApi };
+const StockPostApi = () => {
+    const queryClient = useQueryClient();
+
+    const fetchPost = (postData) => {
+        return axiosInstance.post("/stocks", postData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchPost,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["GetStock"] });
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { StockGetApi, StockPostApi };
