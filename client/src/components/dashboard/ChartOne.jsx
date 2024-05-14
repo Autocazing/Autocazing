@@ -96,11 +96,11 @@ const options = {
             },
         },
         min: 0,
-        max: 3000000,
+        max: 100,
     },
 };
 
-const ChartOne = ({ thisWeekSold }) => {
+const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     const [maxSize, setMaxSize] = useState(0);
     // const [minSize, setMinSize] = useState(0);
 
@@ -113,13 +113,15 @@ const ChartOne = ({ thisWeekSold }) => {
 
             {
                 name: "Product Two",
-                data: [30, 25, 36, 30, 45, 35, 64],
+                data: [0, 0, 0, 0, 0, 0, 0],
             },
         ],
     });
 
     useEffect(() => {
+        // console.log(thisMonthAvgSold);
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
+
         if (thisWeekSold.length > 0) {
             // console.log(thisWeekSold);
             // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
@@ -143,6 +145,24 @@ const ChartOne = ({ thisWeekSold }) => {
             // setMinSize(minVal);
         }
     }, [thisWeekSold]);
+
+    useEffect(() => {
+        const length = Object.keys(thisMonthAvgSold).length;
+        if (length > 0) {
+            // Update Product Two data with thisMonthAvgSold
+            const productTwoData = Object.values(thisMonthAvgSold);
+            setState((prevState) => ({
+                ...prevState,
+                series: [
+                    prevState.series[0], // Product One remains unchanged
+                    {
+                        ...prevState.series[1],
+                        data: productTwoData,
+                    },
+                ],
+            }));
+        }
+    }, [thisMonthAvgSold]);
 
     const updatedOptions = {
         ...options, // 기존 옵션들 복사

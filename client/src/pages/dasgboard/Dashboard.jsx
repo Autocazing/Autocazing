@@ -4,6 +4,7 @@ import {
     GetSalesSold,
     GetSalesDay,
     GetSalesMonth,
+    GetSalesMonthAvg,
 } from "../../apis/server/DashboardServer";
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,7 @@ const Dashboard = () => {
     const [yesterdaySold, setYesterdaySold] = useState(0);
     const [thisMonthSold, setThisMonthSold] = useState(0);
     const [thisWeekSold, setThisWeekSold] = useState([]);
+    const [thisMonthAvgSold, setThisMonthAvgSold] = useState([]);
     const [visited, setVisited] = useState();
 
     const { data: SalesSold } = GetSalesSold();
@@ -38,6 +40,17 @@ const Dashboard = () => {
     const { data: SalesDay } = GetSalesDay();
 
     const { data: SalesMonth } = GetSalesMonth();
+
+    const { data: SalesMonthAvg } = GetSalesMonthAvg();
+
+    useEffect(() => {
+        if (SalesMonthAvg !== undefined) {
+            if (SalesMonthAvg !== 0) {
+                setThisMonthAvgSold(SalesMonthAvg);
+            }
+            // console.log(SalesMonthAvg);
+        }
+    }, [SalesMonthAvg]);
 
     useEffect(() => {
         if (SalesMonth !== undefined) {
@@ -200,7 +213,10 @@ const Dashboard = () => {
                 </CardDataStats>
             </div>
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <ChartOne thisWeekSold={thisWeekSold} />
+                <ChartOne
+                    thisWeekSold={thisWeekSold}
+                    thisMonthAvgSold={thisMonthAvgSold}
+                />
             </div>
         </div>
     );

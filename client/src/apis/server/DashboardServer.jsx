@@ -31,4 +31,14 @@ const GetSalesMonth = () => {
     });
 };
 
-export { GetSalesSold, GetSalesDay, GetSalesMonth };
+const GetSalesMonthAvg = () => {
+    const fetchGet = () => axiosInstance.get("/sales/avg");
+
+    return useQuery({
+        queryKey: ["GetSalesMonthAvg"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+
+export { GetSalesSold, GetSalesDay, GetSalesMonth, GetSalesMonthAvg };
