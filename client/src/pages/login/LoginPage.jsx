@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../apis/server/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
+import { TbLocationStar } from "react-icons/tb";
 
 const LoginPage = () => {
     const [Id, setId] = useState(""); // Id
@@ -18,6 +19,7 @@ const LoginPage = () => {
                 if (res) {
                     // console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
+                    localStorage.setItem("userId", Id);
                     navigate("/dashboard"); // 메인페이지 이동
                     window.location.reload();
                 }
