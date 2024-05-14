@@ -60,6 +60,7 @@ public class StockService {
             StockDetailsDto stockDetails = new StockDetailsDto();
             stockDetails.setStockId(stock.getStockId());
             stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
+            stockDetails.setIngredientName(stock.getIngredient().getIngredientName());
             stockDetails.setExpirationDate(stock.getExpirationDate());
             stockDetails.setQuantity(stock.getQuantity());
             stockDetails.setDeliveringCount(deliveringCount);
