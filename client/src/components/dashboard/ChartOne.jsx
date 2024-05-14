@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 // 테스트
 const options = {
@@ -81,20 +81,7 @@ const options = {
     },
     xaxis: {
         type: "category",
-        categories: [
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-        ],
+        categories: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
         axisBorder: {
             show: false,
         },
@@ -113,20 +100,78 @@ const options = {
     },
 };
 
-const ChartOne = () => {
+const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
+    const [maxSize, setMaxSize] = useState(0);
+    // const [minSize, setMinSize] = useState(0);
+
     const [state, setState] = useState({
         series: [
             {
                 name: "Product One",
-                data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
+                data: [0, 0, 0, 0, 0, 0, 0],
             },
 
             {
                 name: "Product Two",
-                data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
+                data: [0, 0, 0, 0, 0, 0, 0],
             },
         ],
     });
+
+    useEffect(() => {
+        // console.log(thisMonthAvgSold);
+        // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
+
+        if (thisWeekSold.length > 0) {
+            // console.log(thisWeekSold);
+            // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
+            const productOneData = thisWeekSold.map((item) => item.totalSales);
+
+            // state를 업데이트합니다.
+            setState((prevState) => ({
+                ...prevState,
+                series: [
+                    {
+                        ...prevState.series[0],
+                        data: productOneData,
+                    },
+                    prevState.series[1], // Product Two는 변경하지 않습니다.
+                ],
+            }));
+
+            const maxVal = Math.max(...productOneData);
+            // const minVal = Math.min(...productOneData);
+            setMaxSize(maxVal);
+            // setMinSize(minVal);
+        }
+    }, [thisWeekSold]);
+
+    useEffect(() => {
+        const length = Object.keys(thisMonthAvgSold).length;
+        if (length > 0) {
+            // Update Product Two data with thisMonthAvgSold
+            const productTwoData = Object.values(thisMonthAvgSold);
+            setState((prevState) => ({
+                ...prevState,
+                series: [
+                    prevState.series[0], // Product One remains unchanged
+                    {
+                        ...prevState.series[1],
+                        data: productTwoData,
+                    },
+                ],
+            }));
+        }
+    }, [thisMonthAvgSold]);
+
+    const updatedOptions = {
+        ...options, // 기존 옵션들 복사
+        yaxis: {
+            ...options.yaxis, // 기존 yaxis 옵션 복사
+            min: 0, // 최솟값(min)을 minSize로 업데이트
+            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+        },
+    };
 
     return (
         <div className="col-span-8 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -177,7 +222,7 @@ const ChartOne = () => {
             <div>
                 <div id="chartOne" className="-ml-5">
                     <ReactApexChart
-                        options={options}
+                        options={updatedOptions}
                         series={state.series}
                         type="area"
                         height={350}
