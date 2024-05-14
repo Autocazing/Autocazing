@@ -101,7 +101,7 @@ public class IngredientService {
             if(patchIngredientDto.getScale().getScaleId() == 0) {
                 PostIngredientScaleDto postIngredientScaleDto = new PostIngredientScaleDto();
                 postIngredientScaleDto.setUnit(patchIngredientDto.getScale().getUnit());
-                ingredientScaleService.createIngredientScale(postIngredientScaleDto);
+                ingredientScaleService.createIngredientScale(postIngredientScaleDto, ingredientEntity.getStore().getLoginId());
             }
             else{
                 IngredientScaleEntity scaleEntity = scaleRepository.findById(patchIngredientDto.getScale().getScaleId())

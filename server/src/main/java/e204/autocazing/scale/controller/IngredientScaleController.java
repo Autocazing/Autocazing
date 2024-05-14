@@ -37,9 +37,10 @@ public class IngredientScaleController {
         @ApiResponse(responseCode = "201", description = "단위 추가 성공")
     })
     @PostMapping("")
-    public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
-//        String loginId = httpServletRequest.getHeader("loginId");
-        ingredientScaleService.createIngredientScale(postScaleDto);
+    public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto,
+        HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        ingredientScaleService.createIngredientScale(postScaleDto, loginId);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -95,9 +96,7 @@ public class IngredientScaleController {
     @GetMapping("")
     public ResponseEntity<List<IngredientScaleDto>> getAllIngredientScales(HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println("loginId : " + loginId);
-        List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales();
+        List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales(loginId);
         return ResponseEntity.ok(scales);
     }
 
