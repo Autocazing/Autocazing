@@ -7,7 +7,7 @@ from db.mysql.base import Base
 #     __tablename__ = 'menu_sales_specific'
 #     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
 
-class ExpirationSpecific(Base): # 유통기한 임박 재료
+class ExpirationSpecifics(Base): # 유통기한 임박 재료
     __tablename__ = 'expiration_specific'
     ingridient_name = Column(String, nullable=False)
 

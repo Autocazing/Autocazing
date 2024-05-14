@@ -28,7 +28,7 @@ async def register_with_eureka():
 @app.on_event("startup")
 async def startup_event():
     register_with_eureka()
-    kafka_task = asyncio.create_task(consume_messages())
+    asyncio.create_task(consume_messages())
 
 # Dependency
 def get_db():

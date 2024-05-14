@@ -6,6 +6,7 @@ from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
 from db.mysql.models.orders import OrderSpecific, Orders
 from db.mysql.models.restock_orders import RestockOrderSpecific, RestockOrders
+from db.mysql.models.reports import ExpirationSpecifics, OnDeliveryIngredients, Reports
 
 from db.mysql.base import Base
 
