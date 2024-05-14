@@ -1,7 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SalesChart from "../../components/cafeData/SalesChart.jsx";
+import {
+    GetSalesDay,
+    GetSalesMonth,
+    GetSalesWeek,
+} from "../../apis/server/CafeDataApi.jsx";
 
 const Sales = () => {
+    const { data: SalesDay } = GetSalesDay();
+    const { data: SalesWeek } = GetSalesMonth();
+    const { data: SalesMonth } = GetSalesWeek();
+
+    useEffect(() => {
+        console.log(SalesDay);
+        console.log(SalesWeek);
+        console.log(SalesMonth);
+    }, [SalesDay, SalesWeek, SalesMonth]);
+
     return (
         <div>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
