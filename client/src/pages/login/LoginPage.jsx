@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../apis/server/Users";
+import { alramConnect, login } from "../../apis/server/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
 
 const LoginPage = () => {
@@ -18,8 +18,16 @@ const LoginPage = () => {
                 if (res) {
                     // console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
-                    navigate("/dashboard"); // 메인페이지 이동
-                    window.location.reload();
+                    alramConnect(
+                        (res) => {
+                            console.log("알람 연결 성송");
+                            navigate("/dashboard"); // 메인페이지 이동
+                            window.location.reload();
+                        },
+                        (err) => {
+                            console.log("연결 실패", err);
+                        },
+                    );
                 }
             },
             (err) => {

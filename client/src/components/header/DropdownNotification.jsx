@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import EventSourcePolyfill from "event-source-polyfill";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 const DropdownNotification = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -12,20 +12,20 @@ const DropdownNotification = () => {
     const trigger = useRef(null);
     const dropdown = useRef(null);
 
-    const EventSource = EventSourcePolyfill;
-
     // 알림 SSE 구현
     useEffect(() => {
         if (token) {
             // login 되었을 때
             try {
+                const EventSource = EventSourcePolyfill;
                 const fetchSse = async () => {
                     const eventSource = new EventSource(
-                        `https://k10e204.p.ssafy.io/api/alerts/???$`, // url 추가해야함
+                        `https://k10e204.p.ssafy.io/api/alerts/ssafy`, // url 추가해야함
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
-                                "Content-Type": "text/event-stream", // 이거 아닐수도 있음
+                                Connetction: "keep-alive",
+                                Accept: "text/event-stream",
                             },
                             withCredentials: true,
                         },
@@ -38,13 +38,13 @@ const DropdownNotification = () => {
                     });
                 };
 
-                // fetchSse(); => 나중에 알람되면 수정
+                fetchSse();
             } catch (err) {
                 console.log("실시간 알람 통신 에러", err);
                 throw err;
             }
         }
-    }, [token]);
+    });
 
     useEffect(() => {
         const clickHandler = ({ target }) => {
