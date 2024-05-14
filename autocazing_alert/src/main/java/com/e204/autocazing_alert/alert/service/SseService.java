@@ -1,7 +1,7 @@
 package com.e204.autocazing_alert.alert.service;
 
-import com.e204.autocazing_alert.db.AlertEntity;
-import com.e204.autocazing_alert.repository.AlertRepository;
+import com.e204.autocazing_alert.db.entity.AlertEntity;
+import com.e204.autocazing_alert.db.repository.AlertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
