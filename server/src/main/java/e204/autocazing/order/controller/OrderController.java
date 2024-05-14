@@ -71,8 +71,8 @@ public class OrderController {
             orderService.addOrder(postOrderDto);
             // 발주 검사 및 발주추가
             orderService.checkAndAddRestockOrderSpecifics();
-            return ResponseEntity.ok(HttpStatus.CREATED);
 
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Operation(summary = "주문 삭제", description = "(포스기) 주문삭제 요청을 수행하는 API입니다.")
