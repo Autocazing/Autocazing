@@ -30,7 +30,7 @@ const Dashboard = () => {
     const [todaySold, setTodaySold] = useState(0);
     const [yesterdaySold, setYesterdaySold] = useState(0);
     const [thisMonthSold, setThisMonthSold] = useState(0);
-    const [visited, setVisited] = useState(0);
+    const [visited, setVisited] = useState();
 
     const { data: SalesSold } = GetSalesSold();
 
@@ -57,10 +57,8 @@ const Dashboard = () => {
         // console.log(GetSalesMonth);
         if (SalesSold !== undefined) {
             if (SalesSold.length !== 0) {
-                setVisited(SalesSold.toLocaleString());
+                setVisited(SalesSold);
             }
-            // console.log(SalesSold.length);
-            // console.log(SalesSold);
         }
     }, [SalesSold]);
 
@@ -161,7 +159,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="금일 판매 잔 수"
-                    total={visited}
+                    total={SalesSold?.todaySold}
                     isNum={false}
                     Date={today}
                     rate="100"
