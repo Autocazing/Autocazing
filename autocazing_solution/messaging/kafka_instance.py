@@ -10,7 +10,7 @@ producer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BOOTSTRAP_SERVER0, se
 )
 
 # Kafka 컨슈머 인스턴스 생성
-consumer = KafkaConsumer('test2',
+consumer = KafkaConsumer('test',
                         bootstrap_servers=[settings.KAFKA_BOOTSTRAP_SERVER0, settings.KAFKA_BOOTSTRAP_SERVER1, settings.KAFKA_BOOTSTRAP_SERVER2],
                         auto_offset_reset="earliest",  # 오프셋 위치(메시지를 읽어오는 시점, earliest: 가장 처음(구독 전부터), latest: 가장 최근(구독 후부터))
                         enable_auto_commit=True,  # 오프셋 자동 커밋 설정
