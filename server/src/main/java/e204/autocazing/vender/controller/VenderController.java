@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,9 @@ public class VenderController {
             )
     })
     @PostMapping("")
-    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto) {
-         venderService.createVender(postVenderDto);
+    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        venderService.createVender(postVenderDto, loginId);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -97,8 +100,9 @@ public class VenderController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<VenderDto>> getAllVenders() {
-        List<VenderDto> venders = venderService.getAllVenders();
+    public ResponseEntity<List<VenderDto>> getAllVenders(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<VenderDto> venders = venderService.getAllVenders(loginId);
         return ResponseEntity.ok(venders);
     }
 }

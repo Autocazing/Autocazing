@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostVenderDto {
-    private Integer storeId;
     private String venderName;
     private String venderManager;
     private String venderManagerContact;
