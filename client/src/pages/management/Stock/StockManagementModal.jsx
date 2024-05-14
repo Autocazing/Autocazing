@@ -1,7 +1,10 @@
 import Modal from "react-modal";
-import { useState } from "react";
-import closeIcon from "../../images/icon/close.svg";
+import { useEffect, useState } from "react";
+import closeIcon from "../../../images/icon/close.svg";
 import ExcelJS from "exceljs";
+import { MaterialGetApi } from "../../../apis/server/MaterialApi";
+import { StockEditApi, StockPostApi } from "../../../apis/server/StockApi";
+
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -29,15 +32,34 @@ const customStyles = {
         overflow: "auto",
     },
 };
-const StockManagementModal = ({ isOpen, onClose }) => {
+const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [stockPostData, setStockPostData] = useState([
         {
-            name: "",
-            volume: 0,
-            period: "",
-            predictOrder: 0,
+            quantity: initialValue.quantity || 0,
+            expirationDate: initialValue.expirationDate || "",
+            ingredientId: initialValue.ingredientId || 0,
         },
     ]);
+
+    const [productNames, setProductNames] = useState({});
+
+    useEffect(() => {
+        console.log(stockPostData);
+    }, [stockPostData]);
+
+    const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
+    const postStock = StockPostApi();
+    const editStock = StockEditApi(initialValue.stockId);
+
+    const handleSubmit = (e) => {
+        postStock.mutate(stockPostData);
+        onClose();
+    };
+
+    const handleEdit = (e) => {
+        editStock.mutate(stockPostData);
+        onClose();
+    };
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
@@ -48,56 +70,65 @@ const StockManagementModal = ({ isOpen, onClose }) => {
         // console.log(stockPostData);
     };
 
-    const fileselect = (e) => {
-        const selectedfile = e.target.files[0]; // 선택된 파일 가져오기
+    const handleSelectChange = (e) => {
+        setStockPostData((prevState) => ({
+            ...prevState,
+            ingredientId: parseInt(e.target.value, 10),
+        }));
+    };
 
-        // 파일 읽기
+    const handleFileSelect = (e) => {
+        const selectedFile = e.target.files[0];
+
         const workbook = new ExcelJS.Workbook();
         const reader = new FileReader();
 
         reader.onload = async (e) => {
             const data = new Uint8Array(e.target.result);
-            await workbook.xlsx.load(data); // 엑셀 파일 로드
+            await workbook.xlsx.load(data);
 
             const worksheet = workbook.getWorksheet(1);
-            const newData = []; // 새로운 데이터를 저장할 배열
+            const newData = [];
+            const newProductNames = {};
 
-            // 데이터 처리
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return; // 첫 번째 행(제목 행)은 건너뜀
+                if (rowNumber === 1) return; // 첫 번째 행을 건너뜀
                 const rowData = row.values.filter((value) => value != null);
-                const [name, period2, volume, predictOrder] = rowData.slice(0); // rowData.slice(0)의 경우 첫 요소가 빈 값일 수 있음
+                const [name, period, volume] = rowData.slice(0, 3);
 
-                let period = period2;
+                const expirationDate =
+                    period instanceof Date
+                        ? `${period.getFullYear()}-${(period.getMonth() + 1)
+                              .toString()
+                              .padStart(2, "0")}-${period
+                              .getDate()
+                              .toString()
+                              .padStart(2, "0")}`
+                        : period;
 
-                if (period2 instanceof Date) {
-                    const year = period2.getFullYear();
-                    const month = (period2.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0");
-                    const day = period2.getDate().toString().padStart(2, "0");
-                    period = `${year}-${month}-${day}`;
+                const ingredientData = materialInfo.find(
+                    (material) => material.ingredientName === name,
+                );
+                const ingredientId = ingredientData
+                    ? ingredientData.ingredientId
+                    : null;
+
+                if (ingredientId !== null) {
+                    newData.push({
+                        ingredientId,
+                        quantity: volume,
+                        expirationDate,
+                    });
+                    newProductNames[ingredientId] = name;
                 }
-
-                const item = {
-                    name,
-                    period,
-                    volume,
-                    predictOrder,
-                };
-                // console.log(item);
-
-                newData.push(item);
             });
 
-            setStockPostData(newData); // 모든 데이터를 한 번에 상태로 설정
+            setStockPostData(newData);
+            setProductNames(newProductNames);
         };
-        // console.log(stockPostData);
 
-        // 파일을 ArrayBuffer로 읽음
-        reader.readAsArrayBuffer(selectedfile);
+        reader.readAsArrayBuffer(selectedFile);
     };
-
     return (
         <Modal
             isOpen={isOpen}
@@ -127,8 +158,8 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                 재고추가
             </h1>
             <div className="p-6.5">
-                {stockPostData.length > 0 ? (
-                    <table className="min-w-full leading-normal">
+                {stockPostData.some((item) => item.quantity > 0) ? (
+                    <table className="min-w-full leading-normal mb-6">
                         <thead>
                             <tr>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -140,32 +171,26 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     유통기한
                                 </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    발주 예정 수량
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {stockPostData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.name}
+                                        {productNames[item.ingredientId]}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.volume}
+                                        {item.quantity}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.period}
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        {item.predictOrder}
+                                        {item.expirationDate}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p className="text-gray-800 font-semibold text-center text-lg mt-5 mb-10">
+                    <p className="text-gray-800 font-semibold text-center text-lg mt-10 mb-10">
                         영수증 파일이 있다면 파일을 넣어주세요.
                     </p>
                 )}
@@ -175,7 +200,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         영주증 파일
                     </label>
                     <input
-                        onChange={fileselect}
+                        onChange={handleFileSelect}
                         type="file"
                         className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
@@ -185,35 +210,22 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         품목명
                     </label>
                     <select
-                        name="name"
-                        onChange={handleInputChange}
+                        name="ingredientId"
+                        onChange={handleSelectChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option
-                            value=""
-                            disabled
-                            className="text-body dark:text-bodydark"
-                        >
+                        <option value="" disabled>
                             재고 추가할 품목을 선택해주세요
                         </option>
-                        <option
-                            value="우유"
-                            className="text-body dark:text-bodydark"
-                        >
-                            우유
-                        </option>
-                        <option
-                            value="원두"
-                            className="text-body dark:text-bodydark"
-                        >
-                            원두
-                        </option>
-                        <option
-                            value="연유"
-                            className="text-body dark:text-bodydark"
-                        >
-                            연유
-                        </option>
+                        {materialInfo &&
+                            materialInfo.map((material) => (
+                                <option
+                                    key={material.ingredientId}
+                                    value={material.ingredientId}
+                                >
+                                    {material.ingredientName}
+                                </option>
+                            ))}
                     </select>
                 </div>
                 <div className="mb-4.5">
@@ -221,7 +233,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         총량
                     </label>
                     <input
-                        name="volume"
+                        name="quantity"
                         onChange={handleInputChange}
                         type="number"
                         placeholder="총량 입력"
@@ -233,13 +245,13 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         유통기한
                     </label>
                     <input
-                        name="period"
+                        name="expirationDate"
                         onChange={handleInputChange}
                         type="date"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div>
-                <div className="mb-4.5">
+                {/* <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         발주 예정 수량
                     </label>
@@ -250,11 +262,23 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         placeholder="발주 예정 수량 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                </div>
+                </div> */}
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
-                    추가하기
-                </button>
+                {Object.keys(initialValue).length === 0 ? (
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        추가하기
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleEdit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        수정하기
+                    </button>
+                )}
             </div>
         </Modal>
     );
