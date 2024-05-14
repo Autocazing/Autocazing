@@ -64,18 +64,12 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (SalesDay !== undefined) {
-            if (SalesDay.length >= 2) {
-                setTodaySold(
-                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
-                );
-                setYesterdaySold(
-                    SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
-                );
-            } else if (SalesDay.length == 1) {
-                setTodaySold(
-                    SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
-                );
-            }
+            setTodaySold(
+                SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+            );
+            setYesterdaySold(
+                SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
+            );
         }
     }, [SalesDay]);
     return (
