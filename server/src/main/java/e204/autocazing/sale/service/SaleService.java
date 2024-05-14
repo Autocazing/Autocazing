@@ -157,19 +157,17 @@ public class SaleService {
 		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
 		LocalDate yesterday = today.minusDays(1);
 
-		System.out.println("repo 접근 전 ");
-		List<Map<String, Integer>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
-		System.out.println("repo 접근 후 : "+ salesData);
-		Map<String, Integer> salesComparison = new HashMap<>();
+		List<Map<String, Object>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
 
+		Map<String, Integer> salesComparison = new HashMap<>();
 		salesComparison.put("yesterdaySold", 0);
 		salesComparison.put("todaySold", 0);
 
 		salesData.forEach(map -> {
-			map.forEach((key, value) -> {
-				if (value != null)
-					salesComparison.put(key, value);
-			});
+			String day = (String) map.get("day");
+			Number totalSales = (Number) map.get("totalSales");
+			if (totalSales != null)
+				salesComparison.put(day, totalSales.intValue());
 		});
 
 		return salesComparison;
