@@ -17,4 +17,4 @@ class Orders(Base):
     order_specifics = relationship("OrderSpecifics", back_populates="orders", cascade="all, delete-orphan")
 
     created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())

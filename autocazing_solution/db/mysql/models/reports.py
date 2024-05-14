@@ -27,5 +27,5 @@ class Reports(Base):    # 리포트
     on_delivery_ingredients = relationship("OnDeliveryIngredients", back_populates="reports", cascade="all, delete-orphan")
     
     created_at = Column(DateTime, default=func.now(), nullable=False)
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    updated_at = Column(DateTime, default=func.now(), nullable=False, onupdate=func.now())
     
