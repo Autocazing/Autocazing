@@ -40,9 +40,9 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
         },
     ]);
 
-    useEffect(() => {
-        console.log(stockPostData);
-    }, [stockPostData]);
+    // useEffect(() => {
+    //     console.log(stockPostData);
+    // }, [stockPostData]);
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
 

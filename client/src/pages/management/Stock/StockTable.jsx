@@ -116,7 +116,7 @@ const StockTable = ({ stockInfo }) => {
                 style={{ height: "35rem" }}
             >
                 <div className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
-                    <div className="p-2.5 xl:p-5">
+                    <div className="p-2.5  text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-sm">
                             품목명
                         </h5>

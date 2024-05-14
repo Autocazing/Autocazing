@@ -11,7 +11,7 @@ const StockListInfo = ({ stock, isLastItem }) => {
             }`}
             key={stock.stockId}
         >
-            <div className="flex items-center gap-3 p-2.5 xl:p-5">
+            <div className="flex items-center justify-center gap-3 p-2.5 xl:p-5">
                 {/* <div className="hidden flex-shrink-0 h-1- w-10 sm:block">
                     <img src={stock.image} alt="tmp"></img>
                 </div> */}
