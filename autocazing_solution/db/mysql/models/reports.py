@@ -8,12 +8,14 @@ from db.mysql.base import Base
 #     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
 
 class ExpirationSpecifics(Base): # 유통기한 임박 재료
-    __tablename__ = 'expiration_specific'
-    ingridient_name = Column(String, nullable=False)
+    __tablename__ = 'expiration_specifics'
+    report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
+    ingridient_name = Column(String(length=20), nullable=False)
 
 class OnDeliveryIngredients(Base):  # 배송 중인 재료
     __tablename__ = 'on_delivery_ingredients'
-    ingridient_name = Column(String, nullable=False)
+    report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
+    ingridient_name = Column(String(length=20), nullable=False)
 
 class Reports(Base):    # 리포트
     __tablename__ = 'reports'
@@ -22,6 +24,8 @@ class Reports(Base):    # 리포트
     sales = Column(Integer, nullable=False)
     expected_monthly_sales = Column(Integer, nullable=False)
     current_monthly_sales = Column(Integer, nullable=False) # 일단 애매함. 매번 새로운 값을 반영해야 하는데...
+    expiration_specifics = relationship("ExpirationSpecifics", back_populates="reports", cascade="all, delete-orphan")
+    on_delivery_ingredients = relationship("OnDeliveryIngredients", back_populates="reports", cascade="all, delete-orphan")
     
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())

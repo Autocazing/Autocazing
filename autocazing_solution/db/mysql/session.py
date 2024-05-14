@@ -4,8 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from core.config import get_setting
 from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
-from db.mysql.models.orders import OrderSpecific, Orders
-from db.mysql.models.restock_orders import RestockOrderSpecific, RestockOrders
+from db.mysql.models.orders import OrderSpecifics, Orders
+from db.mysql.models.restock_orders import RestockOrderSpecifics, RestockOrders
 from db.mysql.models.reports import ExpirationSpecifics, OnDeliveryIngredients, Reports
 
 from db.mysql.base import Base
@@ -24,9 +24,5 @@ SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(
 )
 
 db_engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)  # data base에 연결할 엔진 생성
-
-# 개발 환경에서만 테이블 자동 생성
-if settings.ENVIRONMENT == "local":
-    Base.metadata.create_all(db_engine)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)  # 위의 엔진을 이용해 세션 팩토리 생성
