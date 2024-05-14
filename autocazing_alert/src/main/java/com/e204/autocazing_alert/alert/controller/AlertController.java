@@ -4,6 +4,7 @@ import com.e204.autocazing_alert.alert.dto.AlertDetailsDto;
 import com.e204.autocazing_alert.alert.service.AlertService;
 import com.e204.autocazing_alert.alert.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -64,7 +65,9 @@ public class AlertController {
 
     }
 
-    @Operation(summary = "테스트용 알림 생성 요청", description = "알림 요청을 수행하는 API입니다.")
+    @Operation(summary = "테스트용 알림 생성 요청", description = "알림 요청을 수행하는 API입니다." +
+            "topic = restock, delivering, sales ")
+
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "알림 요청  성공",
                     content = @Content(mediaType = "application/json"
@@ -73,7 +76,12 @@ public class AlertController {
     })
     //테스트용 알림
     @GetMapping("/test")
-    public ResponseEntity TestAlertService(@RequestParam(name = "topic") String topic,  HttpServletRequest httpServletRequest){
+    public ResponseEntity TestAlertService(@RequestParam(name = "topic")
+    @Parameter(description = "알림의 주제를 지정합니다",
+            required = true,
+            example = "restock", // 여기에 원하는 예시 값을 추가
+            schema = @Schema(implementation = String.class, allowableValues = {"restock", "delivering", "sales"}))
+    String topic, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         if(topic.equals("restock")){
             sseService.sendRestockNotification(loginId,"발주 알림 전송" );
