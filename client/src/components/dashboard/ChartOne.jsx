@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 // 테스트
 const options = {
@@ -81,20 +81,7 @@ const options = {
     },
     xaxis: {
         type: "category",
-        categories: [
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-        ],
+        categories: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
         axisBorder: {
             show: false,
         },
@@ -109,24 +96,45 @@ const options = {
             },
         },
         min: 0,
-        max: 100,
+        max: 3000000,
     },
 };
 
-const ChartOne = () => {
+const ChartOne = ({ thisWeekSold }) => {
     const [state, setState] = useState({
         series: [
             {
                 name: "Product One",
-                data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
+                data: [23, 11, 22, 27, 13, 22, 37],
             },
 
             {
                 name: "Product Two",
-                data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
+                data: [30, 25, 36, 30, 45, 35, 64],
             },
         ],
     });
+
+    useEffect(() => {
+        // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
+        if (thisWeekSold.length > 0) {
+            // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
+            const productOneData = thisWeekSold.map((item) => item.totalSales);
+
+            // state를 업데이트합니다.
+            setState((prevState) => ({
+                ...prevState,
+                series: [
+                    {
+                        ...prevState.series[0],
+                        data: productOneData,
+                    },
+                    prevState.series[1], // Product Two는 변경하지 않습니다.
+                ],
+            }));
+        }
+        console.log(state);
+    }, [thisWeekSold]);
 
     return (
         <div className="col-span-8 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">

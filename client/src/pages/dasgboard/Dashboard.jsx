@@ -30,6 +30,7 @@ const Dashboard = () => {
     const [todaySold, setTodaySold] = useState(0);
     const [yesterdaySold, setYesterdaySold] = useState(0);
     const [thisMonthSold, setThisMonthSold] = useState(0);
+    const [thisWeekSold, setThisWeekSold] = useState([]);
     const [visited, setVisited] = useState();
 
     const { data: SalesSold } = GetSalesSold();
@@ -41,7 +42,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (SalesMonth !== undefined) {
             if (SalesMonth.length !== 0) {
-                console.log(SalesMonth[SalesMonth.length - 1].totalSales);
+                // console.log(SalesMonth[SalesMonth.length - 1].totalSales);
                 setThisMonthSold(
                     SalesMonth[
                         SalesMonth.length - 1
@@ -70,6 +71,18 @@ const Dashboard = () => {
             setYesterdaySold(
                 SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
             );
+
+            const thisWeekData = [];
+            for (let i = SalesDay.length - 7; i < SalesDay.length; i++) {
+                if (i >= 0) {
+                    thisWeekData.push(SalesDay[i]);
+                } else {
+                    break;
+                }
+            }
+            setThisWeekSold(thisWeekData);
+            console.log(thisWeekData);
+            // console.log(thisWeekData);
         }
     }, [SalesDay]);
     return (
@@ -187,7 +200,7 @@ const Dashboard = () => {
                 </CardDataStats>
             </div>
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <ChartOne />
+                <ChartOne thisWeekSold={thisWeekSold} />
             </div>
         </div>
     );
