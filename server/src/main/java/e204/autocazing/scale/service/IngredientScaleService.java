@@ -55,7 +55,7 @@ public class IngredientScaleService {
         Integer storeId = storeRepository.findByLoginId(loginId);
         List<IngredientScaleEntity> ingredientScaleEntityList = ingredientScaleRepository.findAllByStoreId(storeId);
 
-        log.info("ingredientEntity : "+ingredientScaleEntityList);
+        log.info("!!!!!!!ingredientEntity : "+ingredientScaleEntityList);
 
         List<IngredientScaleDto> ingredientScaleDtoList = new ArrayList<>();
 
@@ -63,7 +63,7 @@ public class IngredientScaleService {
             ingredientScaleDtoList.add(fromEntity(ingredient));
         }
 
-        log.info("ingredientScaleDtoList : "+ingredientScaleDtoList);
+        log.info("!!!!!!!!!!ingredientScaleDtoList : "+ingredientScaleDtoList);
         return ingredientScaleDtoList;
     }
 
