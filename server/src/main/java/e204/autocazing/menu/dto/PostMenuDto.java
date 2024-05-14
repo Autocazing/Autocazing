@@ -20,4 +20,5 @@ public class PostMenuDto {
     private Integer storeId;
     private int discountRate=0;
     private String imageUrl=" ";
+    private Boolean soldOut ;
 }
