@@ -24,9 +24,7 @@ async def startup_event():
         instance_port=8088,
         instance_host="solution-service"
     )
-    # print("influxdb 연결 시작")
-    # influx_connection.connect()
-    # print("influxdb 연결 완료")
+    influx_connection.connect()
     # print("kafka 연결")
     # asyncio.create_task(consume_messages())    # Kafka 메시지 수신을 위한 비동기 태스크 생성
 
@@ -46,5 +44,5 @@ async def root():
 @app.on_event("shutdown")
 async def shutdown_event():
     # consumer.close()  # Kafka 컨슈머 종료
-    # influx_connection.client.close()
+    influx_connection.client.close()
     eureka_client.stop()
