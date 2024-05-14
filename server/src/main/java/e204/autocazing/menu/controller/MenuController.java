@@ -106,7 +106,9 @@ public class MenuController {
         )
     })
     @GetMapping("/{menuId}")
-    public ResponseEntity getMenuById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId){
+    public ResponseEntity getMenuById(@Parameter(in = ParameterIn.PATH)
+    @PathVariable(name = "menuId") Integer menuId, HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
         MenuDto menu = menuService.findMenuById(menuId);
         return ResponseEntity.ok(menu);
     }
