@@ -1,7 +1,55 @@
 import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
+import { useEffect, useState } from "react";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { GetAlarmList } from "../../apis/server/Alarm";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 const Header = (props) => {
+    // 알림 SSE 구현
+    const token = localStorage.getItem("accessToken");
+    const [alarmlist, setAlarmlist] = useState([]);
+    const { data: alarmInfo } = GetAlarmList();
+
+    const queryClient = useQueryClient();
+
+    console.log("응", alarmInfo);
+
+    useEffect(() => {
+        if (token) {
+            // login 되었을 때
+            try {
+                const EventSource = EventSourcePolyfill;
+                const fetchSse = async () => {
+                    const eventSource = new EventSource(
+                        `https://k10e204.p.ssafy.io/api/alerts/connect`, // url 추가해야함
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                            withCredentials: true,
+                            heartbeatTimeout: 1500000,
+                        },
+                    );
+
+                    eventSource.addEventListener("connect", (e) => {
+                        if (alarmInfo !== undefined) {
+                            setAlarmlist(alarmInfo);
+                        }
+                    });
+
+                    eventSource.addEventListener("restock", (e) => {
+                        queryClient.invalidateQueries("Alarm");
+                        setAlarmlist(alarmInfo);
+                    });
+                };
+
+                fetchSse();
+            } catch (err) {
+                console.log("실시간 알람 통신 에러", err);
+            }
+        }
+    });
     return (
         <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
             <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -69,7 +117,7 @@ const Header = (props) => {
                 <div className="flex items-center gap-3 2xsm:gap-7">
                     <ul className="flex items-center gap-2 2xsm:gap-4">
                         {/* <!-- Notification Menu Area --> */}
-                        <DropdownNotification />
+                        <DropdownNotification alarmlist={alarmlist} />
                         {/* <!-- Notification Menu Area --> */}
                     </ul>
 
