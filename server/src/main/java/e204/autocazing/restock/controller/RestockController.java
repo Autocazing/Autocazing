@@ -113,9 +113,6 @@ public class RestockController {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-
-
-
     @Operation(summary = "장바구니 재료 수정", description = "장바구니 재료 수정하는 API 입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "재료 수정 완료",
@@ -146,5 +143,25 @@ public class RestockController {
                                                            @PathVariable Integer restockOrderSpecificId) {
         restockSpecificService.deleteRestockOrderSpecific(restockOrderId,restockOrderSpecificId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{restockOrderId}/start")
+    public ResponseEntity restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        UpdateRestockDto updateRestockDto = new UpdateRestockDto(RestockOrderEntity.RestockStatus.ON_DELIVERY);
+
+        //업체가 발주 수락 : ORDERED -> ON_DELIVERY
+        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
+        return ResponseEntity.ok(restockDetails);
+    }
+
+    @PutMapping("/{restockOrderId}/arrive")
+    public ResponseEntity restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        UpdateRestockDto updateRestockDto = new UpdateRestockDto(RestockOrderEntity.RestockStatus.ARRIVED);
+
+        //업체가 발주 수락 : ON_DELIVERY -> ARRIVED
+        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
+        return ResponseEntity.ok(restockDetails);
     }
 }
