@@ -158,9 +158,7 @@ public class RestockOrderService {
                     requestDto.setOrderList(contactEntry.getValue());
                     requestDtoList.add(requestDto);
                 }
-
-                //시연할 때 주석 해제해야합니다!
-                //smsUtil.sendOne(requestDtoList, storeName);
+                smsUtil.sendOne(requestDtoList,restockOrderId,storeName);
             }
         }
 
