@@ -11,10 +11,10 @@ from db.mysql.models.menus import Menus
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpStatus, value
 
 
-report_router = APIRouter(prefix="/ingredient-solution")
+ingredient_solution_router = APIRouter(prefix="/ingredient-solution")
 
-@report_router.get("/{ingredient_id}", tags=["ingreient_router"], response_model=IngredientSolutionResponse)
-async def get_report_details(request: Request, ingredient_id: int, db: Session = Depends(get_db)):
+@ingredient_solution_router.get("/{ingredient_id}", tags=["ingreient_router"], response_model=IngredientSolutionResponse)
+async def get_ingredient_solution(request: Request, ingredient_id: int, db: Session = Depends(get_db)):
     login_id = request.headers.get("loginId")
     if login_id is None:
         raise HTTPException(status_code=400, detail="loginId header is required")
@@ -30,11 +30,11 @@ async def get_report_details(request: Request, ingredient_id: int, db: Session =
 
 def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Session) -> IngredientSolutionResponse:
     # 메뉴별 가격 가져오기
-    menu_prices = {menu.id: menu.price for menu in db.query(Menus).filter(Menus.id.in_(menu_ids)).all()}
+    menu_prices = {menu.menu_id: menu.menu_price for menu in db.query(Menus).filter(Menus.menu_id.in_(menu_ids)).all()}
     
     # 재료 사용량 가져오기
     ingredient_usage = {
-        menu.menu_id: menu.quantity for menu in db.query(MenuIngredients).filter(MenuIngredients.menu_id.in_(menu_ids), MenuIngredients.ingredient_id == ingredient_id).all()
+        menu.menu_id: menu.capacity for menu in db.query(MenuIngredients).filter(MenuIngredients.menu_id.in_(menu_ids), MenuIngredients.ingredient_id == ingredient_id).all()
     }
     
     # 문제 정의
