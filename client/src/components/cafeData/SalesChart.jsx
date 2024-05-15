@@ -109,7 +109,7 @@ const options = {
             },
         },
         min: 0,
-        max: 1000000,
+        max: 10000000,
     },
 };
 
@@ -126,7 +126,6 @@ const SalesChart = ({ dayData, weekData }) => {
     const [selectedButton, setSelectedButton] = useState("day");
 
     useEffect(() => {
-        console.log(weekData);
         // 페이지가 처음 로드될 때 또는 dayData가 변경될 때 실행
         if (dayData && selectedButton === "day") {
             // dayData를 그대로 사용하거나 필요에 따라 가공
@@ -142,6 +141,23 @@ const SalesChart = ({ dayData, weekData }) => {
             setState({ series: newSeries });
         }
     }, [dayData, selectedButton]);
+
+    useEffect(() => {
+        // 페이지가 처음 로드될 때 또는 dayData가 변경될 때 실행
+        if (dayData && selectedButton === "week") {
+            // dayData를 그대로 사용하거나 필요에 따라 가공
+            const newData = weekData.map((item) => item);
+
+            const newSeries = [
+                {
+                    name: "New Product",
+                    data: newData,
+                },
+            ];
+
+            setState({ series: newSeries });
+        }
+    }, [weekData, selectedButton]);
 
     const handleButtonClick = (button) => {
         if (button === "month") {
