@@ -34,7 +34,7 @@ public class SmsUtil {
 	}
 
 	// 단일 메시지 발송 예제
-	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, Integer restockOrderId, String storeName ) {
+	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, Integer restockOrderId, String storeName) {
 
 		List<SingleMessageSentResponse> responses = new ArrayList<>();
 
@@ -58,9 +58,7 @@ public class SmsUtil {
 					text.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 				}
 			}
-			// String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/" + restockOrderId + "/" + venderId + "/start";
-
-			String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/1/1/start";
+			String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/" + restockOrderId + "/" + venderId + "/start";
 			String deliveryEndAPI = "https://k10e204.p.ssafy.io/api/restocks/" + restockOrderId + "/" + venderId + "/arrive";
 
 			text.append("\n[ 배송 시작 ]\n")
@@ -73,7 +71,7 @@ public class SmsUtil {
 			SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
 			//시연할 때 주석 해제 해야 합니다!
-			responses.add(response);
+			//responses.add(response);
 		}
 		return responses;
 	}
