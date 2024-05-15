@@ -21,7 +21,7 @@ class RestockOrderSpecifics(Base):
 class RestockOrders(Base):
     __tablename__ = 'restock_orders'
     restock_order_id = Column(Integer, primary_key=True, autoincrement=True)
-    store_id = Column(Integer, nullable=false)
+    login_id = Column(Integer, nullable=false)
     restock_order_specifics = relationship("RestockOrderSpecifics", cascade="all, delete-orphan")
     status = Column(Enum(RestockStatus), server_default="WRITING", nullable=False)
 
