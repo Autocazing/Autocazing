@@ -58,12 +58,13 @@ public class SmsUtil {
 					text.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 				}
 			}
+			String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/" + restockOrderId + "/" + venderId + "/start";
+			String deliveryEndAPI = "https://k10e204.p.ssafy.io/api/restocks/" + restockOrderId + "/" + venderId + "/arrive";
+
 			text.append("\n[ 배송 시작 ]\n")
-				.append("https://k10e204.p.ssafy.io/api/restocks/")
-				.append(restockOrderId).append("/").append(venderId).append("/start\n\n")
+				.append(deliveryStartAPI).append("\n\n")
 				.append("[ 배송 완료 ]\n")
-				.append("https://k10e204.p.ssafy.io/api/restocks/")
-				.append(restockOrderId).append("/").append(venderId).append("/arrive\n");
+				.append(deliveryEndAPI).append("\n");
 
 			message.setText(text.toString());
 
