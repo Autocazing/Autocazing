@@ -11,10 +11,16 @@ const Sales = () => {
     const { data: SalesWeek } = GetSalesMonth();
     const { data: SalesMonth } = GetSalesWeek();
 
+    const [dayData, setDayData] = useState([]);
+
     useEffect(() => {
-        console.log(SalesDay);
-        console.log(SalesWeek);
-        console.log(SalesMonth);
+        if (SalesDay) {
+            if (SalesDay.length > 1) {
+                const lastSevenTotalSales = SalesDay.slice(-7) // 마지막 7개의 데이터만 가져옵니다.
+                    .map((item) => item.totalSales); // totalSales 값만 추출합니다.
+                setDayData(lastSevenTotalSales);
+            }
+        }
     }, [SalesDay, SalesWeek, SalesMonth]);
 
     return (
@@ -29,7 +35,7 @@ const Sales = () => {
                 </ol>
             </div>
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <SalesChart />
+                <SalesChart dayData={dayData} />
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 // 테스트
 const options = {
@@ -109,11 +109,11 @@ const options = {
             },
         },
         min: 0,
-        max: 100,
+        max: 1000000,
     },
 };
 
-const SalesChart = () => {
+const SalesChart = ({ dayData }) => {
     const [state, setState] = useState({
         series: [
             {
@@ -124,6 +124,23 @@ const SalesChart = () => {
     });
 
     const [selectedButton, setSelectedButton] = useState("day");
+
+    useEffect(() => {
+        // 페이지가 처음 로드될 때 또는 dayData가 변경될 때 실행
+        if (dayData && selectedButton === "day") {
+            // dayData를 그대로 사용하거나 필요에 따라 가공
+            const newData = dayData.map((item) => item);
+
+            const newSeries = [
+                {
+                    name: "New Product",
+                    data: newData,
+                },
+            ];
+
+            setState({ series: newSeries });
+        }
+    }, [dayData, selectedButton]);
 
     const handleButtonClick = (button) => {
         if (button === "month") {
@@ -148,16 +165,21 @@ const SalesChart = () => {
             setState({ series: newSeries });
         }
 
-        if (button === "day") {
-            const newSeries = [
-                {
-                    name: "New Product",
-                    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-                },
-            ];
+        // if (button === "day") {
+        //     // dayData를 적절히 가공하여 그래프에 표시할 데이터로 변환
+        //     const newData = dayData.map((item) => item); // 예시로, dayData를 그대로 사용하거나, 다른 방식으로 가공
 
-            setState({ series: newSeries });
-        }
+        //     // 시리즈 데이터 업데이트
+        //     const newSeries = [
+        //         {
+        //             name: "New Product",
+        //             data: newData,
+        //         },
+        //     ];
+
+        //     // 상태 업데이트
+        //     setState({ series: newSeries });
+        // }
 
         setSelectedButton(button);
     };
