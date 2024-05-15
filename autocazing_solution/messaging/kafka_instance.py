@@ -21,7 +21,7 @@ def create_consumer(topic):
     )
 
 # 각 토픽별 Kafka 컨슈머 생성
-ingredient_consumer = create_consumer('ingredient')
-ingredient_consumer = create_consumer('menu')
-ingredient_consumer = create_consumer('order')
-ingredient_consumer = create_consumer('restock_order')
+order_consumer = create_consumer('ingredient')
+menu_consumer = create_consumer('menu')
+order_consumer = create_consumer('order')
+restock_order_consumer = create_consumer('restock_order')
