@@ -19,9 +19,3 @@ def create_consumer(topic):
         group_id='solution_server',  # solution 서버의 고유 소비자 그룹 ID
         value_deserializer=lambda x: loads(x.decode('utf-8'))  # 메시지의 값 역직렬화
     )
-
-# 각 토픽별 Kafka 컨슈머 생성
-order_consumer = create_consumer('ingredient')
-menu_consumer = create_consumer('menu')
-order_consumer = create_consumer('order')
-restock_order_consumer = create_consumer('restock_order')
