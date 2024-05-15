@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +105,7 @@ public class RestockOrderService {
 
         //이전 상태 저장
         RestockOrderEntity.RestockStatus previousStatus = restockOrder.getStatus();
+
         //새로운 상태 세팅,저장
         restockOrder.setStatus(updateRestockDto.getStatus());
         restockOrderRepository.save(restockOrder);
@@ -114,6 +116,7 @@ public class RestockOrderService {
         }
 
         //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
+
         if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
             //새로운 장바구니 만들기
             createNewRestockOrder(loginId);
@@ -122,8 +125,9 @@ public class RestockOrderService {
             //다시 커밋하겠음.
             if(restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
                 Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
-                Optional<StoreEntity> store = storeRepository.findById(storeId);
-                String storeName = store.get().getStoreName();
+                StoreEntity storeEntity = storeRepository.findById(storeId)
+                        .orElseThrow(() -> new RuntimeException("No StoreENtity By storeId :  " +storeId ));
+                String storeName = storeEntity.getStoreName();
 
                 //restock order에서, order specific 접근해서 주문할 재료, 수량 저장
                 List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrder.getRestockOrderSpecific();
@@ -136,11 +140,28 @@ public class RestockOrderService {
                     } else {
                         order.put(ingredientId, ingredientQuantity);
                     }
-
                 }
-                //재료 ID로 업체 정보 가져오기
-                //List<requestDto> : 연락처, Map(재료, 수량)
-                //smsUtil.sendOne(requestDto, storeName);
+
+                // 재료 ID로 업체 정보 가져오기
+                Map<String, List<Map<String, Integer>>> contactOrdersMap = new HashMap<>();
+                for (Map.Entry<Integer, Integer> entry : order.entrySet()) {
+                    // entry의 재료ID로 담당 업체 연락처(String) 불러오기
+                    String contact = ingredientRepository.findContactByIngredientId(entry.getKey(), storeId);
+                    String ingredientName = ingredientRepository.findNameByIngredientId(entry.getKey(), storeId);
+
+                    // 연락처를 키 값으로 하고, value는 재료 이름과 수량을 포함한 맵 리스트
+                    contactOrdersMap.computeIfAbsent(contact, k -> new ArrayList<>()).add(Map.of(ingredientName, entry.getValue()));
+                }
+
+                // List<SmsRequestDto> : 연락처, 주문 리스트
+                List<SmsRequestDto> requestDtoList = new ArrayList<>();
+                for (Map.Entry<String, List<Map<String, Integer>>> contactEntry : contactOrdersMap.entrySet()) {
+                    SmsRequestDto requestDto = new SmsRequestDto();
+                    requestDto.setVenderManagerContact(contactEntry.getKey());
+                    requestDto.setOrderList(contactEntry.getValue());
+                    requestDtoList.add(requestDto);
+                }
+                smsUtil.sendOne(requestDtoList,restockOrderId,storeName);
             }
         }
 
