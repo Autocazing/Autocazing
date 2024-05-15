@@ -1,6 +1,8 @@
 package e204.autocazing.restock.controller;
 
+import e204.autocazing.db.entity.OrderSpecific;
 import e204.autocazing.db.entity.RestockOrderEntity;
+import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import e204.autocazing.restock.dto.*;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
@@ -93,6 +95,7 @@ public class RestockController {
         @RequestBody UpdateRestockDto updateRestockDto, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
+
         return ResponseEntity.ok(restockDetails);
     }
 
@@ -130,9 +133,6 @@ public class RestockController {
         return ResponseEntity.ok(restockSpecificResponseDto);
     }
 
-
-
-
     @Operation(summary = "장바구니 재료 삭제 요청", description = "장바구니 재료 삭제를 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "재료 삭제 성공")
@@ -145,23 +145,29 @@ public class RestockController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{restockOrderId}/start")
-    public ResponseEntity restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId, HttpServletRequest httpServletRequest) {
+    @PutMapping("/{restockOrderId}/{venderId}/start")
+    public ResponseEntity restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+        @PathVariable(name = "venderId") Integer venderId,
+        HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        UpdateRestockDto updateRestockDto = new UpdateRestockDto(RestockOrderEntity.RestockStatus.ON_DELIVERY);
 
-        //업체가 발주 수락 : ORDERED -> ON_DELIVERY
-        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
-        return ResponseEntity.ok(restockDetails);
+        //restockOrderId의 venderId가 같은 orderSpecific의 status를 ON_DELIVERY로 변경
+        List<RestockOrderSpecificEntity> restockOrderSpecificEntityList
+            = restockSpecificService.updateRestockOrderSpecificStatus(restockOrderId, venderId, RestockOrderSpecificEntity.RestockSpecificStatus.ON_DELIVERY);
+
+        return ResponseEntity.ok(restockOrderSpecificEntityList);
     }
 
-    @PutMapping("/{restockOrderId}/arrive")
-    public ResponseEntity restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId, HttpServletRequest httpServletRequest) {
+    @PutMapping("/{restockOrderId}/{venderId}/arrive")
+    public ResponseEntity restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+        @PathVariable(name = "venderId") Integer venderId,
+        HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        UpdateRestockDto updateRestockDto = new UpdateRestockDto(RestockOrderEntity.RestockStatus.ARRIVED);
 
-        //업체가 발주 수락 : ON_DELIVERY -> ARRIVED
-        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
-        return ResponseEntity.ok(restockDetails);
+        //restockOrderId의 venderId가 같은 orderSpecific의 status를 ARRIVED로 변경
+        List<RestockOrderSpecificEntity> restockOrderSpecificEntityList
+            = restockSpecificService.updateRestockOrderSpecificStatus(restockOrderId, venderId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED);
+
+        return ResponseEntity.ok(restockOrderSpecificEntityList);
     }
 }

@@ -13,4 +13,8 @@ public interface VenderRepository extends JpaRepository<VenderEntity, Integer> {
 
 	@Query(value = "SELECT v FROM VenderEntity v WHERE v.store.StoreId = :storeId ")
 	List<VenderEntity> findAllByStoreId(Integer storeId);
+
+	@Query(value = "SELECT v.venderId FROM VenderEntity v "
+		+ "WHERE v.venderManagerContact=:venderContact AND v.store.StoreId = :storeId ")
+	Integer findByContact(String venderContact, Integer storeId);
 }

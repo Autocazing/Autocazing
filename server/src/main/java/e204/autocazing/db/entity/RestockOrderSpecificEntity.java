@@ -33,6 +33,14 @@ public class RestockOrderSpecificEntity {
     @JoinColumn(name = "restock_order_id", nullable = false)
     private RestockOrderEntity restockOrder;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RestockOrderSpecificEntity.RestockSpecificStatus status= RestockOrderSpecificEntity.RestockSpecificStatus.WRITING;  // 기본값으로 WRITING (작성중)
+
+    public enum RestockSpecificStatus {
+        WRITING, ORDERED, ON_DELIVERY, ARRIVED, COMPLETE
+    }
+
     //굳이 연관?
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "ingredient_id", nullable = false)

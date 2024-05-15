@@ -20,4 +20,7 @@ public interface RestockOrderSpecificRepository extends JpaRepository<RestockOrd
     @Query("DELETE FROM RestockOrderSpecificEntity ros WHERE ros.restockOrder.restockOrderId = :restockOrderId AND ros.restockOrderSpecificId = :specificId")
     void deleteByRestockOrderIdAndRestockOrderSpecificId(@Param("restockOrderId") Integer restockOrderId, @Param("specificId") Integer specificId);
 
+    // @Query("SELECT r.restockOrderSpecific FROM RestockOrderEntity r WHERE r.restockOrderId = :restockOrderId ")
+    // List<RestockOrderSpecificEntity> findOrderSpecificByRestockOrderId(Integer restockOrderId);
+
 }

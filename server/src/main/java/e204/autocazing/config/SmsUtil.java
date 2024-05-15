@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.model.MessageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
@@ -33,9 +34,7 @@ public class SmsUtil {
 	}
 
 	// 단일 메시지 발송 예제
-	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, Integer restockOrderId,String storeName ) {
-		String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/"+restockOrderId+"/start"; //배송 시작
-		String deliveryEndAPI = "https://k10e204.p.ssafy.io/api/restocks/"+restockOrderId+"/arrive"; //배송 완료
+	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, Integer restockOrderId, String storeName ) {
 
 		List<SingleMessageSentResponse> responses = new ArrayList<>();
 
@@ -43,8 +42,10 @@ public class SmsUtil {
 			// String to = order.getVenderManagerContact();
 			//나중에 업체 번호 변경 해야 함.
 			String to = sendNumber;
+			Integer venderId = order.getVenderId();
 
 			Message message = new Message();
+			message.setType(MessageType.LMS);
 			message.setFrom(sendNumber);
 			message.setSubject("[" + storeName + "] 발주 요청\n");
 			message.setTo(to);
@@ -57,8 +58,12 @@ public class SmsUtil {
 					text.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 				}
 			}
-			text.append("[ 배송 시작 ]\n").append(deliveryStartAPI).append("\n")
-				.append("[ 배송 완료 ]\n").append(deliveryEndAPI).append("\n");
+			text.append("\n[ 배송 시작 ]\n")
+				.append("https://k10e204.p.ssafy.io/api/restocks/")
+				.append(restockOrderId).append("/").append(venderId).append("/start\n\n")
+				.append("[ 배송 완료 ]\n")
+				.append("https://k10e204.p.ssafy.io/api/restocks/")
+				.append(restockOrderId).append("/").append(venderId).append("/arrive\n");
 
 			message.setText(text.toString());
 
