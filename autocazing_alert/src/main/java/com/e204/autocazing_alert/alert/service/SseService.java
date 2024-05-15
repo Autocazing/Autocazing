@@ -46,7 +46,8 @@ public class SseService {
     //발주 시 보내는 알림
     public void sendRestockNotification(String loginId,String message) {
         SseEmitter emitter = emitters.get(loginId);
-        System.out.println("loginId 로 가져온 emitter 로 알림~");
+
+        System.out.println("loginId 로 가져온 emitter 로 알림~" + loginId);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("restock").data(message));
