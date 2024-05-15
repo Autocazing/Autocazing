@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,11 +40,15 @@ public class AlertController {
     })
     //클라이언트에서 알림 수신하기 위해 연결해야함.
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request) throws IOException {
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginId = request.getHeader("loginId");
 //        System.out.println("loginId: " + loginId);
         System.out.println("연결 완료!");
-        return ResponseEntity.ok(sseService.createEmitter(loginId));
+
+        // Set X-Accel-Buffering header to disable buffering for this response
+        response.setHeader("X-Accel-Buffering", "no");
+        SseEmitter emitter = sseService.createEmitter(loginId);
+        return ResponseEntity.ok(emitter);
     }
 
     @Operation(summary = "로그인한 계정의 알림 전체 조회", description = "알림을 조회하는 API입니다.")
