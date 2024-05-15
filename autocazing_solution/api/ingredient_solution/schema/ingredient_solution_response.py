@@ -1,2 +1,6 @@
+from pydantic import BaseModel
+from typing import Dict
+
 class IngredientSolutionResponse:
-    pass
+    status: str
+    optimal_sales: Dict[str, float]
