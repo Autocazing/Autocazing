@@ -30,7 +30,7 @@ async def register_with_eureka():
 @app.on_event("startup")
 async def startup_event():
     register_with_eureka()
-    asyncio.create_task(consume_messages())
+    # asyncio.create_task(consume_messages())
 
 @app.get("/api/fastapi-test")
 async def root():
@@ -39,5 +39,5 @@ async def root():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    consumer.close()  # Kafka 컨슈머 종료
+    # consumer.close()  # Kafka 컨슈머 종료
     eureka_client.stop()

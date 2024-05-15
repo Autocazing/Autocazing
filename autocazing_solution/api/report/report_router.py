@@ -12,7 +12,6 @@ report_router = APIRouter(prefix="/report")
 
 @report_router.get("", tags=["report_router"], response_model=List[ReportResponseSchema])
 async def get_reports(request: Request, month: Union[int, None] = Query(None, ge=1, le=12), db: Session = Depends(get_db)):
-    db = next(db)
     login_id = request.headers.get("loginId")
     if login_id is None:
         raise HTTPException(status_code=400, detail="loginId header is required")
@@ -27,7 +26,6 @@ async def get_reports(request: Request, month: Union[int, None] = Query(None, ge
 
 @report_router.get("/{report_id}", tags=["report_router"], response_model=ReportResponseSchema)
 async def get_report_details(request: Request, report_id: int, db: Session = Depends(get_db)):
-    db = next(db)
     login_id = request.headers.get("loginId")
     if login_id is None:
         raise HTTPException(status_code=400, detail="loginId header is required")
