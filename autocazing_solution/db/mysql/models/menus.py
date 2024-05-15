@@ -5,7 +5,7 @@ from db.mysql.base import Base
 class Menus(Base):
     __tablename__ = 'menus'
     menu_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    store_id = Column(Integer, nullable=False)
+    login_id = Column(Integer, nullable=False)
 
     menu_name = Column(String(length=20), nullable=False)
     menu_price = Column(Integer, nullable=False)
