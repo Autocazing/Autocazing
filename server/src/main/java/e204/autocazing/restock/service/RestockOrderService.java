@@ -36,7 +36,7 @@ public class RestockOrderService {
     // 장바구니생성
     @Transactional
     public void createRestockOrder(PostRestockDto postRestockDto, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         RestockOrderEntity restockOrder = new RestockOrderEntity();
         restockOrder.setStatus(postRestockDto.getStatus());
@@ -48,7 +48,7 @@ public class RestockOrderService {
 
     // 발주  조회
     public List<RestockOrderResponse> findAllRestockOrders(List<RestockOrderEntity.RestockStatus> status, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         List<RestockOrderEntity> orders;
         if (status == null || status.isEmpty()) {
@@ -116,18 +116,21 @@ public class RestockOrderService {
         }
 
         //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
-        if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() != RestockOrderEntity.RestockStatus.WRITING) {
 
+        if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
+            //새로운 장바구니 만들기
             createNewRestockOrder(loginId);
-
+            //todo
+            //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
+            //다시 커밋하겠음.
             if(restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
-                Integer storeId = storeRepository.findByLoginId(loginId);
-                Optional<StoreEntity> store = storeRepository.findById(storeId);
-                String storeName = store.get().getStoreName();
+                Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
+                StoreEntity storeEntity = storeRepository.findById(storeId)
+                        .orElseThrow(() -> new RuntimeException("No StoreENtity By storeId :  " +storeId ));
+                String storeName = storeEntity.getStoreName();
 
                 //restock order에서, order specific 접근해서 주문할 재료, 수량 저장
                 List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrder.getRestockOrderSpecific();
-
                 Map<Integer, Integer> order = new HashMap<>();
                 for(RestockOrderSpecificEntity restockOrderSpecific : restockOrderSpecificEntityList){
                     Integer ingredientId = restockOrderSpecific.getIngredientId();

@@ -27,7 +27,7 @@ public class VenderService {
 
     public void createVender(PostVenderDto postVenderDto, String loginId) {
         VenderEntity venderEntity = new VenderEntity();
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
         Optional<StoreEntity> store = storeRepository.findById(storeId);
 
         if (!store.isPresent())
@@ -57,7 +57,7 @@ public class VenderService {
     }
 
     public List<VenderDto> getAllVenders(String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
         List<VenderEntity> venderEntityList = venderRepository.findAllByStoreId(storeId);
 
         List<VenderDto> venderDtoList = new ArrayList<>();

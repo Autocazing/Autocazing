@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,9 @@ public class MenuController {
         @ApiResponse(responseCode = "201", description = "메뉴 등록 성공")
     })
     @PostMapping
-    public ResponseEntity createMenu(@RequestBody PostMenuDto postMenuDto) {
-        menuService.createMenu(postMenuDto);
+    public ResponseEntity createMenu(@RequestBody PostMenuDto postMenuDto,HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        menuService.createMenu(postMenuDto,loginId);
         return new ResponseEntity(HttpStatus.CREATED);
 
     }
@@ -139,8 +141,9 @@ public class MenuController {
         )
     })
     @GetMapping("")
-    public ResponseEntity getAllmenus(){
-        List<MenuDetailsDto> menus = menuService.findAllMenus();
+    public ResponseEntity getAllmenus(HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<MenuDetailsDto> menus = menuService.findAllMenus(loginId);
         return ResponseEntity.ok(menus);
     }
 

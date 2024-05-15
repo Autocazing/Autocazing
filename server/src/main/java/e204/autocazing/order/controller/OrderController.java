@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,9 @@ public class OrderController {
             )
     })
     @GetMapping("")
-    public ResponseEntity getOrders(){
-        List<OrderResponseDto> orders = orderService.getAllOrders();
+    public ResponseEntity getOrders(HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<OrderResponseDto> orders = orderService.getAllOrders(loginId);
         return ResponseEntity.ok(orders);
 
     }
@@ -65,12 +67,12 @@ public class OrderController {
             )
     })
     @PostMapping("")
-    public ResponseEntity addOrder(@RequestBody PostOrderDto postOrderDto){
-
-            //주문 받기 및 재고 검사로 주문 받을 수 있는 지 검사 + 재고 재료 사용한만큼 줄이기.
-            orderService.addOrder(postOrderDto);
-            // 발주 검사 및 발주추가
-            orderService.checkAndAddRestockOrderSpecifics();
+    public ResponseEntity addOrder(@RequestBody PostOrderDto postOrderDto, HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        //주문 받기 및 재고 검사로 주문 받을 수 있는 지 검사 + 재고 재료 사용한만큼 줄이기.
+        orderService.addOrder(postOrderDto,loginId);
+        // 발주 검사 및 발주추가
+        orderService.checkAndAddRestockOrderSpecifics(loginId);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }

@@ -38,8 +38,11 @@ public class OrderService {
     @Autowired
     private StoreRepository storeRepository;
 
-    public List<OrderResponseDto> getAllOrders() {
-        return orderRepository.findAll().stream()
+    public List<OrderResponseDto> getAllOrders(String loginId) {
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
+        return orderRepository.findByStore(storeEntity).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -65,12 +68,13 @@ public class OrderService {
 
 
         @Transactional
-        public void addOrder(PostOrderDto postOrderDto) {
+        public void addOrder(PostOrderDto postOrderDto, String loginId) {
 
             OrderEntity order = new OrderEntity();
-            StoreEntity store = storeRepository.findById(postOrderDto.getStoreId())
-                    .orElseThrow(() -> new ResourceNotFoundException("StoreId not found with id: " + postOrderDto.getStoreId()));
-            order.setStore(store);
+            StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
+            order.setStore(storeEntity);
             List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
                     .map(detail -> {
                         MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
@@ -96,8 +100,11 @@ public class OrderService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void checkAndAddRestockOrderSpecifics()  {
-        List<IngredientEntity> ingredients = ingredientRepository.findAll();
+    public void checkAndAddRestockOrderSpecifics(String loginId)  {
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
+        List<IngredientEntity> ingredients = ingredientRepository.findByStore(storeEntity);
         ingredients.forEach(ingredient -> {
             //총 재고 조회 (같은 재료 유통기한만 다른것도)
             Integer totalQuantity = stockRepository.findTotalQuantityByIngredientId(ingredient.getIngredientId());
@@ -109,7 +116,7 @@ public class OrderService {
             //minimumCount 보다 낮을때 발주에 재료 등록
             if (totalQuantity + totalDelivering <= ingredient.getMinimumCount()) {
                 // WRITING 상태의 가장 최신 RestockOrder 조회
-                RestockOrderEntity restockOrderEntity = restockOrderRepository.findFirstByStatusOrderByCreatedAtDesc(RestockOrderEntity.RestockStatus.WRITING)
+                RestockOrderEntity restockOrderEntity = restockOrderRepository.findFirstByStatusAndStoreOrderByCreatedAtDesc(RestockOrderEntity.RestockStatus.WRITING,storeEntity)
                         .orElseThrow(() -> new RuntimeException("No WRITING status RestockOrder found"));
                 AddSpecificRequest addSpecificRequest = new AddSpecificRequest();
                 addSpecificRequest.setRestockOrderId(restockOrderEntity.getRestockOrderId());

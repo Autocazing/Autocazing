@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostOrderDto {
-    private Integer storeId;
     private List<PostOrderSpecificDto> orderSpecifics;
 
 }

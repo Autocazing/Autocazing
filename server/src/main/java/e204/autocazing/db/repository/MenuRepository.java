@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import e204.autocazing.db.entity.MenuEntity;
+import e204.autocazing.db.entity.StoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,6 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Integer> {
     List<Map<String, Object>> calculateMonthSales(@Param("startDate") LocalDateTime startDate, @Param("menuId") Integer menuId, @Param("storeId") Integer storeId);
 
     MenuEntity findByMenuId(Integer menuId);
+
+    List<MenuEntity> findByStore(StoreEntity store);
 }
