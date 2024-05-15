@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -146,29 +147,28 @@ public class RestockController {
     }
 
     @PutMapping("/{restockOrderId}/{venderId}/start")
-    public ResponseEntity<List<RestockOrderSpecificEntity>> restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+    public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
 
         //restockOrderId의 venderId가 같은 orderSpecific의 status를 ON_DELIVERY로 변경
-        List<RestockOrderSpecificEntity> restockOrderSpecificEntityList
+        List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList
             = restockSpecificService.updateRestockOrderSpecificStatus(restockOrderId, venderId, RestockOrderSpecificEntity.RestockSpecificStatus.ON_DELIVERY);
 
-        return ResponseEntity.ok(restockOrderSpecificEntityList);
+        return ResponseEntity.ok(updatedRestockSpecificDtoList);
     }
 
     @PutMapping("/{restockOrderId}/{venderId}/arrive")
-    public ResponseEntity restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+    public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
 
         //restockOrderId의 venderId가 같은 orderSpecific의 status를 ARRIVED로 변경
-        List<RestockOrderSpecificEntity> restockOrderSpecificEntityList
+        List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList
             = restockSpecificService.updateRestockOrderSpecificStatus(restockOrderId, venderId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED);
 
-
-        return ResponseEntity.ok(restockOrderSpecificEntityList);
+        return ResponseEntity.ok(updatedRestockSpecificDtoList);
     }
 }

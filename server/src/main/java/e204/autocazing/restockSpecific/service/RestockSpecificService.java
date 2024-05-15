@@ -6,6 +6,7 @@ import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
+import e204.autocazing.restock.dto.UpdatedRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -99,20 +101,41 @@ public class RestockSpecificService {
     public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
         restockOrderSpecificRepository.deleteByRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
     }
-
-    public List<RestockOrderSpecificEntity> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
-        //restockOrderId로 발주 상세 리스트
+    @Transactional
+    public List<UpdatedRestockSpecificDto> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
+        // restockOrderId로 발주 상세 리스트
         List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
+        List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList = new ArrayList<>();
 
-        //발주 상세 리스트의 재료 ID
-        for(RestockOrderSpecificEntity restockOrderSpecificEntity : restockOrderSpecificEntityList){
+        // 발주 상세 리스트의 재료 ID
+        for(RestockOrderSpecificEntity restockOrderSpecificEntity : restockOrderSpecificEntityList) {
             Integer ingredientId = restockOrderSpecificEntity.getIngredientId();
             Integer specificVenderId = ingredientRepository.findByIngredientId(ingredientId);
 
-            if(Objects.equals(venderId, specificVenderId)){
+            // System.out.println("재료 ID : "+ingredientId);
+            // System.out.println("현재 업체 ID : "+venderId);
+            // System.out.println("재료의 업체 ID : "+specificVenderId);
+
+            if (Objects.equals(venderId, specificVenderId)) {
                 restockOrderSpecificEntity.setStatus(onDelivery);
+                restockOrderSpecificRepository.save(restockOrderSpecificEntity); // 상태 변경 후 저장
+
+                //System.out.println("저장 완료");
+                UpdatedRestockSpecificDto dto = convertToUpdatedDto(restockOrderSpecificEntity);
+                updatedRestockSpecificDtoList.add(dto);
             }
         }
-        return restockOrderSpecificEntityList;
+        return updatedRestockSpecificDtoList;
+    }
+
+    private UpdatedRestockSpecificDto convertToUpdatedDto(RestockOrderSpecificEntity entity) {
+        return new UpdatedRestockSpecificDto(
+            entity.getRestockOrderSpecificId(),
+            entity.getIngredientQuantity(),
+            entity.getIngredientPrice(),
+            entity.getIngredientName(),
+            entity.getIngredientId(),
+            entity.getStatus()
+        );
     }
 }

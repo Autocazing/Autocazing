@@ -1,5 +1,6 @@
 package e204.autocazing.restock.dto;
 
+import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,5 @@ public class UpdatedRestockSpecificDto {
     private Integer ingredientPrice;
     private String ingredientName;
     private Integer ingredientId;
-
+    private RestockOrderSpecificEntity.RestockSpecificStatus restockSpecificStatus;
 }

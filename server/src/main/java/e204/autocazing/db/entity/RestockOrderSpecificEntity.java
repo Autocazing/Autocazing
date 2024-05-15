@@ -35,7 +35,7 @@ public class RestockOrderSpecificEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RestockOrderSpecificEntity.RestockSpecificStatus status= RestockOrderSpecificEntity.RestockSpecificStatus.WRITING;  // 기본값으로 WRITING (작성중)
+    private RestockOrderSpecificEntity.RestockSpecificStatus status;
 
     public enum RestockSpecificStatus {
         WRITING, ORDERED, ON_DELIVERY, ARRIVED, COMPLETE
