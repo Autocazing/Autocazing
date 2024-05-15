@@ -146,7 +146,7 @@ public class RestockController {
     }
 
     @PutMapping("/{restockOrderId}/{venderId}/start")
-    public ResponseEntity restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
+    public ResponseEntity<List<RestockOrderSpecificEntity>> restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
@@ -167,6 +167,7 @@ public class RestockController {
         //restockOrderId의 venderId가 같은 orderSpecific의 status를 ARRIVED로 변경
         List<RestockOrderSpecificEntity> restockOrderSpecificEntityList
             = restockSpecificService.updateRestockOrderSpecificStatus(restockOrderId, venderId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED);
+
 
         return ResponseEntity.ok(restockOrderSpecificEntityList);
     }
