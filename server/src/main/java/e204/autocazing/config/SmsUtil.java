@@ -41,7 +41,7 @@ public class SmsUtil {
 		for (SmsRequestDto order : orderList) {
 			// String to = order.getVenderManagerContact();
 			//나중에 업체 번호 변경 해야 함.
-			String to = sendNumber;
+			String to = "01028287449";
 			Integer venderId = order.getVenderId();
 
 			Message message = new Message();
