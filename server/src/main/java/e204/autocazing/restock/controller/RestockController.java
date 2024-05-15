@@ -145,6 +145,10 @@ public class RestockController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "재료 ON_DELIVERY로 업데이트", description = "발주 리스트의 재료의 상태를 ON_DELIVERY로 업데이트 합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "status 갱신 성공")
+    })
     @PutMapping("/{restockOrderId}/{venderId}/start")
     public ResponseEntity restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
