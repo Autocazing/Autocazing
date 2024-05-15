@@ -10,7 +10,6 @@ class OnDeliveryIngredients(BaseModel):
 
 class ReportResponseSchema(BaseModel):
     report_id: int
-    store_id: int
     expected_monthly_sales: int
     current_monthly_sales: int
     expiration_specifics: List[ExpirationSpecifics]
