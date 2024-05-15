@@ -90,7 +90,7 @@ public class AlertController {
         if(topic.equals("restock")){
             sseService.sendRestockNotification(loginId,"발주 알림 전송" );
         }
-        else if(topic.equals("delevering")){
+        else if(topic.equals("delivering")){
             sseService.sendDeliveringNotification(loginId,"배송상태 알림 전송" );
         }
         else if(topic.equals("sales")){
