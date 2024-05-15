@@ -146,7 +146,7 @@ public class RestockController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{restockOrderId}/{venderId}/start")
+    @GetMapping("/sms/{restockOrderId}/{venderId}/start")
     public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
@@ -158,7 +158,7 @@ public class RestockController {
         return ResponseEntity.ok(updatedRestockSpecificDtoList);
     }
 
-    @GetMapping("/{restockOrderId}/{venderId}/arrive")
+    @GetMapping("/sms/{restockOrderId}/{venderId}/arrive")
     public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
