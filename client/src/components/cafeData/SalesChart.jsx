@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 // 테스트
-const options = {
+let options = {
     legend: {
         show: false,
         position: "top",
@@ -176,6 +176,32 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
         }
     }, [monthData, selectedButton]);
 
+    useEffect(() => {
+        let max = 0;
+        if (selectedButton === "day" && dayData) {
+            max = Math.max(...dayData);
+        } else if (selectedButton === "week" && weekData) {
+            max = Math.max(...weekData);
+        } else if (selectedButton === "month" && monthData) {
+            max = Math.max(...monthData);
+        }
+
+        if (max > 1) {
+            setMaxSize(max);
+        }
+    }, [dayData, weekData, monthData, selectedButton]);
+
+    const [maxSize, setMaxSize] = useState(0);
+
+    const updatedOptions = {
+        ...options, // 기존 옵션들 복사
+        yaxis: {
+            ...options.yaxis, // 기존 yaxis 옵션 복사
+            min: 0, // 최솟값(min)을 minSize로 업데이트
+            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+        },
+    };
+
     const handleButtonClick = (button) => {
         // if (button === "month") {
         //     const newSeries = [
@@ -291,7 +317,7 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
             <div>
                 <div id="chartOne" className="-ml-5">
                     <ReactApexChart
-                        options={options}
+                        options={updatedOptions}
                         series={state.series}
                         type="area"
                         height={350}
