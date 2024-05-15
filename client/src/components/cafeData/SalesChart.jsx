@@ -177,27 +177,27 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
     }, [monthData, selectedButton]);
 
     const handleButtonClick = (button) => {
-        if (button === "month") {
-            const newSeries = [
-                {
-                    name: "New Product",
-                    data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
-                },
-            ];
+        // if (button === "month") {
+        //     const newSeries = [
+        //         {
+        //             name: "New Product",
+        //             data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+        //         },
+        //     ];
 
-            setState({ series: newSeries });
-        }
+        //     setState({ series: newSeries });
+        // }
 
-        if (button === "week") {
-            const newSeries = [
-                {
-                    name: "New Product",
-                    data: [30, 41, 12, 27, 13, 62, 27, 11, 44, 22, 40, 45],
-                },
-            ];
+        // if (button === "week") {
+        //     const newSeries = [
+        //         {
+        //             name: "New Product",
+        //             data: [30, 41, 12, 27, 13, 62, 27, 11, 44, 22, 40, 45],
+        //         },
+        //     ];
 
-            setState({ series: newSeries });
-        }
+        //     setState({ series: newSeries });
+        // }
 
         // if (button === "day") {
         //     // dayData를 적절히 가공하여 그래프에 표시할 데이터로 변환
