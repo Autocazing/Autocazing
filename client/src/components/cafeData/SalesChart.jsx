@@ -159,6 +159,23 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
         }
     }, [weekData, selectedButton]);
 
+    useEffect(() => {
+        // 페이지가 처음 로드될 때 또는 dayData가 변경될 때 실행
+        if (dayData && selectedButton === "month") {
+            // dayData를 그대로 사용하거나 필요에 따라 가공
+            const newData = monthData.map((item) => item);
+
+            const newSeries = [
+                {
+                    name: "New Product",
+                    data: newData,
+                },
+            ];
+
+            setState({ series: newSeries });
+        }
+    }, [monthData, selectedButton]);
+
     const handleButtonClick = (button) => {
         if (button === "month") {
             const newSeries = [
