@@ -20,7 +20,7 @@ class OnDeliveryIngredients(Base):  # 배송 중인 재료
 class Reports(Base):    # 리포트
     __tablename__ = 'reports'
     report_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    store_id = Column(Integer, nullable=False)
+    login_id = Column(Integer, nullable=False)
     expected_monthly_sales = Column(Integer, nullable=False)
     current_monthly_sales = Column(Integer, nullable=False) # 일단 애매함. 매번 새로운 값을 반영해야 하는데...
     expiration_specifics = relationship("ExpirationSpecifics", cascade="all, delete-orphan")
