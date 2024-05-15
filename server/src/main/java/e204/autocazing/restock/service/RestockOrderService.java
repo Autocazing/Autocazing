@@ -120,14 +120,13 @@ public class RestockOrderService {
             //todo
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
             //다시 커밋하겠음.
-            if(restockOrder.getStatus() != RestockOrderEntity.RestockStatus.ORDERED) {
+            if(restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
                 Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
                 Optional<StoreEntity> store = storeRepository.findById(storeId);
                 String storeName = store.get().getStoreName();
 
                 //restock order에서, order specific 접근해서 주문할 재료, 수량 저장
                 List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrder.getRestockOrderSpecific();
-
                 Map<Integer, Integer> order = new HashMap<>();
                 for(RestockOrderSpecificEntity restockOrderSpecific : restockOrderSpecificEntityList){
                     Integer ingredientId = restockOrderSpecific.getIngredientId();
