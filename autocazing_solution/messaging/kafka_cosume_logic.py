@@ -1,8 +1,15 @@
 import asyncio
-from messaging.kafka_instance import ingredient_consumer, menu_consumer, order_consumer, restock_order_consumer
+from messaging.kafka_instance import create_consumer
+
+
+# 각 토픽별 Kafka 컨슈머 생성
+ingredient_consumer = create_consumer('ingredient')
+menu_consumer = create_consumer('menu')
+order_consumer = create_consumer('order')
+restock_order_consumer = create_consumer('restock_order')
+
 
 # 비동기 kafka 메시지 소비
-
 async def consume_ingredient_messages():
     await ingredient_consumer.start()
     try:
