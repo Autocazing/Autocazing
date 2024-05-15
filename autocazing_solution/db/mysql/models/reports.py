@@ -23,8 +23,8 @@ class Reports(Base):    # 리포트
     store_id = Column(Integer, nullable=False)
     expected_monthly_sales = Column(Integer, nullable=False)
     current_monthly_sales = Column(Integer, nullable=False) # 일단 애매함. 매번 새로운 값을 반영해야 하는데...
-    expiration_specifics = relationship("ExpirationSpecifics", back_populates="reports", cascade="all, delete-orphan")
-    on_delivery_ingredients = relationship("OnDeliveryIngredients", back_populates="reports", cascade="all, delete-orphan")
+    expiration_specifics = relationship("ExpirationSpecifics", cascade="all, delete-orphan")
+    on_delivery_ingredients = relationship("OnDeliveryIngredients", cascade="all, delete-orphan")
     
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), nullable=False, onupdate=func.now())
