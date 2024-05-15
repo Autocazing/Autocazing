@@ -113,7 +113,7 @@ const options = {
     },
 };
 
-const SalesChart = ({ dayData, weekData }) => {
+const SalesChart = ({ dayData, weekData, monthData }) => {
     const [state, setState] = useState({
         series: [
             {
