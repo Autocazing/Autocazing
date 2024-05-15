@@ -2,10 +2,12 @@ package e204.autocazing.db.repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import e204.autocazing.db.entity.OrderEntity;
+import e204.autocazing.db.entity.StoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -49,4 +51,5 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 			+"WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.store.StoreId = :storeId ")
 	List<Map<String, Object>> getAvgSales(LocalDateTime startDate, LocalDateTime endDate, Integer storeId);
 
+    List<OrderEntity> findByStore(StoreEntity storeEntity);
 }

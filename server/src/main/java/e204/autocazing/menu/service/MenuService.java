@@ -8,6 +8,7 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.MenuIngredientRepository;
 import e204.autocazing.db.repository.MenuRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.menu.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class MenuService {
     private StoreRepository storeRepository;
 
     @Transactional
-    public void createMenu(PostMenuDto postMenuDto) {
+    public void createMenu(PostMenuDto postMenuDto,String loginId) {
         MenuEntity menu = new MenuEntity();
         menu.setMenuName(postMenuDto.getMenuName());
         menu.setMenuPrice(postMenuDto.getMenuPrice());
@@ -50,9 +51,9 @@ public class MenuService {
         menu.setImageUrl(postMenuDto.getImageUrl());
         menu.setSoldOut(postMenuDto.getSoldOut());
         // 가게 정보 설정
-        StoreEntity store = storeRepository.findById(postMenuDto.getStoreId())
-                .orElseThrow(() -> new RuntimeException("Store not found with id: " + postMenuDto.getStoreId()));
-        menu.setStore(store);
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+        menu.setStore(storeEntity);
         // 저장 후 ID를 얻기 위해 먼저 메뉴를 저장
         menu = menuRepository.save(menu);
         // 메뉴와 재료의 관계 설정
@@ -169,8 +170,10 @@ public class MenuService {
         return menuDto;
     }
 
-    public List<MenuDetailsDto> findAllMenus() {
-        List<MenuEntity> menuEntities = menuRepository.findAll();
+    public List<MenuDetailsDto> findAllMenus(String loginId) {
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+        List<MenuEntity> menuEntities = menuRepository.findByStore(storeEntity);
         return menuEntities.stream()
                 .map(this::convertToMenuDetailsDto)
                 .collect(Collectors.toList());
@@ -201,7 +204,7 @@ public class MenuService {
     }
 
     public List<Map<String, Object>> getMenuSales(String type, Integer menuId, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
         LocalDateTime currentTime = LocalDateTime.now().plusHours(9);

@@ -8,6 +8,7 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.db.repository.VenderRepository;
+import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.ingredient.dto.IngredientDetails;
 import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +37,10 @@ public class IngredientService {
     @Autowired
     private IngredientScaleService ingredientScaleService;
 
-    public void createIngredient(PostIngredientDto postIngredientDto) {
+    public void createIngredient(PostIngredientDto postIngredientDto,String loginId) {
+
+
+
         IngredientEntity ingredient = new IngredientEntity();
         ingredient.setIngredientName(postIngredientDto.getIngredientName());
         ingredient.setIngredientPrice(postIngredientDto.getIngredientPrice());
@@ -46,9 +51,10 @@ public class IngredientService {
         ingredient.setImageUrl(postIngredientDto.getImageUrl());
 
         // 참조 설정
-        StoreEntity store = storeRepository.findById(postIngredientDto.getStoreId())
-                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + postIngredientDto.getStoreId()));
-        VenderEntity vender = venderRepository.findById(postIngredientDto.getVenderId())
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
+        VenderEntity venderEntity = venderRepository.findById(postIngredientDto.getVenderId())
                 .orElseThrow(() -> new EntityNotFoundException("Vender not found with id: " + postIngredientDto.getVenderId()));
         //단위 직접 입력
         if(postIngredientDto.getScale().getScaleId() == 0){
@@ -65,8 +71,8 @@ public class IngredientService {
             ingredient.setScale(scaleEntity);
         }
 
-        ingredient.setStore(store);
-        ingredient.setVender(vender);
+        ingredient.setStore(storeEntity);
+        ingredient.setVender(venderEntity);
         ingredientRepository.save(ingredient);
     }
 
@@ -137,9 +143,13 @@ public class IngredientService {
     }
 
     public List<IngredientDetails> findAllIngredients(String loginId) {
+        // loginId로 StoreEntity 조회
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
 
+        // StoreEntity에 속한 IngredientEntity 조회
+        List<IngredientEntity> ingredients = ingredientRepository.findByStore(storeEntity);
 
-        List<IngredientEntity> ingredients = ingredientRepository.findAll();
         return ingredients.stream()
                 .map(this::fromEntity)
                 .collect(Collectors.toList());

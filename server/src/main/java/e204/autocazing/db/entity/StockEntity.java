@@ -23,6 +23,8 @@ public class StockEntity {
     private Integer quantity;
     @Column(nullable = false)
     private LocalDate expirationDate;
+    @Column
+    private Integer storeId;
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id", nullable = false)

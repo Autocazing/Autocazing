@@ -39,8 +39,9 @@ public class IngredientController {
         @ApiResponse(responseCode = "201", description = "재료 등록 성공")
     })
     @PostMapping
-    public ResponseEntity<IngredientEntity> createIngredient(@RequestBody PostIngredientDto postIngredientDto) {
-        ingredientService.createIngredient(postIngredientDto);
+    public ResponseEntity<IngredientEntity> createIngredient(@RequestBody PostIngredientDto postIngredientDto,HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        ingredientService.createIngredient(postIngredientDto,loginId);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -98,31 +99,5 @@ public class IngredientController {
         return ResponseEntity.ok(ingredients);
     }
 
-    // 재료 상세 조회 (쓸 일이 있나?)
-    @Operation(summary = "재료 조회 요청", description = "재료 조회를 수행하는 API입니다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "재료 조회 성공",
-            content = @Content(examples = {
-                @ExampleObject(
-                    name = "재료 조회 body",
-                    summary = "재료 조회 body의 예시",
-                    value = "{\"ingredientId\": 1,\n"
-                        + "    \"storeId\": 1,\n"
-                        + "    \"venderId\": 1,\n"
-                        + "    \"ingredientName\": \"milk\",\n"
-                        + "    \"ingredientPrice\": 5000,\n"
-                        + "    \"ingredientCapacity\": 5,\n"
-                        + "    \"scaleId\": 1,\n"
-                        + "    \"minimumCount\": 15,\n"
-                        + "    \"deliveryTime\": 1,\n"
-                        + "    \"orderCount\": 10}"
-                )
-            })
-        )
-    })
-    @GetMapping("/{ingredientId}")
-    public ResponseEntity<IngredientDetails> getIngredientById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId) {
-        IngredientDetails ingredient = ingredientService.findIngredientById(ingredientId);
-        return ResponseEntity.ok(ingredient);
-    }
+
 }

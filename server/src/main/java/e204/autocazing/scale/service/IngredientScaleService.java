@@ -23,7 +23,7 @@ public class IngredientScaleService {
     private StoreRepository storeRepository;
 
     public void createIngredientScale(PostIngredientScaleDto postScaleDto, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         // DB에서 해당 Unit이 있는지 확인
         IngredientScaleEntity existingScale = ingredientScaleRepository.findByUnitAndStoreId(postScaleDto.getUnit(), storeId);
@@ -51,7 +51,7 @@ public class IngredientScaleService {
     }
 
     public List<IngredientScaleDto> findAllIngredientScales(String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
         List<IngredientScaleEntity> ingredientScaleEntityList = ingredientScaleRepository.findAllByStoreId(storeId);
 
         List<IngredientScaleDto> ingredientScaleDtoList = new ArrayList<>();

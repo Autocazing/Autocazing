@@ -35,7 +35,7 @@ public class RestockOrderService {
     // 장바구니생성
     @Transactional
     public void createRestockOrder(PostRestockDto postRestockDto, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         RestockOrderEntity restockOrder = new RestockOrderEntity();
         restockOrder.setStatus(postRestockDto.getStatus());
@@ -47,7 +47,7 @@ public class RestockOrderService {
 
     // 발주  조회
     public List<RestockOrderResponse> findAllRestockOrders(List<RestockOrderEntity.RestockStatus> status, String loginId) {
-        Integer storeId = storeRepository.findByLoginId(loginId);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
         List<RestockOrderEntity> orders;
         if (status == null || status.isEmpty()) {
@@ -120,7 +120,7 @@ public class RestockOrderService {
             //todo
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
             if(restockOrder.getStatus() != RestockOrderEntity.RestockStatus.ORDERED) {
-                Integer storeId = storeRepository.findByLoginId(loginId);
+                Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
                 Optional<StoreEntity> store = storeRepository.findById(storeId);
                 String storeName = store.get().getStoreName();
 

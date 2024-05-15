@@ -31,7 +31,7 @@ public class SaleService {
 	private StoreRepository storeRepository;
 
 	public List<Map<String, Object>> getSales(String type, String loginId) {
-		Integer storeId = storeRepository.findByLoginId(loginId);
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 		LocalDateTime currentTime = LocalDateTime.now().plusHours(9);
@@ -155,7 +155,7 @@ public class SaleService {
 	}
 
 	public Map<String, Integer> getSoldNumber(String loginId) {
-		Integer storeId = storeRepository.findByLoginId(loginId);
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
 		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
 		LocalDate yesterday = today.minusDays(1);
@@ -177,7 +177,7 @@ public class SaleService {
 	}
 
 	public Map<String, Double> getAvgSales(String loginId) {
-		Integer storeId = storeRepository.findByLoginId(loginId);
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
 		LocalDateTime startDate = LocalDateTime.now().plusHours(9).minusMonths(1);

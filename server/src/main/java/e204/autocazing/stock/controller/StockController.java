@@ -37,11 +37,11 @@ public class StockController {
             @ApiResponse(responseCode = "201", description = "재고 추가 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostStockDto.class)))
                     )
-
     })
     @PostMapping("")
-    public ResponseEntity createStock(@RequestBody List<PostStockDto> postStockDtos){
-        stockService.createStock(postStockDtos);
+    public ResponseEntity createStock(@RequestBody List<PostStockDto> postStockDtos,HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        stockService.createStock(postStockDtos,loginId);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
@@ -57,7 +57,8 @@ public class StockController {
     @GetMapping("")
     public ResponseEntity<List<StockDetailsDto>> getAllStocks(HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-
+        System.out.println("request : " + httpServletRequest.toString());
+        System.out.println("loginId :" + loginId );
         List<StockDetailsDto> stocks = stockService.findAllStocks(loginId);
         return ResponseEntity.ok(stocks);
     }
