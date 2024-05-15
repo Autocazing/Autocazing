@@ -10,7 +10,7 @@ class RestockOrderSpecifics(Base):
     ingredient_name = Column(String(length=20), nullable=False, primary_key=True)   # 복합 PK
     ingredient_quantity = Column(Integer, nullable=False)
     ingredient_price = Column(Integer, nullable=False)
-    status = Column(String(length=10), nullable=False)
+    status = Column(String(length=20), nullable=False)
 
 class RestockOrders(Base):
     __tablename__ = 'restock_orders'

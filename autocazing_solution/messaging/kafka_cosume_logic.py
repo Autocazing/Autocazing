@@ -7,6 +7,7 @@ from db.mysql.session import mysqlSession
 from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
 from db.mysql.models.orders import Orders, OrderSpecifics
+from db.mysql.models.restock_orders import RestockOrders, RestockOrderSpecifics
 
 
 # 각 토픽별 Kafka 컨슈머 생성
@@ -56,11 +57,11 @@ async def process_menu_message(key: str, value: dict):
     db: Session = get_db_session()
     try:
         new_menu = Menus(
-            login_id=key,
-            menu_name=value["menuName"],
-            menu_price=value["menuPrice"],
-            on_event=value["onEvent"],
-            discount_rate=value["discountRate"]
+            login_id = key,
+            menu_name = value["menuName"],
+            menu_price = value["menuPrice"],
+            on_event = value["onEvent"],
+            discount_rate = value["discountRate"]
         )
         db.add(new_menu)
         db.commit()
@@ -83,11 +84,11 @@ async def process_order_message(key: str, value: dict):
     db: Session = get_db_session()
     try:
         new_order = Orders(
-            login_id=key,
-            order_specifics=[OrderSpecifics(
-                menu_name=spec["menuName"],
-                menu_quantity=spec["menuQuantity"],
-                menu_price=spec["menuPrice"]
+            login_id = key,
+            order_specifics = [OrderSpecifics(
+                menu_name = spec["menuName"],
+                menu_quantity = spec["menuQuantity"],
+                menu_price = spec["menuPrice"]
             ) for spec in value["orderSpecifics"]]
         )
         db.add(new_order)
@@ -103,9 +104,30 @@ async def consume_restock_order_messages():
     try:
         async for message in restock_order_consumer:
             print("Received from restock_order:", message.value)
-            # restock_order 메시지 처리 로직 추가
+            await process_restock_order_message(message.key, message.value)
     finally:
         await restock_order_consumer.stop()
+
+async def process_restock_order_message(key: str, value: dict):
+    db: Session = get_db_session()
+    try:
+        new_restock_order = RestockOrders(
+            login_id = key,
+            restock_order_specifics = [RestockOrderSpecifics(
+                ingredient_name = spec["ingredientName"],
+                ingredient_quantity = spec["ingredientQuantity"],
+                ingredient_price = spec["ingredientPrice"],
+                status = spec["restockSpecificStatus"]
+            ) for spec in value["restockOrderSpecifics"]],
+            status = value["status"]
+        )
+        db.add(new_restock_order)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"Error processing restock order message: {e}")
+    finally:
+        db.close()
 
 async def consume_messages():
     await asyncio.gather(
