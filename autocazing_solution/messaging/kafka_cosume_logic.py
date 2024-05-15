@@ -29,18 +29,11 @@ async def consume_ingredient_messages():
 async def process_ingredient_message(key: str, value: str):
     db: Session = get_db_session()
     try:
-        # 만약 value가 이미 dict라면, loads를 사용하지 않고 바로 사용
-        if isinstance(value, str):
-            print("dict가 아님")
-            message_data = loads(value)
-        else:
-            print("dict임")
-            message_data = value
         new_ingredient = Ingredients(
             login_id=key,
-            ingredient_name=message_data["ingredient_name"],
-            ingredient_price=message_data["ingredient_price"],
-            order_count=message_data["order_count"]
+            ingredient_name = value["ingredient_name"],
+            ingredient_price = value["ingredient_price"],
+            order_count = value["order_count"]
         )
         db.add(new_ingredient)
         db.commit()
