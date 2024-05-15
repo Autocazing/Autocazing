@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from py_eureka_client import eureka_client
-from messaging.kafka_instance import producer, consumer
+from messaging.kafka_instance import producer
 from api.monthly_sales.monthly_sales_router import monthly_sales_router
 from api.report.report_router import report_router
-from messaging.kafka_cosume_logic import consume_messages
+from messaging.kafka_cosume_logic import consume_messages, ingredient_consumer, menu_consumer, order_consumer, restock_order_consumer
 import asyncio
 import logging
 
@@ -30,7 +30,8 @@ async def register_with_eureka():
 @app.on_event("startup")
 async def startup_event():
     await register_with_eureka()
-    asyncio.create_task(consume_messages())
+    await producer.start()  # Kafka 프로듀서 시작
+    asyncio.create_task(consume_messages()) # Kafka consume background task 시작
 
 @app.get("/api/fastapi-test")
 async def root():
@@ -39,5 +40,9 @@ async def root():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    consumer.close()  # Kafka 컨슈머 종료
+    await ingredient_consumer.stop()
+    await menu_consumer.stop()
+    await order_consumer.stop()
+    await restock_order_consumer.stop()
+    await producer.stop()  # Kafka 프로듀서 종료
     eureka_client.stop()
