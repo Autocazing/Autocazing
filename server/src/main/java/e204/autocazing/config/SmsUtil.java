@@ -33,10 +33,9 @@ public class SmsUtil {
 	}
 
 	// 단일 메시지 발송 예제
-	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, String storeName ) {
-		String restockOrderCheckLink = "\"발주 수락 링크\""; //발주 전표 확인 링크
-		String deliveryStartAPI = "\"배송 시작 링크\""; //배송 시작
-		String deliveryEndAPI = "\"배송 완료 링크\""; //배송 완료
+	public List<SingleMessageSentResponse> sendOne(List<SmsRequestDto> orderList, Integer restockOrderId,String storeName ) {
+		String deliveryStartAPI = "https://k10e204.p.ssafy.io/api/restocks/"+restockOrderId+"/start"; //배송 시작
+		String deliveryEndAPI = "https://k10e204.p.ssafy.io/api/restocks/"+restockOrderId+"/arrive"; //배송 완료
 
 		List<SingleMessageSentResponse> responses = new ArrayList<>();
 
@@ -64,6 +63,8 @@ public class SmsUtil {
 			message.setText(text.toString());
 
 			SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+
+			//시연할 때 주석 해제 해야 합니다!
 			responses.add(response);
 		}
 		return responses;
