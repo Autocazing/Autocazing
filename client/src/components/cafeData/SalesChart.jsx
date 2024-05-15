@@ -113,7 +113,7 @@ const options = {
     },
 };
 
-const SalesChart = ({ dayData }) => {
+const SalesChart = ({ dayData, weekData }) => {
     const [state, setState] = useState({
         series: [
             {
@@ -126,6 +126,7 @@ const SalesChart = ({ dayData }) => {
     const [selectedButton, setSelectedButton] = useState("day");
 
     useEffect(() => {
+        console.log(weekData);
         // 페이지가 처음 로드될 때 또는 dayData가 변경될 때 실행
         if (dayData && selectedButton === "day") {
             // dayData를 그대로 사용하거나 필요에 따라 가공
