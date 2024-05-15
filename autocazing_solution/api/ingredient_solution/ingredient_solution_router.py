@@ -30,7 +30,7 @@ async def get_report_details(request: Request, ingredient_id: int, db: Session =
 
 def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Session) -> IngredientSolutionResponse:
     # 메뉴별 가격 가져오기
-    menu_prices = {menu.id: menu.price for menu in db.query(Menu).filter(Menu.id.in_(menu_ids)).all()}
+    menu_prices = {menu.id: menu.price for menu in db.query(Menus).filter(Menus.id.in_(menu_ids)).all()}
     
     # 재료 사용량 가져오기
     ingredient_usage = {
