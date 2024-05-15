@@ -1,5 +1,6 @@
 package e204.autocazing.restock.dto;
 
+import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,5 @@ public class RestockOrderSpecificDetailDto {
     private Double ingredientPrice; // 가격
     private String venderName; // 발주 업체 이름
     private Integer deliveryTime; // 배송 소요기간
+    private RestockOrderSpecificEntity.RestockSpecificStatus restockSpecificStatus;
 }
