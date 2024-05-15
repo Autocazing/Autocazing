@@ -10,10 +10,18 @@ producer = AIOKafkaProducer(bootstrap_servers=[settings.KAFKA_BOOTSTRAP_SERVER0,
 )
 
 # Kafka 컨슈머 인스턴스 생성
-consumer = AIOKafkaConsumer('test2',
-                        bootstrap_servers=[settings.KAFKA_BOOTSTRAP_SERVER0, settings.KAFKA_BOOTSTRAP_SERVER1, settings.KAFKA_BOOTSTRAP_SERVER2],
-                        auto_offset_reset="earliest",  # 오프셋 위치(메시지를 읽어오는 시점, earliest: 가장 처음(구독 전부터), latest: 가장 최근(구독 후부터))
-                        enable_auto_commit=True,  # 오프셋 자동 커밋 설정
-                        # group_id='solutionGroup', # 우선은 로드밸런싱 할 게 아니니까 그룹은 좀 배제하고 진행하기
-                        value_deserializer=lambda x: loads(x.decode('utf-8'))  # 메시지의 값 역직렬화
-)
+def create_consumer(topic):
+    return AIOKafkaConsumer(
+        topic,
+        bootstrap_servers=[settings.KAFKA_BOOTSTRAP_SERVER0, settings.KAFKA_BOOTSTRAP_SERVER1, settings.KAFKA_BOOTSTRAP_SERVER2],
+        auto_offset_reset="earliest",  # 오프셋 위치(메시지를 읽어오는 시점)
+        enable_auto_commit=True,  # 오프셋 자동 커밋 설정
+        group_id='solution_server',  # solution 서버의 고유 소비자 그룹 ID
+        value_deserializer=lambda x: loads(x.decode('utf-8'))  # 메시지의 값 역직렬화
+    )
+
+# 각 토픽별 Kafka 컨슈머 생성
+ingredient_consumer = create_consumer('ingredient')
+ingredient_consumer = create_consumer('menu')
+ingredient_consumer = create_consumer('order')
+ingredient_consumer = create_consumer('restock_order')
