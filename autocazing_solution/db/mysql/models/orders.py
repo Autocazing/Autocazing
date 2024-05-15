@@ -15,7 +15,7 @@ class Orders(Base):
     __tablename__ = 'orders'
     order_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     store_id = Column(Integer, nullable=False)
-    order_specifics = relationship("OrderSpecifics", back_populates="orders", cascade="all, delete-orphan")
+    order_specifics = relationship("OrderSpecifics", cascade="all, delete-orphan")
 
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), nullable=False, server_onupdate=func.now())

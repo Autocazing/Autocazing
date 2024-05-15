@@ -2,10 +2,10 @@ from typing import List
 from pydantic import BaseModel
 
 class ExpirationSpecifics(BaseModel):
-    ingridient_name: str
+    ingredient_name: str
 
 class OnDeliveryIngredients(BaseModel):
-    ingridient_name: str
+    ingredient_name: str
 
 class ReportResponseSchema(BaseModel):
     report_id: int
