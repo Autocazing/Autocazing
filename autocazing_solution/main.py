@@ -29,7 +29,7 @@ async def register_with_eureka():
 
 @app.on_event("startup")
 async def startup_event():
-    register_with_eureka()
+    await register_with_eureka()
     asyncio.create_task(consume_messages())
 
 @app.get("/api/fastapi-test")
