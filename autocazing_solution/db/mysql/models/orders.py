@@ -14,7 +14,7 @@ class OrderSpecifics(Base):
 class Orders(Base):
     __tablename__ = 'orders'
     order_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    store_id = Column(Integer, nullable=False)
+    login_id = Column(Integer, nullable=False)
     order_specifics = relationship("OrderSpecifics", cascade="all, delete-orphan")
 
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
