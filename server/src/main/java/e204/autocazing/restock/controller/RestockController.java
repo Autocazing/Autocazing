@@ -146,11 +146,10 @@ public class RestockController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{restockOrderId}/{venderId}/start")
+    @GetMapping("/{restockOrderId}/{venderId}/start")
     public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderStart(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
-        String loginId = httpServletRequest.getHeader("loginId");
 
         //restockOrderId의 venderId가 같은 orderSpecific의 status를 ON_DELIVERY로 변경
         List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList
@@ -159,11 +158,10 @@ public class RestockController {
         return ResponseEntity.ok(updatedRestockSpecificDtoList);
     }
 
-    @PutMapping("/{restockOrderId}/{venderId}/arrive")
+    @GetMapping("/{restockOrderId}/{venderId}/arrive")
     public ResponseEntity<List<UpdatedRestockSpecificDto>> restockOrderArrive(@PathVariable(name = "restockOrderId") Integer restockOrderId,
         @PathVariable(name = "venderId") Integer venderId,
         HttpServletRequest httpServletRequest) {
-        String loginId = httpServletRequest.getHeader("loginId");
 
         //restockOrderId의 venderId가 같은 orderSpecific의 status를 ARRIVED로 변경
         List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList
