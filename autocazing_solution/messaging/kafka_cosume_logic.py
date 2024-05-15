@@ -85,7 +85,7 @@ async def process_order_message(key: str, value: dict):
         new_order = Orders(
             login_id=key,
             order_specifics=[OrderSpecifics(
-                menu_id=spec["menuName"],
+                menu_name=spec["menuName"],
                 menu_quantity=spec["menuQuantity"],
                 menu_price=spec["menuPrice"]
             ) for spec in value["orderSpecifics"]]
