@@ -13,7 +13,7 @@ from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpStatus, value
 
 ingredient_solution_router = APIRouter(prefix="/ingredient-solution")
 
-@ingredient_solution_router.get("/{ingredient_id}", tags=["ingreient_router"], response_model=IngredientSolutionResponse)
+@ingredient_solution_router.get("/{ingredient_id}", tags=["ingreient_solution_router"], response_model=IngredientSolutionResponse)
 async def get_ingredient_solution(request: Request, ingredient_id: int, db: Session = Depends(get_db)):
     login_id = request.headers.get("loginId")
     if login_id is None:
@@ -29,8 +29,10 @@ async def get_ingredient_solution(request: Request, ingredient_id: int, db: Sess
     return ingredient_solution
 
 def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Session) -> IngredientSolutionResponse:
-    # 메뉴별 가격 가져오기
-    menu_prices = {menu.menu_id: menu.menu_price for menu in db.query(Menus).filter(Menus.menu_id.in_(menu_ids)).all()}
+    # 메뉴별 가격 및 이름 가져오기
+    menus = db.query(Menus).filter(Menus.menu_id.in_(menu_ids)).all()
+    menu_prices = {menu.menu_id: menu.menu_price for menu in menus}
+    menu_names = {menu.menu_id: menu.menu_name for menu in menus}
     
     # 재료 사용량 가져오기
     ingredient_usage = {
@@ -48,7 +50,7 @@ def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Sessi
     # 문제 풀기
     model.solve()
     # 결과 출력
-    optimal_sales = {f"menu_{menu_id}": value(variables[menu_id]) for menu_id in menu_ids}
+    optimal_sales = {menu_names[menu_id]: value(variables[menu_id]) for menu_id in menu_ids}
     
     ingredient_solution = IngredientSolutionResponse(
         status=LpStatus[model.status],
