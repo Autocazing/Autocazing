@@ -114,11 +114,12 @@ public class RestockOrderService {
         }
 
         //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
-        if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() != RestockOrderEntity.RestockStatus.WRITING) {
+        if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrder.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
             //새로운 장바구니 만들기
             createNewRestockOrder(loginId);
             //todo
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
+            //다시 커밋하겠음.
             if(restockOrder.getStatus() != RestockOrderEntity.RestockStatus.ORDERED) {
                 Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
                 Optional<StoreEntity> store = storeRepository.findById(storeId);
