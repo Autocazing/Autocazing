@@ -19,7 +19,8 @@ public class SseService {
     //Emitter 객체 생성 후 연결이 오나료되거나 타임아웃될때 리스트에서 제거
     //Long.MAX_VALUE 는 사실상 무한대
     public SseEmitter createEmitter(String loginId) throws IOException {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+//        SseEmitter emitter = new SseEmitter(1000L * 60 * 60 * 24);
+        SseEmitter emitter =new SseEmitter(Long.MAX_VALUE);
         this.emitters.put(loginId,emitter);
 
         emitter.send(SseEmitter.event()
