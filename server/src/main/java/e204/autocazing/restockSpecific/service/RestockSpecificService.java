@@ -6,20 +6,16 @@ import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
-import e204.autocazing.ingredient.service.IngredientService;
-import e204.autocazing.restock.dto.RestockOrderSpecificDetailDto;
-import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
-import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,8 +74,6 @@ public class RestockSpecificService {
           //      .venderName(restockSpecific.getIngredient().getVender().getVenderName())
                 .status(String.valueOf(restockSpecific.getRestockOrder().getStatus()))
                 .build();
-
-
     }
 
     // Update
@@ -104,5 +98,21 @@ public class RestockSpecificService {
     @Transactional
     public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
         restockOrderSpecificRepository.deleteByRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
+    }
+
+    public List<RestockOrderSpecificEntity> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
+        //restockOrderId로 발주 상세 리스트
+        List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
+
+        //발주 상세 리스트의 재료 ID
+        for(RestockOrderSpecificEntity restockOrderSpecificEntity : restockOrderSpecificEntityList){
+            Integer ingredientId = restockOrderSpecificEntity.getIngredientId();
+            Integer specificVenderId = ingredientRepository.findByIngredientId(ingredientId);
+
+            if(Objects.equals(venderId, specificVenderId)){
+                restockOrderSpecificEntity.setStatus(onDelivery);
+            }
+        }
+        return restockOrderSpecificEntityList;
     }
 }

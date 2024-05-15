@@ -32,6 +32,8 @@ public class RestockOrderService {
     private IngredientRepository ingredientRepository;
     @Autowired
     private SmsUtil smsUtil;
+    @Autowired
+    private VenderRepository venderRepository;
 
     // 장바구니생성
     @Transactional
@@ -137,6 +139,7 @@ public class RestockOrderService {
                     } else {
                         order.put(ingredientId, ingredientQuantity);
                     }
+                    restockOrderSpecific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.ORDERED);
                 }
 
                 // 재료 ID로 업체 정보 가져오기
@@ -152,8 +155,14 @@ public class RestockOrderService {
 
                 // List<SmsRequestDto> : 연락처, 주문 리스트
                 List<SmsRequestDto> requestDtoList = new ArrayList<>();
+
                 for (Map.Entry<String, List<Map<String, Integer>>> contactEntry : contactOrdersMap.entrySet()) {
                     SmsRequestDto requestDto = new SmsRequestDto();
+
+                    String venderContact = contactEntry.getKey();
+                    Integer venderId = venderRepository.findByContact(venderContact, storeId);
+
+                    requestDto.setVenderId(venderId);
                     requestDto.setVenderManagerContact(contactEntry.getKey());
                     requestDto.setOrderList(contactEntry.getValue());
                     requestDtoList.add(requestDto);
@@ -256,6 +265,7 @@ public class RestockOrderService {
         specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
         specific.setIngredientId(ingredientEntity.getIngredientId());
         specific.setRestockOrder(restockOrder);
+        specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.WRITING);
         restockOrderSpecificRepository.save(specific);
 
         System.out.println( "수동발주 2");

@@ -13,5 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SmsRequestDto {
 	private String venderManagerContact;
+	private Integer venderId;
 	private List<Map<String, Integer>> orderList;
 }

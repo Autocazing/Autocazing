@@ -21,4 +21,7 @@ public interface IngredientRepository extends JpaRepository<IngredientEntity, In
 	String findNameByIngredientId(Integer ingredientId, Integer storeId);
 
     List<IngredientEntity> findByStore(StoreEntity store);
+
+	@Query(value = "SELECT i.vender.venderId FROM IngredientEntity i WHERE i.ingredientId=:ingredientId ")
+	Integer findByIngredientId(Integer ingredientId);
 }

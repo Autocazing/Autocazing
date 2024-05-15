@@ -1,5 +1,9 @@
 package e204.autocazing.restockSpecific.controller;
 
+import e204.autocazing.db.entity.RestockOrderEntity;
+import e204.autocazing.db.entity.RestockOrderSpecificEntity;
+import e204.autocazing.restock.dto.UpdateRestockDto;
+import e204.autocazing.restock.dto.UpdatedRestockDto;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
@@ -14,6 +18,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +31,7 @@ import java.util.List;
 @RequestMapping("api/restock-specifics")
 public class RestockSpecificController {
     @Autowired
-    private RestockSpecificService service;
-
-
-
+    private RestockSpecificService restockSpecificService;
 
     // 수정
 //    @Operation(summary = "발주리스트 내 재료목록  수정", description = "발주리스트 내 재료목록 수정을 수행하는 API입니다.")
@@ -64,4 +67,5 @@ public class RestockSpecificController {
 //        service.deleteRestockOrderSpecific(restockOrderSpecificId);
 //        return ResponseEntity.ok().build();
 //    }
+
 }
