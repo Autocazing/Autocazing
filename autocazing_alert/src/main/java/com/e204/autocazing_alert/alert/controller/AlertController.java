@@ -39,7 +39,8 @@ public class AlertController {
     })
     //클라이언트에서 알림 수신하기 위해 연결해야함.
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(@RequestParam(name = "loginid") String loginId) throws IOException {
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest httpServletRequest) throws IOException {
+        String loginId = httpServletRequest.getHeader("loginId");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println("loginId: " + loginId);
         System.out.println("연결 완료!");
@@ -79,6 +80,8 @@ public class AlertController {
             schema = @Schema(implementation = String.class, allowableValues = {"restock", "delivering", "sales"}))
     String topic, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
+        System.out.println("testAPI 에서 loginId : " + loginId);
+        System.out.println("topic: " + topic);
         if(topic.equals("restock")){
             sseService.sendRestockNotification(loginId,"발주 알림 전송" );
         }
