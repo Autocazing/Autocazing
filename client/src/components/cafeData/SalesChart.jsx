@@ -109,7 +109,7 @@ let options = {
             },
         },
         min: 0,
-        max: 10000000,
+        max: 100,
     },
 };
 
@@ -122,6 +122,17 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
             },
         ],
     });
+
+    const [maxSize, setMaxSize] = useState(0);
+
+    const updatedOptions = {
+        ...options, // 기존 옵션들 복사
+        yaxis: {
+            ...options.yaxis, // 기존 yaxis 옵션 복사
+            min: 0, // 최솟값(min)을 minSize로 업데이트
+            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+        },
+    };
 
     const [selectedButton, setSelectedButton] = useState("day");
 
@@ -191,56 +202,7 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
         }
     }, [dayData, weekData, monthData, selectedButton]);
 
-    const [maxSize, setMaxSize] = useState(0);
-
-    const updatedOptions = {
-        ...options, // 기존 옵션들 복사
-        yaxis: {
-            ...options.yaxis, // 기존 yaxis 옵션 복사
-            min: 0, // 최솟값(min)을 minSize로 업데이트
-            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
-        },
-    };
-
     const handleButtonClick = (button) => {
-        // if (button === "month") {
-        //     const newSeries = [
-        //         {
-        //             name: "New Product",
-        //             data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
-        //         },
-        //     ];
-
-        //     setState({ series: newSeries });
-        // }
-
-        // if (button === "week") {
-        //     const newSeries = [
-        //         {
-        //             name: "New Product",
-        //             data: [30, 41, 12, 27, 13, 62, 27, 11, 44, 22, 40, 45],
-        //         },
-        //     ];
-
-        //     setState({ series: newSeries });
-        // }
-
-        // if (button === "day") {
-        //     // dayData를 적절히 가공하여 그래프에 표시할 데이터로 변환
-        //     const newData = dayData.map((item) => item); // 예시로, dayData를 그대로 사용하거나, 다른 방식으로 가공
-
-        //     // 시리즈 데이터 업데이트
-        //     const newSeries = [
-        //         {
-        //             name: "New Product",
-        //             data: newData,
-        //         },
-        //     ];
-
-        //     // 상태 업데이트
-        //     setState({ series: newSeries });
-        // }
-
         setSelectedButton(button);
     };
 
