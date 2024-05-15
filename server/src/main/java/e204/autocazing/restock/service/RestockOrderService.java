@@ -96,6 +96,7 @@ public class RestockOrderService {
         detailDto.setIngredientPrice(specific.getIngredientPrice().doubleValue());
         detailDto.setVenderName(ingredientEntity.getVender().getVenderName());
         detailDto.setDeliveryTime(ingredientEntity.getDeliveryTime());
+        detailDto.setRestockSpecificStatus(specific.getStatus());
         return detailDto;
     }
 
