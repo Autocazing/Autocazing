@@ -1,5 +1,7 @@
 import asyncio
+from datetime import datetime
 from messaging.kafka_instance import create_consumer
+from sqlalchemy import extract
 from sqlalchemy.orm import Session
 from db.mysql.session import mysqlSession
 from db.mysql.models.ingredients import Ingredients
@@ -7,6 +9,7 @@ from db.mysql.models.menus import Menus
 from db.mysql.models.menu_ingredients import MenuIngredients
 from db.mysql.models.orders import Orders, OrderSpecifics
 from db.mysql.models.restock_orders import RestockOrders, RestockOrderSpecifics
+from db.mysql.models.reports import Reports, ExpirationSpecifics
 
 
 # 각 토픽별 Kafka 컨슈머 생성
@@ -14,6 +17,7 @@ ingredient_consumer = create_consumer('ingredient')
 menu_consumer = create_consumer('menu')
 order_consumer = create_consumer('order')
 restock_order_consumer = create_consumer('restock_order')
+expiration_ingredients_consumer = create_consumer('expiration_ingredients')
 
 def get_db_session() -> Session:
     return next(mysqlSession.get_db())
@@ -140,10 +144,56 @@ async def process_restock_order_message(key: str, value: dict):
     finally:
         db.close()
 
+async def consume_expiration_messages():
+    await expiration_ingredients_consumer.start()
+    try:
+        async for message in expiration_ingredients_consumer:
+            print("Received from restock_order:", message.value)
+            await process_expiration_message(message.key, message.value)
+    finally:
+        await expiration_ingredients_consumer.stop()
+
+async def process_expiration_message(key: str, value: dict):
+    db: Session = get_db_session()
+    try:
+        today = datetime.utcnow().date()
+        # Retrieve the report for today's date
+        report = db.query(Reports).filter(
+            extract('year', Reports.created_at) == today.year,
+            extract('month', Reports.created_at) == today.month,
+            extract('day', Reports.created_at) == today.day,
+            Reports.login_id == key
+        ).first()
+        # Create a new report if none exists for today
+        if report is None:
+            report = Reports(
+                login_id=key,
+                expected_monthly_sales=0,  # Initialize with appropriate default values
+                current_monthly_sales=0    # Initialize with appropriate default values
+            )
+            db.add(report)
+            db.commit()
+            db.refresh(report)  # Refresh to get the new report_id
+        # Add expiration ingredients to the report
+        for ingredient in value["expirationIngredients"]:
+            new_expiration_specific = ExpirationSpecifics(
+                report_id=report.report_id,
+                ingredient_id=ingredient["ingredientId"],
+                ingredient_name=ingredient["ingredientName"]
+            )
+            db.add(new_expiration_specific)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"Error processing restock order message: {e}")
+    finally:
+        db.close()
+
 async def consume_messages():
     await asyncio.gather(
         consume_ingredient_messages(),
         consume_menu_messages(),
         consume_order_messages(),
         consume_restock_order_messages(),
+        consume_expiration_messages(),
     )
