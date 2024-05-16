@@ -20,6 +20,10 @@ const CartListTable = ({ Basket }) => {
         setModalIsOpen(true);
     };
 
+    const deleteItem = (item) => {
+        console.log(item);
+    };
+
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
@@ -115,7 +119,11 @@ const CartListTable = ({ Basket }) => {
                                 />
                             </button>
                             <button>
-                                <img src={deleteIcon} alt="delete" />
+                                <img
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    onClick={() => deleteItem(order)}
+                                />
                             </button>
                             {modalIsOpen && selectedItem && (
                                 <MaterialManagementModal
