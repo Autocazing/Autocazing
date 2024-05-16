@@ -81,7 +81,16 @@ public class OrderService {
                         if (menu == null) {
                             throw new IllegalStateException("Menu not found: " + detail.getMenuId());
                         }
-                        return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), menu.getMenuPrice());
+
+                        //menu가 할인된 상품이면 할인 가격 적용
+                        Integer price = 0;
+                        if(menu.getOnEvent()){
+                            price = menu.getMenuPrice() * ((100-menu.getDiscountRate())/100);
+                        }
+                        else{
+                            price = menu.getMenuPrice();
+                        }
+                        return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
                     })
                     .toList();
             order.setOrderSpecific(orderSpecifics);
