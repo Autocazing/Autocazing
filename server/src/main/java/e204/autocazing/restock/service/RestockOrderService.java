@@ -245,9 +245,9 @@ public class RestockOrderService {
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
                 // RestockOrderSpecificEntity에서 재료 확인
                 String ingredientName = specific.getIngredientName();
-                log.info("재고 조회 전");
+
                 IngredientEntity orderedIngredient = ingredientRepository.findByIngredientName(ingredientName);
-                log.info("재고 조회 후");
+
                 if (ingredient.equals(orderedIngredient)) {
                     //배송중인 재료가 있다면
                     deliverdCount += specific.getIngredientQuantity();
