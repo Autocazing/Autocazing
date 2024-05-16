@@ -5,13 +5,20 @@ import { useEffect, useState } from "react";
 
 const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [cartList, setCartList] = useState([]);
     useEffect(() => {
         if (Basket !== undefined) {
             setCartList(Basket[0].specifics);
-            console.log(Basket[0].specifics);
+            // console.log(Basket[0].specifics);
         }
     });
+
+    const handleItemClick = (item) => {
+        // console.log(item);
+        setSelectedItem(item);
+        setModalIsOpen(true);
+    };
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -97,7 +104,10 @@ const CartListTable = ({ Basket }) => {
                             </p>
                         </div>
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <button className="mr-2">
+                            <button
+                                className="mr-2"
+                                onClick={() => handleItemClick(order)}
+                            >
                                 <img
                                     src={modifyIcon}
                                     alt="Modify"
@@ -107,11 +117,16 @@ const CartListTable = ({ Basket }) => {
                             <button>
                                 <img src={deleteIcon} alt="delete" />
                             </button>
-                            {modalIsOpen && (
+                            {modalIsOpen && selectedItem && (
                                 <MaterialManagementModal
                                     isOpen={modalIsOpen}
                                     onClose={() => setModalIsOpen(false)}
-                                    initialValue={[]}
+                                    initialValue={{
+                                        ingredientName:
+                                            selectedItem.ingredientName,
+                                        ingredientQuantity:
+                                            selectedItem.ingredientQuanrtity,
+                                    }}
                                 />
                             )}
                         </div>
