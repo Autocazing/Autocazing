@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestockOrderDetailsDto {
-    private Integer restockOrderId;
+//    private Integer restockOrderId;
     private List<RestockOrderSpecificDetailDto> specifics; // 발주된 재료들의 상세 정보
 }

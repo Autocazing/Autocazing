@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostRestockSpecificDto {
     private Integer ingredientId;
-    private Integer restockOrderId;
+//    private Integer restockOrderId;
     private Integer ingredientQuantity;
 
 //    private Integer ingredientPrice;

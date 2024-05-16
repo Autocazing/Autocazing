@@ -40,6 +40,6 @@ public class RestockOrderEntity {
     private List<RestockOrderSpecificEntity> restockOrderSpecific;
 
     public enum RestockStatus {
-        WRITING, ORDERED, ON_DELIVERY, ARRIVED, COMPLETE
+        WRITING, ORDERED,COMPLETE
     }
 }

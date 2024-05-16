@@ -13,4 +13,5 @@ public class UpdateRestockSpecificDto {
 
     private Integer ingredientQuantity;
 
+
 }

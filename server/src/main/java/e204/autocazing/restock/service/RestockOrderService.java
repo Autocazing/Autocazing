@@ -12,12 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,40 +70,52 @@ public class RestockOrderService {
     }
 
 
-    // 발주 상세조회
-    public RestockOrderDetailsDto findRestockOrderById(Integer restockOrderId) {
-         RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
-            .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
+    // 발주 상세조회 (테스트)
+    public List<RestockOrderDetailsDto> findRestockOrderById(RestockOrderEntity.RestockStatus status , String loginId) {
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("Store not found for loginId: " + loginId));
+        //조회했는데 장바구니가 없을때 만들기.
+        if(status == RestockOrderEntity.RestockStatus.WRITING){
+            RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.WRITING);
+            if(restockOrderEntity == null) {
+                PostRestockDto postRestockDto = new PostRestockDto();
+                postRestockDto.setStatus(RestockOrderEntity.RestockStatus.WRITING);
+                createRestockOrder(postRestockDto,loginId);
+            }
+        }
 
-        RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
-        restockOrderDetailsDto.setRestockOrderId(restockOrderEntity.getRestockOrderId());
-        restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
-            .map(this::convertToSpecificDetailDto)
-            .collect(Collectors.toList()));
-        return restockOrderDetailsDto;
+        List<RestockOrderDetailsDto> restockOrderDetailsDtos = new ArrayList<>();
+        //진행중인 발주 조회
+        if(status == null){
+            //구현
+            List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findAllByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
+            for (RestockOrderEntity restockEntity : restockOrderEntityList) {
+                RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
+//            restockOrderDetailsDto.setRestockOrderId(restockEntity.getRestockOrderId());
+                restockOrderDetailsDto.setSpecifics(restockEntity.getRestockOrderSpecific().stream()
+                        .map(this::convertToSpecificDetailDto)
+                        .collect(Collectors.toList()));
+
+                restockOrderDetailsDtos.add(restockOrderDetailsDto);
+            }
+
+            return restockOrderDetailsDtos;
+        }
+        //WRITING (장바구니)
+        else if (status == RestockOrderEntity.RestockStatus.WRITING){
+            RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
+
+            RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
+            restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
+                    .map(this::convertToSpecificDetailDto)
+                    .collect(Collectors.toList()));
+
+            restockOrderDetailsDtos.add(restockOrderDetailsDto);
+            return restockOrderDetailsDtos;
+
+        }
+        return restockOrderDetailsDtos;
     }
-
-
-    // 발주 상세조회
-//    public RestockOrderDetailsDto testService(String loginId) {
-//        Optional<StoreEntity> storeEntity = storeRepository.findByLoginId(loginId);
-//        if (storeEntity.isPresent()) {
-//            //구현
-////            return restockOrderRepository.findByStore(storeEntity.get());
-//        } else {
-//            throw new RuntimeException("Store not found for loginId: " + loginId);
-//        }
-//        List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findByStore(storeEntity);
-//        RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
-//                .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
-//
-//        RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
-//        restockOrderDetailsDto.setRestockOrderId(restockOrderEntity.getRestockOrderId());
-//        restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
-//                .map(this::convertToSpecificDetailDto)
-//                .collect(Collectors.toList()));
-//        return restockOrderDetailsDto;
-//    }
 
     private RestockOrderSpecificDetailDto convertToSpecificDetailDto(RestockOrderSpecificEntity specific) {
         RestockOrderSpecificDetailDto detailDto = new RestockOrderSpecificDetailDto();
@@ -121,6 +128,8 @@ public class RestockOrderService {
         detailDto.setIngredientPrice(specific.getIngredientPrice().doubleValue());
         detailDto.setVenderName(ingredientEntity.getVender().getVenderName());
         detailDto.setDeliveryTime(ingredientEntity.getDeliveryTime());
+        detailDto.setCreatedAt(specific.getCreatedAt());
+        detailDto.setUpdatedAt(specific.getUpdatedAt());
         detailDto.setRestockSpecificStatus(specific.getStatus());
         return detailDto;
     }
