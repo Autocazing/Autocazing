@@ -26,6 +26,10 @@ public class StockEntity {
     @Column
     private Integer storeId;
 
+    //소모량 추가
+    @Column(nullable = false)
+    private Integer used = 0;
+
     @ManyToOne
     @JoinColumn(name = "ingredient_id", nullable = false)
     private IngredientEntity ingredient;

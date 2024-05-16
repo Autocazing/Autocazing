@@ -76,8 +76,10 @@ public class StockService {
             stockDetails.setExpirationDate(stock.getExpirationDate());
             stockDetails.setQuantity(stock.getQuantity());
             stockDetails.setDeliveringCount(deliveringCount);
+            stockDetails.setUsed(stock.getUsed());
             stockDetailsList.add(stockDetails);
         }
+        //이건 뭐지?
         System.out.println("SIZE : " + stockDetailsList.size());
         return stockDetailsList;
     }

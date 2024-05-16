@@ -120,16 +120,15 @@ public class RestockController {
         return ResponseEntity.ok(restockSpecificResponseDto);
     }
 
+
+    //발주 재료 삭제
     @Operation(summary = "장바구니 재료 삭제 요청", description = "장바구니 재료 삭제를 수행하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "재료 삭제 성공")
     })
-    //발주 재료 삭제
-    @DeleteMapping("/specifics/{specificId}")
-    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderSpecificId) {
+    @DeleteMapping("/specifics/{restockOrderSpecificId}")
+    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable(name = "restockOrderSpecificId") Integer restockOrderSpecificId) {
         restockSpecificService.deleteRestockOrderSpecific(restockOrderSpecificId);
         return ResponseEntity.ok().build();
     }
-
-
 }

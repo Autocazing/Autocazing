@@ -100,6 +100,7 @@ public class RestockSpecificService {
     public void deleteRestockOrderSpecific(Integer restockOrderSpecificId) {
         restockOrderSpecificRepository.deleteById(restockOrderSpecificId);
     }
+
     @Transactional
     public List<UpdatedRestockSpecificDto> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
         // restockOrderId로 발주 상세 리스트

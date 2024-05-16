@@ -120,6 +120,16 @@ public class RestockOrderService {
             return restockOrderDetailsDtos;
 
         }
+        else if (status == RestockOrderEntity.RestockStatus.COMPLETE){
+            RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.COMPLETE);
+            RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
+            restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
+                    .map(this::convertToSpecificDetailDto)
+                    .collect(Collectors.toList()));
+
+            restockOrderDetailsDtos.add(restockOrderDetailsDto);
+            return restockOrderDetailsDtos;
+        }
         return restockOrderDetailsDtos;
     }
 
