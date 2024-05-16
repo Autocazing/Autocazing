@@ -33,7 +33,7 @@ const CartListTable = ({ Basket }) => {
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            용량
+                            총량
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
@@ -58,10 +58,10 @@ const CartListTable = ({ Basket }) => {
                     </div>
                 </div>
 
-                {/* {CartList.map((order, key) => (
+                {cartList.map((order, key) => (
                     <div
                         className={`grid grid-cols-3 sm:grid-cols-6 ${
-                            key === CartList.length - 1
+                            key === cartList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
                         }`}
@@ -69,25 +69,25 @@ const CartListTable = ({ Basket }) => {
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
                             <p className="hidden text-black dark:text-white sm:block">
-                                {order.name}
+                                {order.ingredientName}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.amount}
+                                {order.ingredientQuanrtity}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.price}
+                                {order.ingredientPrice}
                             </p>
                         </div>
 
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.company}
+                                {order.venderName}
                             </p>
                         </div>
 
@@ -116,7 +116,7 @@ const CartListTable = ({ Basket }) => {
                             )}
                         </div>
                     </div>
-                ))} */}
+                ))}
             </div>
         </div>
     );
