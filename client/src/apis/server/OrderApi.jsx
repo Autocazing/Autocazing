@@ -11,4 +11,14 @@ const GetOredered = () => {
     });
 };
 
-export { GetOredered };
+const GetBasket = () => {
+    const fetchGet = () => axiosInstance.get("/restocks?status=WRITING");
+
+    return useQuery({
+        queryKey: ["GetBasket"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+
+export { GetOredered, GetBasket };

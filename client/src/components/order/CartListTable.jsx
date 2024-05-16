@@ -1,49 +1,17 @@
 import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const CartList = [
-    // 테스트용
-    {
-        name: "우유",
-        amount: 1,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "원두",
-        amount: 2,
-        price: "8000",
-        company: "동민상사",
-        ordertime: 2,
-    },
-    {
-        name: "연유",
-        amount: 1,
-        price: "9000",
-        company: "민호상사",
-        ordertime: 7,
-    },
-    {
-        name: "우유2",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "우유3",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-];
-
-const CartListTable = () => {
+const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [cartList, setCartList] = useState([]);
+    useEffect(() => {
+        if (Basket !== undefined) {
+            setCartList(Basket[0].specifics);
+            console.log(Basket[0].specifics);
+        }
+    });
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -90,7 +58,7 @@ const CartListTable = () => {
                     </div>
                 </div>
 
-                {CartList.map((order, key) => (
+                {/* {CartList.map((order, key) => (
                     <div
                         className={`grid grid-cols-3 sm:grid-cols-6 ${
                             key === CartList.length - 1
@@ -148,7 +116,7 @@ const CartListTable = () => {
                             )}
                         </div>
                     </div>
-                ))}
+                ))} */}
             </div>
         </div>
     );
