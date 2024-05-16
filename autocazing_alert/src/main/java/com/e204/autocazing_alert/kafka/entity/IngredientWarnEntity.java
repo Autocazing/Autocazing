@@ -4,8 +4,9 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientWarnEntity {
+public class IngredientWarnEntity extends ConsumerEntity {
+
 	private Integer restockOrderId;
 	private Integer ingredientId;
-	private Integer ingredientQuantity;
+
 }
