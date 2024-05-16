@@ -96,10 +96,6 @@ const CartListTable = () => {
                         key={key}
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <div className="flex-shrink-0">
-                                사진
-                                {/* <img src={brand.logo} alt="Brand" /> */}
-                            </div>
                             <p className="hidden text-black dark:text-white sm:block">
                                 {order.name}
                             </p>
