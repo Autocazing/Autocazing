@@ -43,9 +43,9 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const [productNames, setProductNames] = useState({});
 
-    useEffect(() => {
-        console.log(stockPostData);
-    }, [stockPostData]);
+    // useEffect(() => {
+    //     console.log(stockPostData);
+    // }, [stockPostData]);
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
     const postStock = StockPostApi();
@@ -214,7 +214,7 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         onChange={handleSelectChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option value="" disabled>
+                        <option value="">
                             재고 추가할 품목을 선택해주세요
                         </option>
                         {materialInfo &&
