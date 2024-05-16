@@ -109,7 +109,7 @@ public class RestockOrderService {
         }
         //WRITING (장바구니)
         else if (status == RestockOrderEntity.RestockStatus.WRITING){
-            RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
+            RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.WRITING);
 
             RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
             restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
