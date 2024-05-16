@@ -11,4 +11,13 @@ const GetAlarmList = () => {
     });
 };
 
-export { GetAlarmList };
+const MakeAlarm = (topic) => {
+    const fetchGet = () => axiosInstance.get(`/alerts/test?topic=${topic}`);
+
+    return useQuery({
+        queryKey: ["MakeAlarm"],
+        queryFn: fetchGet,
+    });
+};
+
+export { GetAlarmList, MakeAlarm };
