@@ -84,12 +84,12 @@ public class OrderService {
 
                         //menu가 할인된 상품이면 할인 가격 적용
                         Integer price = 0;
-                        if(menu.getOnEvent()){
-                            price = menu.getMenuPrice() * ((100-menu.getDiscountRate())/100);
-                        }
-                        else{
+                        if (menu.getOnEvent() != null && menu.getOnEvent()) {
+                            price = (int) (menu.getMenuPrice() * (1 - (menu.getDiscountRate() / 100.0)));
+                        } else {
                             price = menu.getMenuPrice();
                         }
+
                         return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
                     })
                     .toList();
