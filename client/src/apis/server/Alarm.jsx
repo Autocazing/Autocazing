@@ -11,13 +11,8 @@ const GetAlarmList = () => {
     });
 };
 
-const MakeAlarm = (topic) => {
-    const fetchGet = () => axiosInstance.get(`/alerts/test?topic=${topic}`);
-
-    return useQuery({
-        queryKey: ["MakeAlarm"],
-        queryFn: fetchGet,
-    });
+const MakeAlarm = (topic, success, fail) => {
+    axiosInstance.get(`alerts/test?topic=${topic}`).then(success).catch(fail);
 };
 
 export { GetAlarmList, MakeAlarm };
