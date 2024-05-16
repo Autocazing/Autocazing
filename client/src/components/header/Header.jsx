@@ -43,8 +43,7 @@ const Header = (props) => {
                     });
 
                     eventSource.addEventListener("sales", (e) => {
-                        console.log("체크");
-                        console.log(e);
+                        console.log("sales 갱신", e);
                     });
                 };
 
