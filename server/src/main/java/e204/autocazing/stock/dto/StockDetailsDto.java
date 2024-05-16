@@ -19,6 +19,7 @@ public class StockDetailsDto {
     private Integer ingredientId;
     private String ingredientName;
     private Integer deliveringCount;
+    private Integer used;
 
 
 }
