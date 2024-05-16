@@ -191,7 +191,8 @@ public class RestockOrderService {
     public void updateStockWithCompleteOrder(Integer restockOrderId) {
         List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
         for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
-            IngredientEntity ingredient = ingredientRepository.findByIngredientName(specific.getIngredientName());
+
+            IngredientEntity ingredient = ingredientRepository.findIngredientByIngredientId(specific.getIngredientId());
             StockEntity stock = stockRepository.findByIngredient(ingredient);
             if (stock == null) {
                 stock = new StockEntity();
@@ -244,10 +245,10 @@ public class RestockOrderService {
 
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
                 // RestockOrderSpecificEntity에서 재료 확인
-                String ingredientName = specific.getIngredientName();
-
-                IngredientEntity orderedIngredient = ingredientRepository.findByIngredientName(ingredientName);
-
+                Integer ingredientId = specific.getIngredientId();
+                log.info("재고 조회 전");
+                IngredientEntity orderedIngredient = ingredientRepository.findIngredientByIngredientId(ingredientId);
+                log.info("재고 조회 후");
                 if (ingredient.equals(orderedIngredient)) {
                     //배송중인 재료가 있다면
                     deliverdCount += specific.getIngredientQuantity();
