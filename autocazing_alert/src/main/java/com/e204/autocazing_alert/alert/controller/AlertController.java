@@ -87,10 +87,10 @@ public class AlertController {
         String loginId = httpServletRequest.getHeader("loginId");
 //        System.out.println("testAPI 에서 loginId : " + loginId);
 //        System.out.println("topic: " + topic);
-        if(topic.equals("restock")){
-            sseService.sendRestockNotification(loginId,"발주 알림 전송" );
-        }
-        else if(topic.equals("delivering")){
+//        if(topic.equals("restock")){
+//            sseService.sendRestockNotification(loginId,"발주 알림 전송" );
+//        }
+        /*else*/ if(topic.equals("delivering")){
             sseService.sendDeliveringNotification(loginId,"배송상태 알림 전송" );
         }
         else if(topic.equals("sales")){
