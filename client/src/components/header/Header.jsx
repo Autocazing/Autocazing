@@ -10,6 +10,7 @@ const Header = (props) => {
     const token = localStorage.getItem("accessToken");
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
+    const posPage = window.location.pathname === "/pos";
 
     const queryClient = useQueryClient();
 
@@ -42,6 +43,7 @@ const Header = (props) => {
                     });
 
                     eventSource.addEventListener("sales", (e) => {
+                        console.log("체크");
                         console.log(e);
                     });
                 };
@@ -52,6 +54,10 @@ const Header = (props) => {
             }
         }
     });
+
+    if (posPage) {
+        return <></>;
+    }
     return (
         <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
             <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">

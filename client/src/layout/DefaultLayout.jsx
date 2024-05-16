@@ -13,7 +13,15 @@ const DefaultLayout = ({ children }) => {
             </div>
         );
     } else if (posPage) {
-        return <div>{children}</div>;
+        return (
+            <>
+                <Header
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                />
+                <div>{children}</div>
+            </>
+        );
     } else {
         return (
             <div className="dark:bg-boxdark-2 dark:text-bodydark">
