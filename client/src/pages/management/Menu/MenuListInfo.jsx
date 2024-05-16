@@ -18,6 +18,13 @@ const MenuListInfo = ({ menu, isLastItem }) => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat("ko-KR").format(price);
     };
+    // 재료 이름을 쉼표로 연결하는 함수
+    const ingredientNames =
+        menu.ingredientoDtoList?.length > 0
+            ? menu.ingredientoDtoList
+                  .map((ingredient) => ingredient.ingredientName)
+                  .join(", ")
+            : "재료 정보 없음";
 
     return (
         <div
@@ -40,7 +47,7 @@ const MenuListInfo = ({ menu, isLastItem }) => {
 
             <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
                 <p className=" text-center text-black dark:text-white">
-                    {/* {`Ingredient ID: ${menu.ingredients.ingredientId}, Capacity: ${menu.ingredients.capacity}`} */}
+                    {ingredientNames}
                 </p>
             </div>
 
