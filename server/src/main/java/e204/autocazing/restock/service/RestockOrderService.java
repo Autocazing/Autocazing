@@ -5,6 +5,8 @@ import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.restock.dto.*;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class RestockOrderService {
     @Autowired
     private RestockOrderRepository restockOrderRepository;
@@ -242,7 +245,9 @@ public class RestockOrderService {
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
                 // RestockOrderSpecificEntity에서 재료 확인
                 String ingredientName = specific.getIngredientName();
+                log.info("재고 조회 전");
                 IngredientEntity orderedIngredient = ingredientRepository.findByIngredientName(ingredientName);
+                log.info("재고 조회 후");
                 if (ingredient.equals(orderedIngredient)) {
                     //배송중인 재료가 있다면
                     deliverdCount += specific.getIngredientQuantity();
