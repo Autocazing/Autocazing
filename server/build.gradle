@@ -34,6 +34,10 @@ dependencies {
     //sms
     implementation 'net.nurigo:sdk:4.3.0'
 
+    //kafka
+    implementation 'org.apache.kafka:kafka-streams'
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
 dependencyManagement {
