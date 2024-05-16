@@ -108,6 +108,7 @@ public class OrderService {
     }
 
 
+    //자동발주
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void checkAndAddRestockOrderSpecifics(String loginId)  {
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
@@ -128,10 +129,10 @@ public class OrderService {
                 RestockOrderEntity restockOrderEntity = restockOrderRepository.findFirstByStatusAndStoreOrderByCreatedAtDesc(RestockOrderEntity.RestockStatus.WRITING,storeEntity)
                         .orElseThrow(() -> new RuntimeException("No WRITING status RestockOrder found"));
                 AddSpecificRequest addSpecificRequest = new AddSpecificRequest();
-                addSpecificRequest.setRestockOrderId(restockOrderEntity.getRestockOrderId());
+//                addSpecificRequest.setRestockOrderId(restockOrderEntity.getRestockOrderId());
                 addSpecificRequest.setIngredientId(ingredient.getIngredientId());
                 addSpecificRequest.setIngredientQuantity(ingredient.getOrderCount());
-                restockOrderService.addSpecific(addSpecificRequest);
+                restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
 //                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
             }
         });

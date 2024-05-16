@@ -46,7 +46,7 @@ public class RestockController {
 
     @Operation(summary = " 발주(장바구니) 재료 조회", description = "발주리스트를  status 에 따라 전체조회하는 API입니다."
                                                                +"status = WRITING 일때는 장바구니 조회"
-                                                               +"status = null 일땐 진행중인 발주 조회")
+                                                               +"status = ORDERED 일땐 진행중인 발주 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주 재료 상세조회 성공",
                     content = @Content(mediaType = "application/json",
@@ -93,11 +93,12 @@ public class RestockController {
             )
     })
     //수동 발주재료추가
+    //todo : 자동 로직 추가
     @PostMapping("/specifics")
-    public ResponseEntity addIngredientToRestockOrder(@RequestBody AddSpecificRequest addDto,
+    public ResponseEntity addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
                                                       HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        AddSpecificResponse addSpecific = restockOrderService.addSpecific(addDto);
+        AddSpecificResponse addSpecific = restockOrderService.addSpecific(type,addDto,loginId);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

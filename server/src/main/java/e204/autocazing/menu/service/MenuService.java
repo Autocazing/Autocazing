@@ -49,7 +49,6 @@ public class MenuService {
         menu.setOnEvent(postMenuDto.getOnEvent());
         menu.setDiscountRate(postMenuDto.getDiscountRate());
         menu.setImageUrl(postMenuDto.getImageUrl());
-        menu.setSoldOut(postMenuDto.getSoldOut());
         // 가게 정보 설정
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
@@ -61,7 +60,6 @@ public class MenuService {
             for (MenuIngredientDto ingredientDto : postMenuDto.getIngredients()) {
                 IngredientEntity ingredient = ingredientRepository.findById(ingredientDto.getIngredientId())
                         .orElseThrow(() -> new RuntimeException("Ingredient not found with id: " + ingredientDto.getIngredientId()));
-
                 MenuIngredientEntity menuIngredient = new MenuIngredientEntity();
                 menuIngredient.setMenu(menu);
                 menuIngredient.setIngredient(ingredient);

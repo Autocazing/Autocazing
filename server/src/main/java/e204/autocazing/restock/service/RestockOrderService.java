@@ -3,6 +3,7 @@ package e204.autocazing.restock.service;
 import e204.autocazing.config.SmsUtil;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
+import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +87,7 @@ public class RestockOrderService {
 
         List<RestockOrderDetailsDto> restockOrderDetailsDtos = new ArrayList<>();
         //진행중인 발주 조회
-        if(status == null){
+        if(status == RestockOrderEntity.RestockStatus.ORDERED){
             //구현
             List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findAllByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
             for (RestockOrderEntity restockEntity : restockOrderEntityList) {
@@ -293,15 +294,21 @@ public class RestockOrderService {
     }
 
     //수동 발주 추가
-    public AddSpecificResponse addSpecific(AddSpecificRequest addDto) {
-        RestockOrderEntity restockOrder = restockOrderRepository.findById(addDto.getRestockOrderId())
-                .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
+    public AddSpecificResponse addSpecific(String type,AddSpecificRequest addDto,String loginId) {
+
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
+        //장바구니 가져오기
+        RestockOrderEntity restockOrder = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.WRITING);
+        //todo : 가져온 장바구니에 발주 추가
 
         System.out.println("수동발주 1");
         RestockOrderSpecificEntity specific = new RestockOrderSpecificEntity();
         IngredientEntity ingredientEntity = ingredientRepository.findById(addDto.getIngredientId())
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
         specific.setIngredientName(ingredientEntity.getIngredientName());
+        if(type.equals(""))
         specific.setIngredientQuantity(addDto.getIngredientQuantity());
         specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
         specific.setIngredientId(ingredientEntity.getIngredientId());

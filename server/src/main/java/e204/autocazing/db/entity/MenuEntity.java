@@ -32,11 +32,8 @@ public class MenuEntity {
     private int discountRate = 0;
     @Column(nullable = false)
     private String imageUrl =" ";
-
-
     @CreationTimestamp
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
