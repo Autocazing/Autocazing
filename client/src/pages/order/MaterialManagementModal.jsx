@@ -31,12 +31,17 @@ const customStyles = {
     },
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
+    const [count, setCount] = useState(initialValue.ingredientQuantity);
+
     const ButtonClick = () => {
+        console.log(count);
         return 0;
     };
 
-    const CountChange = () => {
-        return 0;
+    const CountChange = (newValue) => {
+        // 값이 변경될 때 상태 업데이트
+        setCount(newValue);
+        // 상태가 변경될 때 부모 컴포넌트로 값 전달
     };
 
     return (
@@ -89,8 +94,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="minimumCount"
-                            value={initialValue.ingredientQuantity}
-                            onChange={CountChange}
+                            value={count}
+                            onChange={(e) => CountChange(e.target.value)}
                             type="number"
                             placeholder="개수 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
