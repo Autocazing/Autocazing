@@ -1,12 +1,7 @@
 import { useState } from "react";
-import ChartOne from "../../components/cafeData/ChartOne.jsx";
+import ChartOne from "../../components/cafeData/MenuChart.jsx";
 
 const Menu = () => {
-    const [list, setList] = useState([1, 2, 3, 4, 5]);
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
     return (
         <div>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
