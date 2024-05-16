@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,5 +25,6 @@ public class RestockOrderSpecificDetailDto {
     private Integer deliveryTime; // 배송 소요기간
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDate arrivedAt; //예상 도착시간
     private RestockOrderSpecificEntity.RestockSpecificStatus restockSpecificStatus;
 }
