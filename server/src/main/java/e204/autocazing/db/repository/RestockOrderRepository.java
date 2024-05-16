@@ -25,4 +25,6 @@ public interface RestockOrderRepository extends JpaRepository<RestockOrderEntity
 
     @Query("SELECT r FROM RestockOrderEntity r WHERE r.status IN :status AND r.store.StoreId = :storeId")
     List<RestockOrderEntity> findByStatusInAndStoreId(List<RestockOrderEntity.RestockStatus> status, Integer storeId);
+
+    List<RestockOrderEntity> findByStore(Optional<StoreEntity> storeEntity);
 }

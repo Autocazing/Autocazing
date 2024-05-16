@@ -19,5 +19,6 @@ public class UpdateMenuDto {
     private int discountRate;
     private String imageUrl;
     private List<MenuIngredientDto> ingredients;
+    private Boolean soldOut;
 
 }
