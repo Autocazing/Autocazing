@@ -252,11 +252,13 @@ function Pos() {
                                     {product.onEvent ? (
                                         <>
                                             <span className="line-through text-gray-500">
-                                                {product?.menuPrice} 원
+                                                {product?.menuPrice.toLocaleString()}{" "}
+                                                원
                                             </span>
                                             <br />
                                             <span className="text-red-500">
-                                                {product?.realPrice}원
+                                                {product?.realPrice.toLocaleString()}{" "}
+                                                원
                                             </span>
                                         </>
                                     ) : (

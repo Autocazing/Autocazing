@@ -52,7 +52,7 @@ const Header = (props) => {
                 console.log("실시간 알람 통신 에러", err);
             }
         }
-    });
+    }, []);
 
     if (posPage) {
         return <></>;
