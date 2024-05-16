@@ -1,5 +1,6 @@
 import CardDataStats from "../../components/dashboard/CardDataState";
 import ChartOne from "../../components/dashboard/ChartOne";
+import DashboardReport from "../cafeReport/DashboardReport";
 import {
     GetSalesSold,
     GetSalesDay,
@@ -217,6 +218,7 @@ const Dashboard = () => {
                     thisWeekSold={thisWeekSold}
                     thisMonthAvgSold={thisMonthAvgSold}
                 />
+                <DashboardReport />
             </div>
         </div>
     );
