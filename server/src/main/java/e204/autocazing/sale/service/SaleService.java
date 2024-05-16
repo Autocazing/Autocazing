@@ -38,7 +38,7 @@ public class SaleService {
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
-			log.info("SaleService_storeId : "+storeId);
+
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
 			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
