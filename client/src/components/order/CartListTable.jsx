@@ -1,5 +1,7 @@
+import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
+import { useState } from "react";
 
 const CartList = [
     // 테스트용
@@ -41,6 +43,8 @@ const CartList = [
 ];
 
 const CartListTable = () => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
@@ -126,11 +130,22 @@ const CartListTable = () => {
                         </div>
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <button className="mr-2">
-                                <img src={modifyIcon} alt="Modify" />
+                                <img
+                                    src={modifyIcon}
+                                    alt="Modify"
+                                    onClick={() => setModalIsOpen(true)}
+                                />
                             </button>
                             <button>
                                 <img src={deleteIcon} alt="delete" />
                             </button>
+                            {modalIsOpen && (
+                                <MaterialManagementModal
+                                    isOpen={modalIsOpen}
+                                    onClose={() => setModalIsOpen(false)}
+                                    initialValue={[]}
+                                />
+                            )}
                         </div>
                     </div>
                 ))}
