@@ -1,8 +1,6 @@
-from fastapi import Depends
 import asyncio
 from messaging.kafka_instance import create_consumer
 from sqlalchemy.orm import Session
-from json import loads
 from db.mysql.session import mysqlSession
 from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
@@ -35,6 +33,7 @@ async def process_ingredient_message(key: str, value: str):
     try:
         new_ingredient = Ingredients(
             login_id=key,
+            ingredient_id = value["ingredientId"],
             ingredient_name = value["ingredientName"],
             ingredient_price = value["ingredientPrice"],
             order_count = value["orderCount"]
@@ -95,6 +94,7 @@ async def process_order_message(key: str, value: dict):
     try:
         new_order = Orders(
             login_id = key,
+            order_id = value["orderId"],
             order_specifics = [OrderSpecifics(
                 menu_name = spec["menuName"],
                 menu_quantity = spec["menuQuantity"],
@@ -123,6 +123,7 @@ async def process_restock_order_message(key: str, value: dict):
     try:
         new_restock_order = RestockOrders(
             login_id = key,
+            restock_order_id = value["restockOrderId"],
             restock_order_specifics = [RestockOrderSpecifics(
                 ingredient_name = spec["ingredientName"],
                 ingredient_quantity = spec["ingredientQuantity"],
