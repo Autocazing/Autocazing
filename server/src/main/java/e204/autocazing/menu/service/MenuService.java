@@ -122,10 +122,10 @@ public class MenuService {
         return menuDto;
     }
 
-    private void changeMenuIngredients(MenuEntity menu, List<MenuIngredientDto> ingredientDtos) {
+    private void changeMenuIngredients(MenuEntity menu, List<IngredientoDto> ingredientDtos) {
 
 
-        for (MenuIngredientDto dto : ingredientDtos) {
+        for (IngredientoDto dto : ingredientDtos) {
             IngredientEntity ingredient = ingredientRepository.findById(dto.getIngredientId())
                     .orElseThrow(() -> new RuntimeException("Ingredient not found with id: " + dto.getIngredientId()));
 
@@ -133,6 +133,7 @@ public class MenuService {
             menuIngredient.setMenu(menu);
             menuIngredient.setIngredient(ingredient);
             menuIngredient.setCapacity(dto.getCapacity());
+
             menuIngredientRepository.save(menuIngredient);
         }
     }
