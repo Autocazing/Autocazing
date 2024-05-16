@@ -258,20 +258,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
-
-                    <div className="mb-4.5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                            자동 발주 수량
-                        </label>
-                        <input
-                            name="orderCount"
-                            value={materialPostData.orderCount}
-                            onChange={handleInputChange}
-                            type="number"
-                            placeholder="자동 발주 수량 입력"
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        />
-                    </div>
                 </div>
 
                 <button
