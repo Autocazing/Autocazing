@@ -27,7 +27,7 @@ public class MenuEntity {
     @Column(nullable = false)
     private Integer menuPrice;
     @Column(nullable = false)
-    private Boolean onEvent = false;
+    private Boolean onEvent;
     @Column(nullable = false)
     private int discountRate = 0;
     @Column(nullable = false)
