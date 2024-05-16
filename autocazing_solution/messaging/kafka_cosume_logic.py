@@ -6,6 +6,7 @@ from json import loads
 from db.mysql.session import mysqlSession
 from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
+from db.mysql.models.menu_ingredients import MenuIngredients
 from db.mysql.models.orders import Orders, OrderSpecifics
 from db.mysql.models.restock_orders import RestockOrders, RestockOrderSpecifics
 
@@ -58,12 +59,21 @@ async def process_menu_message(key: str, value: dict):
     try:
         new_menu = Menus(
             login_id = key,
+            menu_id = value["menuId"],
             menu_name = value["menuName"],
             menu_price = value["menuPrice"],
             on_event = value["onEvent"],
             discount_rate = value["discountRate"]
         )
+        new_menu_ingredients = [MenuIngredients(
+            login_id = key,
+            menu_id = value["menuId"],
+            ingredient_id = ing["ingredientId"],
+            capacity = ing["capacity"]
+        ) for ing in value["menuIngredients"]]
         db.add(new_menu)
+        for ing in new_menu_ingredients:
+            db.add(ing)
         db.commit()
     except Exception as e:
         db.rollback()
