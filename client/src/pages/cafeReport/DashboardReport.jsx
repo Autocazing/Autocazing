@@ -1,10 +1,12 @@
 import { ReportMonthGetApi } from "../../apis/server/ReportApi";
+import ExpirationList from "./ExpirationList";
 
 const DashboardReport = () => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
-    const day = today.getDate();
+    // const day = today.getDate();
+    const day = 16;
     const {
         data: monthReportData,
         isLoading,
@@ -87,6 +89,14 @@ const DashboardReport = () => {
                     </div>
                     <div className="text-title-xsm mb-3">
                         유통기한 임박 재료에 대한 솔루션을 제공합니다.
+                    </div>
+                    <div>
+                        {monthReportData[0].expiration_specifics.map((item) => (
+                            <ExpirationList
+                                key={item.ingredient_id}
+                                item={item}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>

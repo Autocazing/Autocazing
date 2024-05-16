@@ -43,9 +43,9 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const [productNames, setProductNames] = useState({});
 
-    useEffect(() => {
-        console.log(stockPostData);
-    }, [stockPostData]);
+    // useEffect(() => {
+    //     console.log(stockPostData);
+    // }, [stockPostData]);
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
     const postStock = StockPostApi();
@@ -63,9 +63,10 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
+        const newValue = type === "number" ? parseInt(value, 10) || 0 : value;
         setStockPostData((prevState) => ({
             ...prevState,
-            [name]: type === "number" ? parseInt(value, 10) || 0 : value,
+            [name]: newValue,
         }));
         // console.log(stockPostData);
     };
@@ -158,7 +159,8 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                 재고추가
             </h1>
             <div className="p-6.5">
-                {stockPostData.some((item) => item.quantity > 0) ? (
+                {Array.isArray(stockPostData) &&
+                stockPostData.some((item) => item.quantity > 0) ? (
                     <table className="min-w-full leading-normal mb-6">
                         <thead>
                             <tr>
@@ -210,11 +212,12 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         품목명
                     </label>
                     <select
+                        value={stockPostData.ingredientId}
                         name="ingredientId"
                         onChange={handleSelectChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option value="" disabled>
+                        <option value="">
                             재고 추가할 품목을 선택해주세요
                         </option>
                         {materialInfo &&
@@ -233,6 +236,7 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         총량
                     </label>
                     <input
+                        value={stockPostData.quantity}
                         name="quantity"
                         onChange={handleInputChange}
                         type="number"
@@ -245,6 +249,7 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         유통기한
                     </label>
                     <input
+                        value={stockPostData.expirationDate}
                         name="expirationDate"
                         onChange={handleInputChange}
                         type="date"

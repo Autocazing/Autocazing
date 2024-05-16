@@ -38,7 +38,7 @@ const customStyles = {
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [materialPostData, setMaterialPostData] = useState({
         storeId: 1,
-        venderId: initialValue.venderId || 1, // vendorid 0은 아예 없는 값이여서 default값 1로 수정함
+        venderId: initialValue.venderId || 0, // disable 속성 없애서 0으로 둠
         ingredientName: initialValue.ingredientName || "",
         ingredientPrice: initialValue.ingredientPrice || 0,
         ingredientCapacity: initialValue.ingredientCapacity || 0,
@@ -312,9 +312,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         onChange={handleInputChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option value="" disabled>
-                            담당 업체를 선택해주세요.
-                        </option>
+                        <option value="">담당 업체를 선택해주세요.</option>
                         {companyInfo.map((company) => (
                             <option
                                 key={company.venderId}
