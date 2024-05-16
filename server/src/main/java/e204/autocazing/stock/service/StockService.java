@@ -11,6 +11,8 @@ import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.dto.PostStockDto;
 import e204.autocazing.stock.dto.StockDetailsDto;
 import e204.autocazing.stock.dto.UpdateStockDto;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StockService {
     @Autowired
     private StockRepository stockRepository;
@@ -59,10 +62,12 @@ public class StockService {
         System.out.println("storeId :" + storeId);
         // 전체 재고를 조회하고 StockDetailsDto 리스트로 변환합니다.
         List<StockEntity> stocks = stockRepository.findAllByStoreId(storeId);
-        List<StockDetailsDto> stockDetailsList = new ArrayList<>();
 
+        List<StockDetailsDto> stockDetailsList = new ArrayList<>();
+        log.info("재고 조회 전");
         for (StockEntity stock : stocks) {
             int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
+            log.info("재고 조회 deliveringCount");
             StockDetailsDto stockDetails = new StockDetailsDto();
             stockDetails.setStockId(stock.getStockId());
             stockDetails.setIngredientId(stock.getIngredient().getIngredientId());
