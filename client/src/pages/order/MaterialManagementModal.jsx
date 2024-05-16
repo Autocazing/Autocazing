@@ -34,8 +34,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [count, setCount] = useState(initialValue.ingredientQuantity);
 
     const ButtonClick = () => {
+        console.log(initialValue.restockOrderSpecificId);
         console.log(count);
-        return 0;
     };
 
     const CountChange = (newValue) => {

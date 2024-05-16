@@ -126,6 +126,8 @@ const CartListTable = ({ Basket }) => {
                                             selectedItem.ingredientName,
                                         ingredientQuantity:
                                             selectedItem.ingredientQuanrtity,
+                                        restockOrderSpecificId:
+                                            selectedItem.restockOrderSpecificId,
                                     }}
                                 />
                             )}
