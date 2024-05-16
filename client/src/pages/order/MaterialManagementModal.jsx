@@ -49,8 +49,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         imageUrl: "",
     });
 
-    const [isDirectInput, setIsDirectInput] = useState(false);
-
     const editMaterial = MaterialEditApi(initialValue.ingredientId);
     const {
         data: companyInfo,
@@ -106,37 +104,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         console.log(value);
     };
 
-    const handleUnitChange = (event) => {
-        const { value } = event.target;
-        if (value === "직접입력") {
-            setIsDirectInput(true);
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                scale: { scaleId: 0, unit: "" },
-            }));
-        } else {
-            setIsDirectInput(false);
-            const selectedScale = materialScaleInfo.find(
-                (scale) => scale.unit === value,
-            );
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                scale: {
-                    scaleId: selectedScale.scaleId,
-                    unit: selectedScale.unit,
-                },
-            }));
-        }
-    };
-
-    const handleDirectUnitInput = (event) => {
-        const { value } = event.target;
-        setMaterialPostData((prevState) => ({
-            ...prevState,
-            scale: { ...prevState.scale, unit: value },
-        }));
-    };
-
     return (
         <Modal
             isOpen={isOpen}
@@ -167,7 +134,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
             </h1>
             <div className="p-6.5">
                 <div className="mb-0.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="mb-4.5">
+                    <div className="mb-4.5" style={{ width: "100%" }}>
                         <label className="mb-2.5 block text-black dark:text-white">
                             재료명
                         </label>
@@ -183,9 +150,9 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                 </div>
 
                 <div className="mb-1 flex flex-col gap-6 xl:flex-row">
-                    <div className="mb-4.5">
+                    <div className="mb-4.5" style={{ width: "100%" }}>
                         <label className="mb-2.5 block text-black dark:text-white">
-                            재료 최소 개수
+                            재료 개수
                         </label>
                         <input
                             name="minimumCount"
