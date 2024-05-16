@@ -87,20 +87,25 @@ public class RestockOrderService {
 
         List<RestockOrderDetailsDto> restockOrderDetailsDtos = new ArrayList<>();
         //진행중인 발주 조회
-        if(status == RestockOrderEntity.RestockStatus.ORDERED){
+        if(status == RestockOrderEntity.RestockStatus.ORDERED) {
             //구현
             List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findAllByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
             for (RestockOrderEntity restockEntity : restockOrderEntityList) {
                 RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
-//            restockOrderDetailsDto.setRestockOrderId(restockEntity.getRestockOrderId());
-                restockOrderDetailsDto.setSpecifics(restockEntity.getRestockOrderSpecific().stream()
+                List<RestockOrderSpecificDetailDto> specifics = restockEntity.getRestockOrderSpecific().stream()
+                        .filter(specific -> specific.getStatus() != RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE)
                         .map(this::convertToSpecificDetailDto)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList());
 
+                restockOrderDetailsDto.setSpecifics(specifics);
                 restockOrderDetailsDtos.add(restockOrderDetailsDto);
-            }
 
-            return restockOrderDetailsDtos;
+//                restockOrderDetailsDto.getSpecifics().
+//                restockOrderDetailsDtos.add(restockOrderDetailsDto);
+
+
+                return restockOrderDetailsDtos;
+            }
         }
         //WRITING (장바구니)
         else if (status == RestockOrderEntity.RestockStatus.WRITING){
