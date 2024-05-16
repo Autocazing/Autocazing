@@ -1,48 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { EventSourcePolyfill } from "event-source-polyfill";
 
-const DropdownNotification = () => {
+const DropdownNotification = ({ alarmlist }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notifying, setNotifying] = useState(true);
-    const [alarmlist, setAlarmlist] = useState([]); // useRef 써야할지도??
-
-    const token = localStorage.getItem("accessToken");
-    const userId = localStorage.getItem("userId");
 
     const trigger = useRef(null);
     const dropdown = useRef(null);
-
-    // 알림 SSE 구현
-    useEffect(() => {
-        if (token) {
-            // login 되었을 때
-            try {
-                const EventSource = EventSourcePolyfill;
-                const fetchSse = async () => {
-                    const eventSource = new EventSource(
-                        `https://k10e204.p.ssafy.io/api/alerts/connect?loginid=${userId}`, // url 추가해야함
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                            withCredentials: true,
-                            heartbeatTimeout: 1500000,
-                        },
-                    );
-
-                    eventSource.addEventListener("connect", (e) => {
-                        console.log(e);
-                    });
-                };
-
-                //fetchSse();
-            } catch (err) {
-                console.log("실시간 알람 통신 에러", err);
-                throw err;
-            }
-        }
-    });
 
     useEffect(() => {
         const clickHandler = ({ target }) => {
@@ -102,7 +66,6 @@ const DropdownNotification = () => {
                     />
                 </svg>
             </Link>
-
             <div
                 ref={dropdown}
                 onFocus={() => setDropdownOpen(true)}
@@ -116,40 +79,22 @@ const DropdownNotification = () => {
                         Notification
                     </h5>
                 </div>
-
                 <ul className="flex h-auto flex-col overflow-y-auto">
-                    <li>
-                        <Link
-                            className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                            to="#"
-                        >
-                            <p className="text-sm">
-                                <span className="text-black dark:text-white">
-                                    There are many variations
-                                </span>{" "}
-                                of passages of Lorem Ipsum available, but the
-                                majority have suffered
-                            </p>
-
-                            <p className="text-xs">04 Jan, 2025</p>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                            to="#"
-                        >
-                            <p className="text-sm">
-                                <span className="text-black dark:text-white">
-                                    There are many variations
-                                </span>{" "}
-                                of passages of Lorem Ipsum available, but the
-                                majority have suffered
-                            </p>
-
-                            <p className="text-xs">01 Dec, 2024</p>
-                        </Link>
-                    </li>
+                    {alarmlist.map((alarm, index) => {
+                        return (
+                            <li key={index}>
+                                <Link
+                                    className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                                    to="#"
+                                >
+                                    <p className="text-sm">
+                                        {alarm.content} {index + 1} 번
+                                    </p>
+                                    <p className="text-xs">{alarm.createdAt}</p>
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             </div>
         </li>
