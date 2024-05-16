@@ -2,6 +2,7 @@ package com.e204.autocazing_alert.alert.service;
 
 import com.e204.autocazing_alert.db.entity.AlertEntity;
 import com.e204.autocazing_alert.db.repository.AlertRepository;
+import com.e204.autocazing_alert.kafka.entity.ConsumerEntity;
 import com.e204.autocazing_alert.kafka.entity.IngredientWarnEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

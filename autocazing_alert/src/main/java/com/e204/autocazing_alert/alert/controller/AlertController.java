@@ -67,35 +67,4 @@ public class AlertController {
 
     }
 
-    @Operation(summary = "테스트용 알림 생성 요청", description = "알림 요청을 수행하는 API입니다." +
-            "topic = restock, delivering, sales ")
-
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "알림 요청  성공",
-                    content = @Content(mediaType = "application/json"
-                    )
-            )
-    })
-    //테스트용 알림
-    @GetMapping("/test")
-    public ResponseEntity TestAlertService(@RequestParam(name = "topic")
-    @Parameter(description = "알림의 주제를 지정합니다",
-            required = true,
-            example = "restock", // 여기에 원하는 예시 값을 추가
-            schema = @Schema(implementation = String.class, allowableValues = {"restock", "delivering", "sales"}))
-    String topic, HttpServletRequest httpServletRequest) {
-        String loginId = httpServletRequest.getHeader("loginId");
-//        System.out.println("testAPI 에서 loginId : " + loginId);
-//        System.out.println("topic: " + topic);
-//        if(topic.equals("restock")){
-//            sseService.sendRestockNotification(loginId,"발주 알림 전송" );
-//        }
-        /*else*/ if(topic.equals("delivering")){
-            sseService.sendDeliveringNotification(loginId,"배송상태 알림 전송" );
-        }
-        else if(topic.equals("sales")){
-            sseService.sendSalesNotification(loginId,"매출갱신 알림 전송" );
-        }
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
 }
