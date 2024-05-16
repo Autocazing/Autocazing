@@ -1,49 +1,17 @@
 import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const CartList = [
-    // 테스트용
-    {
-        name: "우유",
-        amount: 1,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "원두",
-        amount: 2,
-        price: "8000",
-        company: "동민상사",
-        ordertime: 2,
-    },
-    {
-        name: "연유",
-        amount: 1,
-        price: "9000",
-        company: "민호상사",
-        ordertime: 7,
-    },
-    {
-        name: "우유2",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "우유3",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-];
-
-const CartListTable = () => {
+const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [cartList, setCartList] = useState([]);
+    useEffect(() => {
+        if (Basket !== undefined) {
+            setCartList(Basket[0].specifics);
+            console.log(Basket[0].specifics);
+        }
+    });
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -65,7 +33,7 @@ const CartListTable = () => {
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            용량
+                            총량
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
@@ -90,10 +58,10 @@ const CartListTable = () => {
                     </div>
                 </div>
 
-                {CartList.map((order, key) => (
+                {cartList.map((order, key) => (
                     <div
                         className={`grid grid-cols-3 sm:grid-cols-6 ${
-                            key === CartList.length - 1
+                            key === cartList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
                         }`}
@@ -101,25 +69,25 @@ const CartListTable = () => {
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
                             <p className="hidden text-black dark:text-white sm:block">
-                                {order.name}
+                                {order.ingredientName}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.amount}
+                                {order.ingredientQuanrtity}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.price}
+                                {order.ingredientPrice}
                             </p>
                         </div>
 
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.company}
+                                {order.venderName}
                             </p>
                         </div>
 
