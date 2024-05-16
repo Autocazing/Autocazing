@@ -49,7 +49,7 @@ const CartListTable = () => {
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
                 <h4 className="mb-6 text-xl font-semibold text-black dark:text-white flex-row">
-                    Cart List2
+                    Cart List
                 </h4>
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                     발주하기

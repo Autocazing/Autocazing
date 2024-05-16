@@ -6,8 +6,6 @@ import { CompanyGetApi } from "../../apis/server/CompanyApi";
 // import { CompanyGetApi } from "../../../apis/server/CompanyApi";
 import {
     MaterialScaleGetApi,
-    MaterialPostApi,
-    MaterialScalePostApi,
     MaterialEditApi,
 } from "../../apis/server/MaterialApi";
 const customStyles = {
@@ -53,8 +51,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
 
     const [isDirectInput, setIsDirectInput] = useState(false);
 
-    const postMaterial = MaterialPostApi();
-    const postMaterialScale = MaterialScalePostApi();
     const editMaterial = MaterialEditApi(initialValue.ingredientId);
     const {
         data: companyInfo,
@@ -87,12 +83,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         ); // 에러 상태 처리
     }
 
-    const handleSubmit = (e) => {
-        postMaterial.mutate(materialPostData);
-        postMaterialScale.mutate(materialPostData.scale);
-        onClose();
-    };
-
     const handleEdit = (e) => {
         editMaterial.mutate(materialPostData);
         onClose();
@@ -116,13 +106,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
         console.log(value);
     };
 
-    // const handleInputChange = (event) => {
-    //     const { name, value } = event.target;
-    //     setMaterialPostData((prevState) => ({
-    //         ...prevState,
-    //         [name]: value,
-    //     }));
-    // };
     const handleUnitChange = (event) => {
         const { value } = event.target;
         if (value === "직접입력") {
@@ -328,21 +311,12 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     </select>
                 </div>
 
-                {Object.keys(initialValue).length === 0 ? (
-                    <button
-                        onClick={handleSubmit}
-                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                    >
-                        추가하기
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleEdit}
-                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                    >
-                        수정하기
-                    </button>
-                )}
+                <button
+                    onClick={handleEdit}
+                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                >
+                    수정하기
+                </button>
             </div>
         </Modal>
     );
