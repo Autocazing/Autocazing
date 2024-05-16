@@ -95,7 +95,6 @@ public class RestockController {
             )
     })
     //수동 발주재료추가
-    //todo : 자동 로직 추가
     @PostMapping("/specifics")
     public ResponseEntity addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
                                                       HttpServletRequest httpServletRequest) {
@@ -127,9 +126,8 @@ public class RestockController {
     })
     //발주 재료 삭제
     @DeleteMapping("/specifics/{specificId}")
-    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderId,
-                                                           @PathVariable Integer restockOrderSpecificId) {
-        restockSpecificService.deleteRestockOrderSpecific(restockOrderId,restockOrderSpecificId);
+    public ResponseEntity<Void> deleteRestockOrderSpecific(@PathVariable Integer restockOrderSpecificId) {
+        restockSpecificService.deleteRestockOrderSpecific(restockOrderSpecificId);
         return ResponseEntity.ok().build();
     }
 

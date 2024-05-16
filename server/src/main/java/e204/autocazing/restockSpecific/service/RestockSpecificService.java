@@ -97,8 +97,8 @@ public class RestockSpecificService {
 
      //Delete
     @Transactional
-    public void deleteRestockOrderSpecific(Integer restockOrderId , Integer restockOrderSpecificId) {
-        restockOrderSpecificRepository.deleteByRestockOrderIdAndRestockOrderSpecificId(restockOrderId, restockOrderSpecificId);
+    public void deleteRestockOrderSpecific(Integer restockOrderSpecificId) {
+        restockOrderSpecificRepository.deleteById(restockOrderSpecificId);
     }
     @Transactional
     public List<UpdatedRestockSpecificDto> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
