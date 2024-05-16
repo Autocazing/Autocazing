@@ -11,6 +11,10 @@ const MaterialListInfo = ({ material, isLastItem }) => {
     const handleDelete = () => {
         deleteMaterial.mutate();
     };
+    // 원화 포맷 함수
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat("ko-KR").format(price);
+    };
     return (
         <div
             className={`grid grid-cols-7 sm:grid-cols-7 text-xs sm:text-base ${
@@ -28,7 +32,7 @@ const MaterialListInfo = ({ material, isLastItem }) => {
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
                 <p className="text-black dark:text-white">
-                    {material.ingredientPrice}
+                    {formatPrice(material.ingredientPrice)}
                 </p>
             </div>
 
