@@ -2,12 +2,7 @@ import Modal from "react-modal";
 import { useEffect, useState } from "react";
 // import closeIcon from "../../../images/icon/close.svg";
 import closeIcon from "../../images/icon/close.svg";
-import { CompanyGetApi } from "../../apis/server/CompanyApi";
 // import { CompanyGetApi } from "../../../apis/server/CompanyApi";
-import {
-    MaterialScaleGetApi,
-    MaterialEditApi,
-} from "../../apis/server/MaterialApi";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -36,72 +31,12 @@ const customStyles = {
     },
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
-    const [materialPostData, setMaterialPostData] = useState({
-        storeId: 1,
-        venderId: initialValue.venderId || 1, // vendorid 0은 아예 없는 값이여서 default값 1로 수정함
-        ingredientName: initialValue.ingredientName || "",
-        ingredientPrice: initialValue.ingredientPrice || 0,
-        ingredientCapacity: initialValue.ingredientCapacity || 0,
-        scale: initialValue.scale || { scaleId: 1, unit: "" },
-        minimumCount: initialValue.minimumCount || 0,
-        deliveryTime: initialValue.deliveryTime || 0,
-        orderCount: initialValue.orderCount || 0,
-        imageUrl: "",
-    });
-
-    const editMaterial = MaterialEditApi(initialValue.ingredientId);
-    const {
-        data: companyInfo,
-        isLoading: companyLoading,
-        isError: companyError,
-        error: companyErrorInfo,
-    } = CompanyGetApi();
-    const {
-        data: materialScaleInfo,
-        isLoading: scaleLoading,
-        isError: scaleError,
-        error: scaleErrorInfo,
-    } = MaterialScaleGetApi();
-
-    // API 호출 결과를 기다리는 중에 조건부 렌더링을 하지 않도록 합니다.
-    if (companyLoading || scaleLoading) {
-        return <div>Loading...</div>; // 로딩 상태 처리
-    }
-
-    if (companyError || scaleError) {
-        return (
-            <div>
-                {companyError
-                    ? `Error loading company data: ${companyErrorInfo.message}`
-                    : ""}
-                {scaleError
-                    ? `Error loading scale data: ${scaleErrorInfo.message}`
-                    : ""}
-            </div>
-        ); // 에러 상태 처리
-    }
-
-    const handleEdit = (e) => {
-        editMaterial.mutate(materialPostData);
-        onClose();
+    const ButtonClick = () => {
+        return 0;
     };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        if (name === "venderId") {
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                venderId: value, // 선택된 업체의 ID를 venderId로 저장
-                // companyName: selectedText, // 선택된 업체의 이름을 저장, 필요하지 않으면 이 라인 제거
-            }));
-        } else {
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
-        }
-
-        console.log(value);
+    const CountChange = () => {
+        return 0;
     };
 
     return (
@@ -140,10 +75,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="ingredientName"
-                            value={materialPostData.ingredientName}
-                            onChange={handleInputChange}
-                            type="text"
-                            placeholder="재료명 입력"
+                            value="여기에 재료명 가져와야 함"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
@@ -156,17 +88,17 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="minimumCount"
-                            value={materialPostData.minimumCount}
-                            onChange={handleInputChange}
+                            value="여기에 개수"
+                            onChange={CountChange}
                             type="number"
-                            placeholder="임계점 입력"
+                            placeholder="개수 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
                 </div>
 
                 <button
-                    onClick={handleEdit}
+                    onClick={ButtonClick}
                     className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                 >
                     수정하기
