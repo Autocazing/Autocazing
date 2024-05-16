@@ -13,8 +13,6 @@ const Header = (props) => {
 
     const queryClient = useQueryClient();
 
-    console.log("응", alarmInfo);
-
     useEffect(() => {
         if (token) {
             // login 되었을 때
@@ -41,6 +39,10 @@ const Header = (props) => {
                     eventSource.addEventListener("restock", (e) => {
                         queryClient.invalidateQueries("Alarm");
                         setAlarmlist(alarmInfo);
+                    });
+
+                    eventSource.addEventListener("sales", (e) => {
+                        console.log(e);
                     });
                 };
 

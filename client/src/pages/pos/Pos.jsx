@@ -8,6 +8,7 @@ import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 
 import { GetMenu } from "../../apis/server/Pos";
 import { PostOrders } from "../../apis/server/Pos";
+import { MakeAlarm } from "../../apis/server/Alarm";
 
 function Pos() {
     const [cart, setCart] = useState([]);
@@ -179,6 +180,7 @@ function Pos() {
             }));
         console.log("Extracted Products:", extractedProducts);
         handleSubmit(extractedProducts);
+        MakeAlarm("sales");
     };
 
     useEffect(() => {
