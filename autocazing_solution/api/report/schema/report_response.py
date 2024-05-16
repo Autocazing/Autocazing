@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class ExpirationSpecifics(BaseModel):
+    ingredient_id: int
     ingredient_name: str
 
 class OnDeliveryIngredients(BaseModel):
