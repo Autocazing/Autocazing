@@ -1,5 +1,6 @@
 package com.e204.autocazing_alert.kafka.config;
 
+import com.e204.autocazing_alert.kafka.entity.ConsumerEntity;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,15 +26,15 @@ public class KafkaConsumerConfigCluster {
 	private String groupId;
 
 	@Bean
-	public ConsumerFactory<String, IngredientWarnEntity> pushEntityConsumerFactory() {
-		JsonDeserializer<IngredientWarnEntity> deserializer = gcmPushEntityJsonDeserializer();
+	public ConsumerFactory<String, ConsumerEntity> pushEntityConsumerFactory() {
+		JsonDeserializer<ConsumerEntity> deserializer = gcmPushEntityJsonDeserializer();
 		return new DefaultKafkaConsumerFactory<>(
 			consumerFactoryConfig(deserializer),
 			new StringDeserializer(),
 			deserializer);
 	}
 
-	private Map<String, Object> consumerFactoryConfig(JsonDeserializer<IngredientWarnEntity> deserializer) {
+	private Map<String, Object> consumerFactoryConfig(JsonDeserializer<ConsumerEntity> deserializer) {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -42,8 +43,8 @@ public class KafkaConsumerConfigCluster {
 		return props;
 	}
 
-	private JsonDeserializer<IngredientWarnEntity> gcmPushEntityJsonDeserializer() {
-		JsonDeserializer<IngredientWarnEntity> deserializer = new JsonDeserializer<>(IngredientWarnEntity.class);
+	private JsonDeserializer<ConsumerEntity> gcmPushEntityJsonDeserializer() {
+		JsonDeserializer<ConsumerEntity> deserializer = new JsonDeserializer<>(ConsumerEntity.class);
 		deserializer.setRemoveTypeHeaders(false);
 		deserializer.addTrustedPackages("*");
 		deserializer.setUseTypeMapperForKey(true);
