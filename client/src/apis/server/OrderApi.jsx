@@ -1,5 +1,5 @@
 import { axiosInstance } from "../../utils/axios/AxiosInstance";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const GetOredered = () => {
     const fetchGet = () => axiosInstance.get("/restocks?status=ORDERED");
@@ -21,4 +21,27 @@ const GetBasket = () => {
     });
 };
 
-export { GetOredered, GetBasket };
+const PutRestock = (specificsId) => {
+    const queryClient = useQueryClient();
+
+    const fetchEdit = (editData) => {
+        return axiosInstance.put(
+            `/restocks/specifics/${specificsId}`,
+            editData,
+        );
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchEdit,
+        onSuccess: () => {
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { GetOredered, GetBasket, PutRestock };

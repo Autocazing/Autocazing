@@ -2,7 +2,9 @@ import Modal from "react-modal";
 import { useEffect, useState } from "react";
 // import closeIcon from "../../../images/icon/close.svg";
 import closeIcon from "../../images/icon/close.svg";
+import { PutRestock } from "../../apis/server/OrderApi";
 // import { CompanyGetApi } from "../../../apis/server/CompanyApi";
+
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -31,12 +33,24 @@ const customStyles = {
     },
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
+    const [count, setCount] = useState(initialValue.ingredientQuantity);
+    const editStock = PutRestock(initialValue.restockOrderSpecificId);
     const ButtonClick = () => {
-        return 0;
+        console.log(initialValue.restockOrderSpecificId);
+        console.log(count);
     };
 
-    const CountChange = () => {
-        return 0;
+    const handleEdit = (e) => {
+        editStock.mutate({
+            ingredientQuantity: count,
+        });
+        onClose();
+    };
+
+    const CountChange = (newValue) => {
+        // 값이 변경될 때 상태 업데이트
+        setCount(newValue);
+        // 상태가 변경될 때 부모 컴포넌트로 값 전달
     };
 
     return (
@@ -75,7 +89,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="ingredientName"
-                            defaultValue="여기에 재료명 가져와야 함"
+                            readOnly
+                            defaultValue={initialValue.ingredientName}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
@@ -88,8 +103,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="minimumCount"
-                            value="여기에 개수"
-                            onChange={CountChange}
+                            value={count}
+                            onChange={(e) => CountChange(e.target.value)}
                             type="number"
                             placeholder="개수 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -98,7 +113,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                 </div>
 
                 <button
-                    onClick={ButtonClick}
+                    onClick={handleEdit}
                     className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                 >
                     수정하기
