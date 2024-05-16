@@ -1,7 +1,5 @@
 package e204.autocazing.stock.controller;
 
-import e204.autocazing.order.dto.OrderResponseDto;
-import e204.autocazing.order.dto.PostOrderDto;
 import e204.autocazing.stock.dto.PostStockDto;
 import e204.autocazing.stock.dto.StockDetailsDto;
 import e204.autocazing.stock.dto.UpdateStockDto;
@@ -18,10 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,10 +35,10 @@ public class StockController {
                     )
     })
     @PostMapping("")
-    public ResponseEntity createStock(@RequestBody List<PostStockDto> postStockDtos,HttpServletRequest httpServletRequest){
+    public ResponseEntity<Void> createStock(@RequestBody List<PostStockDto> postStockDtos, HttpServletRequest httpServletRequest){
         String loginId = httpServletRequest.getHeader("loginId");
         stockService.createStock(postStockDtos,loginId);
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
