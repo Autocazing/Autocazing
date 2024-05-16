@@ -6,7 +6,6 @@ import lombok.*;
 @AllArgsConstructor
 public class IngredientWarnEntity extends ConsumerEntity {
 
-	private Integer restockOrderId;
-	private Integer ingredientId;
+	private Integer ingredientId;	// 발주를 넣을 재료의 id
 
 }
