@@ -1,53 +1,22 @@
-const ProgressOrder = [
-    // 테스트용
-    {
-        name: "우유(1L)",
-        amount: 10,
-        price: "20000",
-        state: "배달 중",
-        company: "동민상사",
-        orderdate: "2024.04.26",
-        arrivedate: "2024.05.01",
-    },
-    {
-        name: "시리얼(1L)",
-        amount: 3,
-        price: "6000",
-        state: "배달 전",
-        company: "동민중사",
-        orderdate: "2024.04.26",
-        arrivedate: "2024.05.04",
-    },
-    {
-        name: "초코가루(500g)",
-        amount: 1,
-        price: "5000",
-        state: "배달 전",
-        company: "동민하사",
-        orderdate: "2024.04.26",
-        arrivedate: "2024.05.10",
-    },
-    {
-        name: "설탕(1kg)",
-        amount: 5,
-        price: "25000",
-        state: "배달 전",
-        company: "동민병장",
-        orderdate: "2024.04.26",
-        arrivedate: "2024.05.11",
-    },
-    {
-        name: "밀가루(1kg)",
-        amount: 1,
-        price: "10000",
-        state: "배달 중",
-        company: "동민상병",
-        orderdate: "2024.04.26",
-        arrivedate: "2024.05.01",
-    },
-];
+import { useEffect, useState } from "react";
 
 const ProgressOrderTable = ({ Ordered }) => {
+    const [ProgressOrder, setProgressOrder] = useState([]);
+    // name: "우유(1L)",
+    // amount: 10,
+    // price: "20000",
+    // state: "배달 중",
+    // company: "동민상사",
+    // orderdate: "2024.04.26",
+    // arrivedate: "2024.05.01",
+
+    useEffect(() => {
+        if (Ordered !== undefined) {
+            if (Ordered.length > 0) {
+                setProgressOrder(Ordered);
+            }
+        }
+    });
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
@@ -93,56 +62,63 @@ const ProgressOrderTable = ({ Ordered }) => {
                     </div>
                 </div>
 
-                {ProgressOrder.map((order, key) => (
-                    <div
-                        className={`grid grid-cols-3 sm:grid-cols-7 ${
-                            key === ProgressOrder.length - 1
-                                ? ""
-                                : "border-b border-stroke dark:border-strokedark"
-                        }`}
-                        key={key}
-                    >
-                        <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <p className="hidden text-black dark:text-white sm:block">
-                                {order.name}
-                            </p>
-                        </div>
+                {ProgressOrder.map((order, orderIndex) => (
+                    <div key={orderIndex}>
+                        {order.specifics.map((specific, specificIndex) => (
+                            <div
+                                className={`grid grid-cols-3 sm:grid-cols-7 ${
+                                    orderIndex === ProgressOrder.length - 1 &&
+                                    specificIndex === order.specifics.length - 1
+                                        ? ""
+                                        : "border-b border-stroke dark:border-strokedark"
+                                }`}
+                                key={`${orderIndex}-${specificIndex}`}
+                            >
+                                <div className="flex items-center gap-3 p-2.5 xl:p-5">
+                                    <p className="hidden text-black dark:text-white sm:block">
+                                        {specific.ingredientName}
+                                    </p>
+                                </div>
 
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.amount}
-                            </p>
-                        </div>
+                                <div className="flex items-center justify-center p-2.5 xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {specific.ingredientQuanrtity}{" "}
+                                        {/* 주문량 */}
+                                    </p>
+                                </div>
 
-                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.price}
-                            </p>
-                        </div>
+                                <div className="flex items-center justify-center p-2.5 xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {specific.ingredientPrice} {/* 가격 */}
+                                    </p>
+                                </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.state}
-                            </p>
-                        </div>
+                                <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {specific.restockSpecificStatus}{" "}
+                                        {/* 상태 */}
+                                    </p>
+                                </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.company}
-                            </p>
-                        </div>
+                                <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {specific.venderName} {/* 업체 */}
+                                    </p>
+                                </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.orderdate}
-                            </p>
-                        </div>
+                                <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {specific.updatedAt} {/* 발주일자 */}
+                                    </p>
+                                </div>
 
-                        <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <p className="text-black dark:text-white">
-                                {order.arrivedate}
-                            </p>
-                        </div>
+                                <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                                    <p className="text-black dark:text-white">
+                                        {order.arrivedate} {/* 도착예정일 */}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ))}
             </div>
