@@ -39,6 +39,7 @@ public class StockController {
         String loginId = httpServletRequest.getHeader("loginId");
         stockService.createStock(postStockDtos,loginId);
         return new ResponseEntity<>(HttpStatus.CREATED);
+
     }
 
 

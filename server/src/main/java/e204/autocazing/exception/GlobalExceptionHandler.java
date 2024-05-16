@@ -22,4 +22,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGeneralException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
     }
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStockException(InsufficientStockException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+}
+
+class ErrorResponse {
+    private String message;
+    private int errorCode;
+
+    public ErrorResponse(String message, int errorCode) {
+        this.message = message;
+        this.errorCode = errorCode;
+    }
 }

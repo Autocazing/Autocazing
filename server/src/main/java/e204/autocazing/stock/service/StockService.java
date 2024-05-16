@@ -6,6 +6,7 @@ import e204.autocazing.db.entity.StoreEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.StockRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.stock.dto.PostStockDto;
@@ -151,7 +152,7 @@ public class StockService {
 
         //재고 부족
         if (quantity > 0) {
-            throw new RuntimeException("Insufficient stock for ingredient ID: " + ingredientId);
+            throw new InsufficientStockException("Insufficient stock for ingredient ID: " + ingredientId, 777);
         }
     }
 

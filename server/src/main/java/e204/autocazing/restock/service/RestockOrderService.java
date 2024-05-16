@@ -136,6 +136,7 @@ public class RestockOrderService {
         detailDto.setDeliveryTime(ingredientEntity.getDeliveryTime());
         detailDto.setCreatedAt(specific.getCreatedAt());
         detailDto.setUpdatedAt(specific.getUpdatedAt());
+        detailDto.setArrivedAt(specific.getUpdatedAt().toLocalDate().plusDays(ingredientEntity.getDeliveryTime()));
         detailDto.setRestockSpecificStatus(specific.getStatus());
         return detailDto;
     }
@@ -306,22 +307,29 @@ public class RestockOrderService {
 
         //장바구니 가져오기
         RestockOrderEntity restockOrder = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.WRITING);
-        //todo : 가져온 장바구니에 발주 추가
 
-        System.out.println("수동발주 1");
+        System.out.println("발주 1단계");
         RestockOrderSpecificEntity specific = new RestockOrderSpecificEntity();
         IngredientEntity ingredientEntity = ingredientRepository.findById(addDto.getIngredientId())
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
         specific.setIngredientName(ingredientEntity.getIngredientName());
-        if(type.equals(""))
-        specific.setIngredientQuantity(addDto.getIngredientQuantity());
+        if(type.equals("auto")){
+            System.out.println("자동발주");
+            specific.setIngredientQuantity(ingredientEntity.getOrderCount());
+        }
+        //수동 발주 일땐
+        else if(type.equals("manual")){
+            System.out.println("수동발주");
+            specific.setIngredientQuantity(addDto.getIngredientQuantity());
+        }
+
         specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
         specific.setIngredientId(ingredientEntity.getIngredientId());
         specific.setRestockOrder(restockOrder);
         specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.WRITING);
         restockOrderSpecificRepository.save(specific);
 
-        System.out.println( "수동발주 2");
+        System.out.println( "발주 2단계");
         AddSpecificResponse addSpecificResponse = new AddSpecificResponse();
         addSpecificResponse.setVenderName(ingredientEntity.getVender().getVenderName());
         addSpecificResponse.setDeliveryTime(ingredientEntity.getDeliveryTime());
