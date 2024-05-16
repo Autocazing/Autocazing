@@ -1,6 +1,8 @@
+import { GetOredered } from "../../apis/server/OrderApi";
 import ProgressOrderTable from "../../components/order/ProgressOrderTable";
 
 const ProgressOrder = () => {
+    const { data: Ordered } = GetOredered();
     return (
         <>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -12,7 +14,7 @@ const ProgressOrder = () => {
                     <li className="font-bold text-primary">진행중인 발주</li>
                 </ol>
             </div>
-            <ProgressOrderTable />
+            <ProgressOrderTable Ordered={Ordered} />
         </>
     );
 };
