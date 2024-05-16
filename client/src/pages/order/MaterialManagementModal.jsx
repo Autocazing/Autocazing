@@ -31,7 +31,6 @@ const customStyles = {
     },
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
-    console.log(initialValue);
     const ButtonClick = () => {
         return 0;
     };
@@ -90,7 +89,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="minimumCount"
-                            value="여기에 개수"
+                            value={initialValue.ingredientQuantity}
                             onChange={CountChange}
                             type="number"
                             placeholder="개수 입력"
