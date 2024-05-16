@@ -55,7 +55,7 @@ public class SseService {
                 emitter.send(SseEmitter.event().name("restock").data(ingredientWarnEntity));
                 System.out.println("restock 알림 보냈슈");
                 AlertEntity alertEntity = new AlertEntity();
-                alertEntity.setContent(ingredientWarnEntity);
+                alertEntity.setContent(ingredientWarnEntity.getMessage());
                 alertEntity.setCompleted(false);
                 alertEntity.setLoginId(loginId);
                 alertRepository.save(alertEntity);

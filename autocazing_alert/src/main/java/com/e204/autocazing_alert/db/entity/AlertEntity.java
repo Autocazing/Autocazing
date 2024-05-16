@@ -20,7 +20,7 @@ public class AlertEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer alertId;
     @Column(nullable = false)
-    private IngredientWarnEntity content;
+    private String content;
     @Column(nullable = false)
     private String loginId;
     @Column(nullable = false)
