@@ -2,7 +2,9 @@ import Modal from "react-modal";
 import { useEffect, useState } from "react";
 // import closeIcon from "../../../images/icon/close.svg";
 import closeIcon from "../../images/icon/close.svg";
+import { PutRestock } from "../../apis/server/OrderApi";
 // import { CompanyGetApi } from "../../../apis/server/CompanyApi";
+
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -32,10 +34,17 @@ const customStyles = {
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [count, setCount] = useState(initialValue.ingredientQuantity);
-
+    const editStock = PutRestock(initialValue.restockOrderSpecificId);
     const ButtonClick = () => {
         console.log(initialValue.restockOrderSpecificId);
         console.log(count);
+    };
+
+    const handleEdit = (e) => {
+        editStock.mutate({
+            ingredientQuantity: count,
+        });
+        onClose();
     };
 
     const CountChange = (newValue) => {
@@ -104,7 +113,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                 </div>
 
                 <button
-                    onClick={ButtonClick}
+                    onClick={handleEdit}
                     className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                 >
                     수정하기
