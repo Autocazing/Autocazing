@@ -287,30 +287,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </div>
 
-                <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        담당 업체명
-                    </label>
-                    <select
-                        name="venderId"
-                        value={materialPostData.venderId}
-                        onChange={handleInputChange}
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    >
-                        <option value="" disabled>
-                            담당 업체를 선택해주세요.
-                        </option>
-                        {companyInfo.map((company) => (
-                            <option
-                                key={company.venderId}
-                                value={company.venderId}
-                            >
-                                {company.venderName}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
                 <button
                     onClick={handleEdit}
                     className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
