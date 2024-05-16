@@ -82,12 +82,12 @@ public class RestockController {
         return ResponseEntity.ok(restockOrderDetailsDto);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity test(HttpServletRequest httpServletRequest) {
-        String loginId = httpServletRequest.getHeader("loginId");
-        RestockOrderDetailsDto restockOrderDetailsDto =restockOrderService.testService(loginId);
-        return ResponseEntity.ok(restockOrderDetailsDto);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity test(HttpServletRequest httpServletRequest) {
+//        String loginId = httpServletRequest.getHeader("loginId");
+//        RestockOrderDetailsDto restockOrderDetailsDto =restockOrderService.testService(loginId);
+//        return ResponseEntity.ok(restockOrderDetailsDto);
+//    }
 
     // 발주 하기 및 새로운 장바구니 생성.
     @Operation(summary = "발주하기 및 새로운 장바구니 생성 / 발주완료", description = "발주하기-> 'status':'ORDERED' // status:'COMPLETE' 일때 발주완료(재고반영) ")
