@@ -10,8 +10,6 @@ import java.util.List;
 
 @Repository
 public interface IngredientRepository extends JpaRepository<IngredientEntity, Integer> {
-    IngredientEntity findByIngredientName(String ingredientName);
-
 	@Query(value = "SELECT i.vender.venderManagerContact FROM IngredientEntity i "
 		+ "WHERE i.ingredientId = :ingredientId AND i.store.StoreId = :storeId ")
 	String findContactByIngredientId(Integer ingredientId, Integer storeId);

@@ -95,6 +95,7 @@ public class MenuService {
             //재료 수정을 어떻게 한담
             changeMenuIngredients(menu, updateMenuDto.getIngredients());
         }
+        menu.setSoldOut(updateMenuDto.getSoldOut());
 //       menu.setUpdatedAt(LocalDateTime.now());
         menuRepository.save(menu);
 

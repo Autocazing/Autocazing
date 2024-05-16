@@ -88,6 +88,28 @@ public class RestockOrderService {
         return restockOrderDetailsDto;
     }
 
+
+    // 발주 상세조회
+//    public RestockOrderDetailsDto testService(String loginId) {
+//        Optional<StoreEntity> storeEntity = storeRepository.findByLoginId(loginId);
+//        if (storeEntity.isPresent()) {
+//            //구현
+////            return restockOrderRepository.findByStore(storeEntity.get());
+//        } else {
+//            throw new RuntimeException("Store not found for loginId: " + loginId);
+//        }
+//        List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findByStore(storeEntity);
+//        RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
+//                .orElseThrow(() -> new EntityNotFoundException("Restock not found"));
+//
+//        RestockOrderDetailsDto restockOrderDetailsDto = new RestockOrderDetailsDto();
+//        restockOrderDetailsDto.setRestockOrderId(restockOrderEntity.getRestockOrderId());
+//        restockOrderDetailsDto.setSpecifics(restockOrderEntity.getRestockOrderSpecific().stream()
+//                .map(this::convertToSpecificDetailDto)
+//                .collect(Collectors.toList()));
+//        return restockOrderDetailsDto;
+//    }
+
     private RestockOrderSpecificDetailDto convertToSpecificDetailDto(RestockOrderSpecificEntity specific) {
         RestockOrderSpecificDetailDto detailDto = new RestockOrderSpecificDetailDto();
         IngredientEntity ingredientEntity = ingredientRepository.findById(specific.getIngredientId())

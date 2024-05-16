@@ -177,7 +177,6 @@ public class StockService {
         stockRepository.deleteByExpirationDateBefore(today);
     }
 
-
     //유통기한 임박 상품 발주로직(총재고 - 임박상품 <= 재료.minimumCount)
     //todo : 언제 불러서 사용할지 정해야함.
     @Transactional
