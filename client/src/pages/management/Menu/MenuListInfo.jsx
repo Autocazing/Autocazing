@@ -14,6 +14,11 @@ const MenuListInfo = ({ menu, isLastItem }) => {
     const handleDelete = () => {
         deleteMenu.mutate();
     };
+    //원화 포맷 함수 추가
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat("ko-KR").format(price);
+    };
+
     return (
         <div
             className={`grid grid-cols-6 sm:grid-cols-6 ${
@@ -28,7 +33,9 @@ const MenuListInfo = ({ menu, isLastItem }) => {
             </div>
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="text-black dark:text-white">{menu.menuPrice}</p>
+                <p className="text-black dark:text-white">
+                    {formatPrice(menu.menuPrice)}
+                </p>
             </div>
 
             <div className="items-center justify-center p-2.5 sm:flex xl:p-5">
