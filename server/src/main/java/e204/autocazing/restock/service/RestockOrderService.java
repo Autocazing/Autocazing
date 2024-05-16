@@ -318,7 +318,7 @@ public class RestockOrderService {
             specific.setIngredientQuantity(ingredientEntity.getOrderCount());
         }
         //수동 발주 일땐
-        else{
+        else if(type.equals("manual")){
             System.out.println("수동발주");
             specific.setIngredientQuantity(addDto.getIngredientQuantity());
         }

@@ -84,7 +84,9 @@ public class RestockController {
 
 
     // 장바구니 내 재료 추가
-    @Operation(summary = "장바구니 내 재료주문추가", description = "장바구니에서 수동으로 재료주문을 추가 ")
+    @Operation(summary = "장바구니 내 재료주문추가", description = "장바구니에서 수동으로 재료주문을 추가" +
+                                                            "수동으로  추가할때 부르는 API " +
+                                                            "type = manual 로 주면됩니다. ")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "재료 추가 성공",
                     content = @Content(mediaType = "application/json",
