@@ -52,9 +52,9 @@ public class KafkaConsumerConfigCluster {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, IngredientWarnEntity>
+	public ConcurrentKafkaListenerContainerFactory<String, ConsumerEntity>
 	kafkaListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<String, IngredientWarnEntity> factory =
+		ConcurrentKafkaListenerContainerFactory<String, ConsumerEntity> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(pushEntityConsumerFactory());
 		return factory;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class ConsumerEntity {
+public class ConsumerEntity {
 
     private String type;    // INGREDIENT_WARN, SALES, DELIVERY
     private String message;
