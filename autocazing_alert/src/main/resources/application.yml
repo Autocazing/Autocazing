@@ -1,0 +1,27 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: alert-service
+  profiles:
+    active: ${profile}
+  output:
+    ansi:
+      enabled: always
+  config:
+    import: optional:configserver:http://config-server:8888
+
+#swagger
+springdoc:
+  packages-to-scan: com.e204.autocazing_alert
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/alert-service/api-docs
+  swagger-ui:
+    path: /api/alert-service/docs # Swagger ???? ??? ??
+    disable-swagger-default-url: true   # ?? ???? ???? ?? ?? ?? ?????
+    operations-sorter: alpha    # API? ?? ????? ??? ??? ??
+    enabled: true   # ???? ?? ???? ?? ??
+
