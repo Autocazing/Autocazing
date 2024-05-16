@@ -6,5 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DeliveryRefreshEntity {
+@AllArgsConstructor
+public class ConsumerEntity {
+
+    private String type;    // INGREDIENT_WARN, SALES, DELIVERY
+    private String message;
+
 }

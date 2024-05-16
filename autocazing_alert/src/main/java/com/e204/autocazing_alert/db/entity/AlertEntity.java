@@ -1,5 +1,6 @@
 package com.e204.autocazing_alert.db.entity;
 
+import com.e204.autocazing_alert.kafka.entity.IngredientWarnEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
