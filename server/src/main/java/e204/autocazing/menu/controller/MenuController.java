@@ -69,6 +69,7 @@ public class MenuController {
                         + "    {\n"
                         + "      \"ingredientId\": 1,\n"
                         + "      \"capacity\": 50\n"
+                        + "     \"ingredientName\": \"milk\",\n"
                         + "    }\n"
                         + "  ],\n"
                         + "  \"storeId\": 1}"
