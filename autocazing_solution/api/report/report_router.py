@@ -21,7 +21,7 @@ async def get_reports(request: Request, year: Union[int, None] = Query(None), mo
         query = query.filter(extract('month', reports.Reports.created_at) == month)
     
     store_reports = query.all()
-
+    store_reports.sort(key=lambda report: report.created_at.day)
 
     return store_reports
 
