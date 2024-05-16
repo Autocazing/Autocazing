@@ -209,40 +209,6 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
-
-                    <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                            단위
-                        </label>
-                        <select
-                            name="unit"
-                            value={
-                                isDirectInput
-                                    ? "직접입력"
-                                    : materialPostData.scale.unit
-                            }
-                            onChange={handleUnitChange}
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        >
-                            <option value="" disabled>
-                                단위 선택
-                            </option>
-                            {materialScaleInfo.map((scale) => (
-                                <option key={scale.scaleId} value={scale.unit}>
-                                    {scale.unit}
-                                </option>
-                            ))}
-                            <option value="직접입력">직접입력</option>
-                        </select>
-                        {isDirectInput && (
-                            <input
-                                type="text"
-                                placeholder="단위 직접 입력"
-                                className="mt-2 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                onChange={handleDirectUnitInput}
-                            />
-                        )}
-                    </div>
                 </div>
                 <div className="mb-1 flex flex-col gap-6 xl:flex-row">
                     <div className="mb-4.5">
