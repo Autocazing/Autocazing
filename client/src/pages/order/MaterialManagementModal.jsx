@@ -31,6 +31,7 @@ const customStyles = {
     },
 };
 const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
+    console.log(initialValue);
     const ButtonClick = () => {
         return 0;
     };
@@ -75,7 +76,8 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         </label>
                         <input
                             name="ingredientName"
-                            defaultValue="여기에 재료명 가져와야 함"
+                            readOnly
+                            defaultValue={initialValue.ingredientName}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
