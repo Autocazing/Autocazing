@@ -3,6 +3,7 @@ package e204.autocazing.restock.service;
 import e204.autocazing.config.SmsUtil;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
+import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.dto.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -192,14 +193,7 @@ public class RestockOrderService {
         if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrderEntity.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
             //새로운 장바구니 만들기
             createNewRestockOrder(loginId);
-//            //재료들 상태 ORDERED로 변경
-//            RestockOrderEntity restockOrder = restockOrderRepository.findById(restockOrderId)
-//                    .orElseThrow(() -> new RuntimeException("restockOrderId  not found :" +restockOrderId));
-//
-//            // RestockOrderSpecificEntity 상태 변경
-//            restockOrder.getRestockOrderSpecific().forEach(specific -> {
-//                specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.ORDERED);
-//            });
+
 
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
             //다시 커밋하겠음.
@@ -363,7 +357,11 @@ public class RestockOrderService {
         specific.setIngredientId(ingredientEntity.getIngredientId());
         specific.setRestockOrder(restockOrder);
         specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.WRITING);
-        if(!exists) {//존재하지 않을때만 save
+        if(exists){
+            throw new IngredientAlreadyExistsException("Ingredient with id " + ingredientEntity.getIngredientId() + " already exists in the restock order.");
+
+        }
+        else if(!exists) {//존재하지 않을때만 save
             restockOrderSpecificRepository.save(specific);
         }
 

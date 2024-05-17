@@ -6,6 +6,7 @@ import e204.autocazing.db.entity.StoreEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.StockRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.service.RestockOrderService;
@@ -151,10 +152,11 @@ public class StockService {
             }
 
         }
+        String name = ingredientRepository.findIngredientNameByIngredientId(ingredientId);
 
         //재고 부족
         if (quantity > 0) {
-            throw new InsufficientStockException("Insufficient stock for ingredient ID: " + ingredientId, 777);
+            throw new InsufficientStockException("Insufficient stock for ingredient: " + name);
         }
     }
 

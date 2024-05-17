@@ -22,19 +22,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGeneralException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
     }
+    //주문시 재료부족 -> 400에러
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientStockException(InsufficientStockException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "InsufficientStock",
+                ex.getMessage()
+        );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-}
 
-class ErrorResponse {
-    private String message;
-    private int errorCode;
-
-    public ErrorResponse(String message, int errorCode) {
-        this.message = message;
-        this.errorCode = errorCode;
+    //이미 있는 재료를 장바구니에 추가 -> 409에러
+    @ExceptionHandler(IngredientAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleIngredientAlreadyExistsException(IngredientAlreadyExistsException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "IngredientAlreadyExists",
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }
+
+
