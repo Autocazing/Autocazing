@@ -18,7 +18,7 @@ const SolutionGetApi = (ingredient_id) => {
         axiosInstance.get(`/solution/ingredient-solution/${ingredient_id}`);
 
     return useQuery({
-        queryKey: ["GetSolution"],
+        queryKey: ["GetSolution", ingredient_id],
         queryFn: fetchGet,
         select: (data) => data.data,
     });

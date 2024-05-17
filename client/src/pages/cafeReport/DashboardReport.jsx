@@ -31,7 +31,7 @@ const DashboardReport = () => {
     return (
         <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
             <div>
-                <div className="mb-3">
+                <div className="mb-6">
                     <div className="font-semibold text-black dark:text-white text-title-md">
                         Today report
                     </div>
