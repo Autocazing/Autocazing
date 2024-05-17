@@ -185,6 +185,9 @@ async def process_expiration_message(key: str, value: dict):
             )
             db.add(new_expiration_specific)
         db.commit()
+
+        # Call function to solve ingredient solution and save results
+        solve_and_save_ingredient_solution(report.report_id, key, db)
     except Exception as e:
         db.rollback()
         print(f"Error processing restock order message: {e}")
