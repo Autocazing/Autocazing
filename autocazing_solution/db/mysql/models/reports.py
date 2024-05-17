@@ -6,6 +6,12 @@ from db.mysql.base import Base
 # class MenuSalesSpecific(Base):
 #     __tablename__ = 'menu_sales_specific'
 #     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
+class IngredientSolution(Base):
+    __tablename__ = 'ingredient_solution'
+    report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
+    ingredient_id = Column(Integer, nullable=False, primary_key=True)
+    menu_name = Column(String(length=20), nullable=False, primary_key=True) # 판매할 재료
+    sale_quantity = Column(Integer, nullable=False) # 판매해야하는 양
 
 class ExpirationSpecifics(Base): # 유통기한 임박 재료
     __tablename__ = 'expiration_specifics'
