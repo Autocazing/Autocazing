@@ -24,18 +24,18 @@ async def get_ingredient_solution(request: Request, ingredient_id: int, db: Sess
         raise HTTPException(status_code=404, detail="No menus found for the given ingredient_id")
     menu_ids = [menu.menu_id for menu in menus]
     # 최적화 문제 해결
-    # ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, db)
+    ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, db)
 
-    optimal_sales_temp = {
-        "test1" : 30.0,
-        "test2" : 40.0,
-        "test3" : 60.0
-    }
+    # optimal_sales_temp = {
+    #     "test1" : 30.0,
+    #     "test2" : 40.0,
+    #     "test3" : 60.0
+    # }
     
-    ingredient_solution = IngredientSolutionResponse(
-        status="Optimal",
-        optimal_sales=optimal_sales_temp
-    )
+    # ingredient_solution = IngredientSolutionResponse(
+    #     status="Optimal",
+    #     optimal_sales=optimal_sales_temp
+    # )
 
     return ingredient_solution
 
@@ -56,7 +56,7 @@ def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Sessi
     variables = {menu_id: LpVariable(name=f"menu_{menu_id}", lowBound=0) for menu_id in menu_ids}
     # 목적 함수 (가격 기반)
     model += lpSum([menu_prices[menu_id] * variables[menu_id] for menu_id in menu_ids])
-    # 제약 조건 (해당 재료의 총 사용량이 1000을 넘지 않도록)
+    # 제약 조건 (해당 재료의 총 사용량이 잔여량을 넘지 않도록)
     model += lpSum([ingredient_usage[menu_id] * variables[menu_id] for menu_id in menu_ids]) <= 1000, f"{ingredient_id}_Usage"
     # 문제 풀기
     model.solve()
