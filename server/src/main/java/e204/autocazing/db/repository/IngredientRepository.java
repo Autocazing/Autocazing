@@ -24,4 +24,6 @@ public interface IngredientRepository extends JpaRepository<IngredientEntity, In
 	Integer findByIngredientId(Integer ingredientId);
 
 	IngredientEntity findIngredientByIngredientId(Integer ingredientId);
+
+	String findIngredientNameByIngredientId(Integer ingredientId);
 }
