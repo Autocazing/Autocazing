@@ -44,7 +44,7 @@ def predict_monthly_sales():
 
     db.close()
 
-@sched.scheduled_job('cron', hour='12', minute='40', id='make_report')  # 01시 00분에 리포트 만드는 스케줄러
+@sched.scheduled_job('cron', hour='01', minute='00', id='make_report')  # 01시 00분에 리포트 만드는 스케줄러
 def make_report():
     db = get_db_session()
     run_make_report(db)
