@@ -22,22 +22,24 @@ const Calendar = ({ reportData }) => {
     };
 
     return (
-        <div>
-            <FullCalendar
-                initialView="dayGridMonth"
-                plugins={[dayGridPlugin]}
-                showNonCurrentDates={false}
-                contentHeight={600}
-                events={events}
-                eventClick={handleEventClick}
-            />
-            {selectedData && (
-                <ReportModal
-                    isOpen={modalIsOpen}
-                    onClose={() => setModalIsOpen(false)}
-                    data={selectedData}
+        <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+            <div>
+                <FullCalendar
+                    initialView="dayGridMonth"
+                    plugins={[dayGridPlugin]}
+                    showNonCurrentDates={false}
+                    contentHeight={600}
+                    events={events}
+                    eventClick={handleEventClick}
                 />
-            )}
+                {selectedData && (
+                    <ReportModal
+                        isOpen={modalIsOpen}
+                        onClose={() => setModalIsOpen(false)}
+                        data={selectedData}
+                    />
+                )}
+            </div>
         </div>
     );
 };
