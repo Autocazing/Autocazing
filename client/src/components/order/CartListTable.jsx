@@ -9,8 +9,9 @@ const CartListTable = ({ Basket }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [cartList, setCartList] = useState([]);
     const [itemNo, setItemNo] = useState(0);
+    const [putNo, setPutNo] = useState(0);
     const deleteStock = DelRestock(itemNo);
-    const putStatus = PutStatus(4);
+    const putStatus = PutStatus(putNo);
 
     // useEffect(() => {
     //     console.log(cartList);
@@ -18,6 +19,8 @@ const CartListTable = ({ Basket }) => {
 
     useEffect(() => {
         if (Basket !== undefined) {
+            console.log(Basket[0].restockOrderId);
+            setPutNo(Basket[0].restockOrderId);
             setCartList(Basket[0].specifics);
         }
     }, [Basket]);
@@ -85,7 +88,7 @@ const CartListTable = ({ Basket }) => {
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            도착예정일
+                            배송 소요기간
                         </h5>
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
@@ -112,13 +115,13 @@ const CartListTable = ({ Basket }) => {
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.ingredientQuanrtity}
+                                {order.ingredientQuanrtity.toLocaleString()}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.ingredientPrice}
+                                {order.ingredientPrice.toLocaleString()}
                             </p>
                         </div>
 
@@ -130,7 +133,7 @@ const CartListTable = ({ Basket }) => {
 
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.arrivedAt}
+                                {order.deliveryTime} 일
                             </p>
                         </div>
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
