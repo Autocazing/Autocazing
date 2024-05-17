@@ -68,7 +68,7 @@ public class SmsUtil {
 
 			message.setText(text.toString());
 
-			SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+			//SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
 			//시연할 때 주석 해제 해야 합니다!
 			//responses.add(response);
