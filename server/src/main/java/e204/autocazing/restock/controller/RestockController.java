@@ -8,6 +8,7 @@ import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import e204.autocazing.restockSpecific.service.RestockSpecificService;
+import e204.autocazing.stock.dto.PostStockDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.QueryParam;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +67,9 @@ public class RestockController {
 
 
     // 발주 하기 및 새로운 장바구니 생성.
-    @Operation(summary = "발주하기 및 새로운 장바구니 생성 / 발주완료", description = "발주하기-> 'status':'ORDERED' // status:'COMPLETE' 일때 발주완료(재고반영) ")
+    @Operation(summary = "발주하기 및 새로운 장바구니 생성 / 발주완료", description = "발주하기-> 'status':'ORDERED' // " +
+                                                                                " status:'COMPLETE' 일때 발주완료(재고반영) " +
+                                                                                    "COMPLETE 로 변경하려면 내부 재료들이 다 COMPLETE여야함.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발주하기 성공 , 새로운 장바구니 생성",
                     content = @Content(mediaType = "application/json",
@@ -95,11 +99,11 @@ public class RestockController {
     })
     //수동 발주재료추가
     @PostMapping("/specifics")
-    public ResponseEntity<Void> addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
+    public ResponseEntity<AddSpecificResponse> addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
                                                       HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         AddSpecificResponse addSpecific = restockOrderService.addSpecific(type,addDto,loginId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.ok(addSpecific);
     }
 
     @Operation(summary = "장바구니 재료 수정", description = "장바구니 재료 수정하는 API 입니다.")
@@ -130,4 +134,12 @@ public class RestockController {
         restockSpecificService.deleteRestockOrderSpecific(restockOrderSpecificId);
         return ResponseEntity.ok().build();
     }
+
+//    @GetMapping("/excel")
+//    public ResponseEntity<Void> enrollExcel(@RequestBody List<PostStockDto> postStockDtos, HttpServletRequest httpServletRequest){
+//        String loginId = httpServletRequest.getHeader("loginId");
+//        restockOrderService.createStock(postStockDtos,loginId);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//
+//    }
 }

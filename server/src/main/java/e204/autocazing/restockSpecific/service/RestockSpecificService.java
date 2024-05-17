@@ -102,7 +102,7 @@ public class RestockSpecificService {
     }
 
     @Transactional
-    public List<UpdatedRestockSpecificDto> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus onDelivery) {
+    public List<UpdatedRestockSpecificDto> updateRestockOrderSpecificStatus(Integer restockOrderId, Integer venderId, RestockOrderSpecificEntity.RestockSpecificStatus status) {
         // restockOrderId로 발주 상세 리스트
         List<RestockOrderSpecificEntity> restockOrderSpecificEntityList = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrderId);
         List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList = new ArrayList<>();
@@ -113,7 +113,7 @@ public class RestockSpecificService {
             Integer specificVenderId = ingredientRepository.findByIngredientId(ingredientId);
 
             if (Objects.equals(venderId, specificVenderId)) {
-                restockOrderSpecificEntity.setStatus(onDelivery);
+                restockOrderSpecificEntity.setStatus(status);
                 restockOrderSpecificRepository.save(restockOrderSpecificEntity); // 상태 변경 후 저장
                 UpdatedRestockSpecificDto dto = convertToUpdatedDto(restockOrderSpecificEntity);
                 updatedRestockSpecificDtoList.add(dto);
