@@ -159,33 +159,45 @@ public class RestockOrderService {
     //status 상태변경
     @Transactional
     public UpdatedRestockDto updateRestockOrderStatus(Integer restockOrderId, UpdateRestockDto updateRestockDto, String loginId) {
-//        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
-//        RestockOrderEntity restockOrder = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity,);
-
         RestockOrderEntity restockOrderEntity = restockOrderRepository.findById(restockOrderId)
                 .orElseThrow(() -> new RuntimeException("restockOrderId  not found :" +restockOrderId));
 
         //이전 상태 저장
         RestockOrderEntity.RestockStatus previousStatus = restockOrderEntity.getStatus();
+        //발주 status == COMPLETE (재고 반영)
+        if (updateRestockDto.getStatus() == RestockOrderEntity.RestockStatus.COMPLETE) {
+            // 모든 RestockOrderSpecific 상태가 COMPLETE인지 확인
+            boolean allSpecificsComplete = restockOrderEntity.getRestockOrderSpecific().stream()
+                    .allMatch(specific -> specific.getStatus() == RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
+            // COMPLETE 가 아닌 재료가 있을때 예외
+            if (!allSpecificsComplete) {
+                throw new RuntimeException("All restock specifics must be COMPLETE to change order status to COMPLETE");
+            }
+            //todo : PostStocks 호출해야됨.
+            System.out.println("재고반영");
+        }
+
 
         //새로운 상태 세팅,저장
         restockOrderEntity.setStatus(updateRestockDto.getStatus());
         restockOrderRepository.save(restockOrderEntity);
 
-        //발주 status == COMPLETE (재고 반영)
-        if (restockOrderEntity.getStatus() == RestockOrderEntity.RestockStatus.COMPLETE) {
-            //updateStockWithCompleteOrder(restockOrderId);
-            //todo : PostStocks 호출해야됨.
-            System.out.println("재고반영");
-        }
+
 
         //발주하기 status  WRITING ->ORDERED , 새로운 장바구니 만들기
 
         if (previousStatus == RestockOrderEntity.RestockStatus.WRITING && restockOrderEntity.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
             //새로운 장바구니 만들기
             createNewRestockOrder(loginId);
-            //todo
+//            //재료들 상태 ORDERED로 변경
+//            RestockOrderEntity restockOrder = restockOrderRepository.findById(restockOrderId)
+//                    .orElseThrow(() -> new RuntimeException("restockOrderId  not found :" +restockOrderId));
+//
+//            // RestockOrderSpecificEntity 상태 변경
+//            restockOrder.getRestockOrderSpecific().forEach(specific -> {
+//                specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.ORDERED);
+//            });
+
             //status가 ORDERED 로 바뀌었으면 , 발주업체에 메일 or 문자보내기 로직 있어야함.
             //다시 커밋하겠음.
             if(restockOrderEntity.getStatus() == RestockOrderEntity.RestockStatus.ORDERED) {
@@ -343,12 +355,17 @@ public class RestockOrderService {
             System.out.println("수동발주");
             specific.setIngredientQuantity(addDto.getIngredientQuantity());
         }
-
+        boolean exists = restockOrderSpecificRepository.existsByRestockOrderAndIngredientId(restockOrder, ingredientEntity.getIngredientId());
         specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
         specific.setIngredientId(ingredientEntity.getIngredientId());
         specific.setRestockOrder(restockOrder);
         specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.WRITING);
-        restockOrderSpecificRepository.save(specific);
+        if(!exists) {//존재하지 않을때만 save
+            restockOrderSpecificRepository.save(specific);
+        }
+
+
+//        restockOrderSpecificRepository.save(specific);
 
         System.out.println( "발주 2단계");
         AddSpecificResponse addSpecificResponse = new AddSpecificResponse();
