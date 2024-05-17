@@ -2,7 +2,7 @@ import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
 import { useEffect, useState } from "react";
-import { DelRestock } from "../../apis/server/OrderApi";
+import { DelRestock, PutStatus } from "../../apis/server/OrderApi";
 
 const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -10,6 +10,7 @@ const CartListTable = ({ Basket }) => {
     const [cartList, setCartList] = useState([]);
     const [itemNo, setItemNo] = useState(0);
     const deleteStock = DelRestock(itemNo);
+    const putStatus = PutStatus(4);
 
     useEffect(() => {
         if (Basket !== undefined) {
@@ -30,13 +31,22 @@ const CartListTable = ({ Basket }) => {
         deleteStock.mutate();
     };
 
+    const Order = () => {
+        putStatus.mutate({
+            status: "ORDERED",
+        });
+    };
+
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
                 <h4 className="mb-6 text-xl font-semibold text-black dark:text-white flex-row">
                     Cart List
                 </h4>
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    onClick={() => Order()}
+                >
                     발주하기
                 </button>
             </div>
