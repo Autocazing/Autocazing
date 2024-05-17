@@ -2,22 +2,32 @@ import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
 import { useEffect, useState } from "react";
+import { DelRestock } from "../../apis/server/OrderApi";
 
 const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [cartList, setCartList] = useState([]);
+    const [itemNo, setItemNo] = useState(0);
+    const deleteStock = DelRestock(itemNo);
+
     useEffect(() => {
         if (Basket !== undefined) {
             setCartList(Basket[0].specifics);
-            // console.log(Basket[0].specifics);
         }
-    });
+    }, [Basket]);
 
     const handleItemClick = (item) => {
         // console.log(item);
         setSelectedItem(item);
         setModalIsOpen(true);
+    };
+
+    const deleteItem = (item) => {
+        setSelectedItem(item);
+        // console.log(item.restockOrderSpecificId);
+        setItemNo(item.restockOrderSpecificId);
+        deleteStock.mutate();
     };
 
     return (
@@ -115,7 +125,11 @@ const CartListTable = ({ Basket }) => {
                                 />
                             </button>
                             <button>
-                                <img src={deleteIcon} alt="delete" />
+                                <img
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    onClick={() => deleteItem(order)}
+                                />
                             </button>
                             {modalIsOpen && selectedItem && (
                                 <MaterialManagementModal
