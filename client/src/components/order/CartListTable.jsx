@@ -9,8 +9,9 @@ const CartListTable = ({ Basket }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [cartList, setCartList] = useState([]);
     const [itemNo, setItemNo] = useState(0);
+    const [putNo, setPutNo] = useState(0);
     const deleteStock = DelRestock(itemNo);
-    const putStatus = PutStatus(4);
+    const putStatus = PutStatus(putNo);
 
     // useEffect(() => {
     //     console.log(cartList);
@@ -18,6 +19,8 @@ const CartListTable = ({ Basket }) => {
 
     useEffect(() => {
         if (Basket !== undefined) {
+            console.log(Basket[0].restockOrderId);
+            setPutNo(Basket[0].restockOrderId);
             setCartList(Basket[0].specifics);
         }
     }, [Basket]);
