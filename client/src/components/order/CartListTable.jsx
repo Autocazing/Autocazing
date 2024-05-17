@@ -29,8 +29,13 @@ const CartListTable = ({ Basket }) => {
     };
 
     const deleteItem = (item) => {
+        const updatedCartList = cartList.filter(
+            (cartItem) =>
+                cartItem.restockOrderSpecificId !== item.restockOrderSpecificId,
+        );
+        setCartList(updatedCartList);
+
         setSelectedItem(item);
-        // console.log(item.restockOrderSpecificId);
         setItemNo(item.restockOrderSpecificId);
         deleteStock.mutate();
     };
