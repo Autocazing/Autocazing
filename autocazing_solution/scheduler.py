@@ -21,13 +21,14 @@ def predict_monthly_sales():
     data = response.json()
     
     # 데이터베이스에 저장
+    
     for item in data:
         year_month = item['Date']
         predicted_sales = item['Value']
         
         predicted_sale = PredictedSales(
             year_month=year_month,
-            login_id=1,  # 적절한 login_id 값을 설정해야 합니다.
+            login_id=1,
             predicted_monthly_sales=predicted_sales
         )
         db.add(predicted_sale)
