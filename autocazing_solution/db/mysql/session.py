@@ -2,12 +2,15 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from core.config import get_setting
+from db.mysql.models.stores import Stores
 from db.mysql.models.ingredients import Ingredients
 from db.mysql.models.menus import Menus
 from db.mysql.models.orders import OrderSpecifics, Orders
 from db.mysql.models.restock_orders import RestockOrderSpecifics, RestockOrders
 from db.mysql.models.reports import ExpirationSpecifics, OnDeliveryIngredients, Reports
 from db.mysql.models.menu_ingredients import MenuIngredients
+from db.mysql.models.predicted_sales import PredictedSales
+
 
 from db.mysql.base import Base
 
