@@ -1,7 +1,17 @@
 import SolutionTooltip from "./SolutionTooltip";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { SolutionGetApi } from "../../apis/server/ReportApi";
 
 const ExpirationList = ({ item }) => {
+    const {
+        data: SolutionData,
+        isLoading,
+        isError,
+        error,
+    } = SolutionGetApi(item.ingredient_id);
+
+    console.log();
+
     return (
         <div className="flex flex-row justify-between items-center mb-2 mx-4">
             <div className="text-black text-title-sm font-semibold">
