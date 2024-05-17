@@ -47,8 +47,11 @@ const PutRestock = (specificsId) => {
 const DelRestock = (specificsId) => {
     const queryClient = useQueryClient();
 
-    const fetchDelete = () => {
-        return axiosInstance.delete(`/restocks/specifics/${specificsId}`);
+    const fetchDelete = (editData) => {
+        return axiosInstance.delete(
+            `/restocks/specifics/${specificsId}`,
+            editData,
+        );
     };
 
     const mutation = useMutation({
@@ -64,4 +67,24 @@ const DelRestock = (specificsId) => {
     return mutation;
 };
 
-export { GetOredered, GetBasket, PutRestock, DelRestock };
+const PutStatus = (specificsId) => {
+    const queryClient = useQueryClient();
+
+    const fetchPut = (editData) => {
+        return axiosInstance.put(`/restocks/${specificsId}`, editData);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchPut,
+        onSuccess: () => {
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { GetOredered, GetBasket, PutRestock, DelRestock, PutStatus };
