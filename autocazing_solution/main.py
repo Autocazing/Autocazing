@@ -8,6 +8,9 @@ from messaging.kafka_cosume_logic import consume_messages, ingredient_consumer, 
 import asyncio
 import logging
 
+# 스케줄러 관련 임포트
+from scheduler import start_image_scheduler, sched
+
 app = FastAPI(docs_url='/api/solution-service/docs', openapi_url='/api/solution-service/openapi.json')
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,6 +37,7 @@ async def startup_event():
     await register_with_eureka()
     await producer.start()  # Kafka 프로듀서 시작
     asyncio.create_task(consume_messages()) # Kafka consume background task 시작
+    start_image_scheduler()  # 스케줄러 시작
 
 @app.get("/api/fastapi-test")
 async def root():
@@ -48,3 +52,4 @@ async def shutdown_event():
     await restock_order_consumer.stop()
     await producer.stop()  # Kafka 프로듀서 종료
     eureka_client.stop()
+    sched.shutdown()  # 스케줄러 종료
