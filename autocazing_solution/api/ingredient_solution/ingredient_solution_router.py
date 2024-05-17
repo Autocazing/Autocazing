@@ -24,7 +24,18 @@ async def get_ingredient_solution(request: Request, ingredient_id: int, db: Sess
         raise HTTPException(status_code=404, detail="No menus found for the given ingredient_id")
     menu_ids = [menu.menu_id for menu in menus]
     # 최적화 문제 해결
-    ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, db)
+    # ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, db)
+
+    optimal_sales_temp = {
+        "test1" : 30.0,
+        "test2" : 40.0,
+        "test3" : 60.0
+    }
+    
+    ingredient_solution = IngredientSolutionResponse(
+        status="Optimal",
+        optimal_sales=optimal_sales_temp
+    )
 
     return ingredient_solution
 
