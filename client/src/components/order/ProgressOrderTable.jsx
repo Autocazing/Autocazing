@@ -96,8 +96,16 @@ const ProgressOrderTable = ({ Ordered }) => {
 
                                 <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {specific.restockSpecificStatus}{" "}
-                                        {/* 상태 */}
+                                        {specific.restockSpecificStatus ===
+                                        "ORDERED"
+                                            ? "배달전"
+                                            : specific.restockSpecificStatus ===
+                                              "ON_DELIVERY"
+                                            ? "배달중"
+                                            : specific.restockSpecificStatus ===
+                                              "ARRIVED"
+                                            ? "배달완료"
+                                            : specific.restockSpecificStatus}
                                     </p>
                                 </div>
 
