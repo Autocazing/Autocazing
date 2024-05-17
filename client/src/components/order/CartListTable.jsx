@@ -112,13 +112,13 @@ const CartListTable = ({ Basket }) => {
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.ingredientQuanrtity}
+                                {order.ingredientQuanrtity.toLocaleString()}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.ingredientPrice}
+                                {order.ingredientPrice.toLocaleString()}
                             </p>
                         </div>
 
