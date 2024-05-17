@@ -19,5 +19,4 @@ public class PostMenuDto {
     private List<MenuIngredientDto> ingredients;
     private int discountRate=0;
     private String imageUrl=" ";
-    private String unit;
 }

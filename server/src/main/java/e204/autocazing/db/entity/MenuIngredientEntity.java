@@ -28,8 +28,6 @@ public class MenuIngredientEntity {
     @Column(nullable = false)
     private Integer capacity; //메뉴에 들어가는 재료의 양
 
-    @Column (nullable = false)
-    private String unit;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
