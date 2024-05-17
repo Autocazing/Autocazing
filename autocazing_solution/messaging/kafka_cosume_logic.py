@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 from messaging.kafka_instance import create_consumer
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 from sqlalchemy.orm import Session
 from db.mysql.session import mysqlSession
 from db.mysql.models.ingredients import Ingredients
@@ -9,7 +9,8 @@ from db.mysql.models.menus import Menus
 from db.mysql.models.menu_ingredients import MenuIngredients
 from db.mysql.models.orders import Orders, OrderSpecifics
 from db.mysql.models.restock_orders import RestockOrders, RestockOrderSpecifics
-from db.mysql.models.reports import Reports, ExpirationSpecifics
+from db.mysql.models.reports import Reports, ExpirationSpecifics, IngredientSolution
+from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpStatus, value
 
 
 # 각 토픽별 Kafka 컨슈머 생성
@@ -179,15 +180,71 @@ async def process_expiration_message(key: str, value: dict):
             new_expiration_specific = ExpirationSpecifics(
                 report_id=report.report_id,
                 ingredient_id=ingredient["ingredientId"],
-                ingredient_name=ingredient["ingredientName"]
+                ingredient_name=ingredient["ingredientName"],
+                remain=ingredient["remain"]
             )
             db.add(new_expiration_specific)
         db.commit()
+
+        # Call function to solve ingredient solution and save results
+        solve_and_save_ingredient_solution(report.report_id, key, db)
     except Exception as e:
         db.rollback()
         print(f"Error processing restock order message: {e}")
     finally:
         db.close()
+
+def solve_and_save_ingredient_solution(report_id: int, login_id: int, db: Session):
+    # Get all menus
+    menus = db.query(MenuIngredients).all()
+    menu_ids = list(set([menu.menu_id for menu in menus]))
+    
+    for ingredient_id in db.query(ExpirationSpecifics.ingredient_id).filter(ExpirationSpecifics.report_id == report_id).distinct():
+        ingredient_id = ingredient_id[0]  # Extract actual ingredient_id from the tuple
+        # Get remaining amount for the ingredient
+        expiration_specific = db.query(ExpirationSpecifics).filter(
+            ExpirationSpecifics.report_id == report_id,
+            ExpirationSpecifics.ingredient_id == ingredient_id
+        ).first()
+
+        if not expiration_specific:
+            continue
+        
+        remain_amount = expiration_specific.remain
+        
+        # 메뉴별 가격 및 이름 가져오기
+        menus = db.query(Menus).filter(Menus.menu_id.in_(menu_ids)).all()
+        menu_prices = {menu.menu_id: menu.menu_price for menu in menus}
+        menu_names = {menu.menu_id: menu.menu_name for menu in menus}
+        
+        # 재료 사용량 가져오기
+        ingredient_usage = {
+            menu.menu_id: menu.capacity for menu in db.query(MenuIngredients).filter(MenuIngredients.menu_id.in_(menu_ids), MenuIngredients.ingredient_id == ingredient_id).all()
+        }
+        
+        # 문제 정의
+        model = LpProblem(name="Cafe_Product_Mix", sense=LpMaximize)
+        # 변수 정의
+        variables = {menu_id: LpVariable(name=f"menu_{menu_id}", lowBound=0, cat="Integer") for menu_id in menu_ids}
+        # 목적 함수 (가격 기반)
+        model += lpSum([menu_prices[menu_id] * variables[menu_id] for menu_id in menu_ids])
+        # 제약 조건 (해당 재료의 총 사용량이 잔여량을 넘지 않도록)
+        model += lpSum([ingredient_usage[menu_id] * variables[menu_id] for menu_id in menu_ids]) <= remain_amount, f"{ingredient_id}_Usage"
+        # 문제 풀기
+        model.solve()
+        # 결과 출력
+        optimal_sales = {menu_names[menu_id]: value(variables[menu_id]) for menu_id in menu_ids if value(variables[menu_id]) is not None and value(variables[menu_id]) > 0}
+
+        # Save results to IngredientSolution table
+        for menu_name, sale_quantity in optimal_sales.items():
+            ingredient_solution = IngredientSolution(
+                report_id=report_id,
+                ingredient_id=ingredient_id,
+                menu_name=menu_name,
+                sale_quantity=sale_quantity
+            )
+            db.add(ingredient_solution)
+        db.commit()
 
 async def consume_messages():
     await asyncio.gather(
