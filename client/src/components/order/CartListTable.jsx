@@ -36,6 +36,7 @@ const CartListTable = ({ Basket }) => {
     };
 
     const Order = () => {
+        setCartList([]);
         putStatus.mutate({
             status: "ORDERED",
         });
