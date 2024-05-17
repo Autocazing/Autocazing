@@ -93,6 +93,7 @@ public class RestockOrderService {
         if(status == RestockOrderEntity.RestockStatus.ORDERED) {
             //구현
             List<RestockOrderEntity> restockOrderEntityList = restockOrderRepository.findAllByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.ORDERED);
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + restockOrderEntityList.size());
             for (RestockOrderEntity restockEntity : restockOrderEntityList) {
                 ResponseDto responseDto = new ResponseDto();
                 responseDto.setRestockOrderId(restockEntity.getRestockOrderId());
@@ -103,9 +104,11 @@ public class RestockOrderService {
 
                 responseDto.setSpecifics(specifics);
                 responseDtos.add(responseDto);
-                return responseDtos;
+
             }
+            return responseDtos;
         }
+
         //WRITING (장바구니)
         else if (status == RestockOrderEntity.RestockStatus.WRITING){
             RestockOrderEntity restockOrderEntity = restockOrderRepository.findRestockOrderByStoreAndStatus(storeEntity, RestockOrderEntity.RestockStatus.WRITING);
@@ -131,9 +134,9 @@ public class RestockOrderService {
 
                 responseDto.setSpecifics(specifics);
                 responseDtos.add(responseDto);
-                return responseDtos;
-            }
 
+            }
+            return responseDtos;
         }
         return responseDtos;
     }
