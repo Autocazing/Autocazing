@@ -82,14 +82,15 @@ const ProgressOrderTable = ({ Ordered }) => {
 
                                 <div className="flex items-center justify-center p-2.5 xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {specific.ingredientQuanrtity}{" "}
+                                        {specific.ingredientQuanrtity.toLocaleString()}{" "}
                                         {/* 주문량 */}
                                     </p>
                                 </div>
 
                                 <div className="flex items-center justify-center p-2.5 xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {specific.ingredientPrice} {/* 가격 */}
+                                        {specific.ingredientPrice.toLocaleString()}{" "}
+                                        {/* 가격 */}
                                     </p>
                                 </div>
 
