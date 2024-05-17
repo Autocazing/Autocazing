@@ -6,7 +6,7 @@ from api.ingredient_solution.schema.ingredient_solution_response import Ingredie
 from db.mysql.models.reports import IngredientSolution
 
 
-ingredient_solution_router = APIRouter(prefix="{report_id}/ingredient-solution")
+ingredient_solution_router = APIRouter(prefix="/{report_id}/ingredient-solution")
 
 @ingredient_solution_router.get("/{ingredient_id}", tags=["ingreient_solution_router"], response_model=IngredientSolutionResponse)
 async def get_ingredient_solution(request: Request, report_id: int, ingredient_id: int, db: Session = Depends(get_db)):
