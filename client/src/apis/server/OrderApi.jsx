@@ -44,4 +44,24 @@ const PutRestock = (specificsId) => {
     return mutation;
 };
 
-export { GetOredered, GetBasket, PutRestock };
+const DelRestock = (specificsId) => {
+    const queryClient = useQueryClient();
+
+    const fetchDelete = () => {
+        return axiosInstance.delete(`/restocks/specifics/${specificsId}`);
+    };
+
+    const mutation = useMutation({
+        mutationFn: fetchDelete,
+        onSuccess: () => {
+            console.log("성공");
+        },
+        onError: (error) => {
+            console.error("실패", error);
+        },
+    });
+
+    return mutation;
+};
+
+export { GetOredered, GetBasket, PutRestock, DelRestock };
