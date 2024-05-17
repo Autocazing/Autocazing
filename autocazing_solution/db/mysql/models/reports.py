@@ -12,6 +12,7 @@ class ExpirationSpecifics(Base): # 유통기한 임박 재료
     report_id = Column(Integer, ForeignKey('reports.report_id'), nullable=False, primary_key=True)
     ingredient_id = Column(Integer, nullable=False)
     ingredient_name = Column(String(length=20), nullable=False, primary_key=True)
+    remain = Column(Integer, nullable=False)
 
 class OnDeliveryIngredients(Base):  # 배송 중인 재료
     __tablename__ = 'on_delivery_ingredients'
