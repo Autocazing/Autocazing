@@ -58,8 +58,8 @@ public class RestockController {
     public ResponseEntity findRestock(@RequestParam(name = "status", required = false) RestockOrderEntity.RestockStatus status,
                                       HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        List<RestockOrderDetailsDto> restockOrderDetailsDtos =restockOrderService.findRestockOrderById(status,loginId);
-        return ResponseEntity.ok(restockOrderDetailsDtos);
+        List<ResponseDto> responseDtos =restockOrderService.findRestockOrderById(status,loginId);
+        return ResponseEntity.ok(responseDtos);
     }
 
 
@@ -74,10 +74,9 @@ public class RestockController {
             )
     })
     @PutMapping("/{restockOrderId}")
-    public ResponseEntity updateRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId,
-        @RequestBody UpdateRestockDto updateRestockDto, HttpServletRequest httpServletRequest) {
+    public ResponseEntity updateRestockOrder(@PathVariable(name = "restockOrderId") Integer restockOrderId ,@RequestBody UpdateRestockDto updateRestockDto, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId, updateRestockDto, loginId);
+        UpdatedRestockDto restockDetails = restockOrderService.updateRestockOrderStatus(restockOrderId,updateRestockDto, loginId);
 
         return ResponseEntity.ok(restockDetails);
     }
@@ -96,11 +95,11 @@ public class RestockController {
     })
     //수동 발주재료추가
     @PostMapping("/specifics")
-    public ResponseEntity addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
+    public ResponseEntity<Void> addIngredientToRestockOrder(@RequestParam(name = "type") String type,@RequestBody AddSpecificRequest addDto,
                                                       HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         AddSpecificResponse addSpecific = restockOrderService.addSpecific(type,addDto,loginId);
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "장바구니 재료 수정", description = "장바구니 재료 수정하는 API 입니다.")
