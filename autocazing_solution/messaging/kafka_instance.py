@@ -17,5 +17,7 @@ def create_consumer(topic):
         auto_offset_reset="earliest",  # 오프셋 위치(메시지를 읽어오는 시점)
         enable_auto_commit=True,  # 오프셋 자동 커밋 설정
         group_id='solution_server',  # solution 서버의 고유 소비자 그룹 ID
+        max_poll_interval_ms=600000,  # 10분
+        max_poll_records=10,  # 한 번에 10개의 메시지 가져오기
         value_deserializer=lambda x: loads(x.decode('utf-8'))  # 메시지의 값 역직렬화
     )
