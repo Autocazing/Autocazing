@@ -3,11 +3,12 @@ from typing import Union
 from typing import List
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 from core.dependencies import get_db
 from api.ingredient_solution.schema.ingredient_solution_response import IngredientSolutionResponse
 from db.mysql.models.menu_ingredients import MenuIngredients
 from db.mysql.models.menus import Menus
+from db.mysql.models.reports import Reports, ExpirationSpecifics
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpStatus, value
 
 
@@ -24,7 +25,7 @@ async def get_ingredient_solution(request: Request, ingredient_id: int, db: Sess
         raise HTTPException(status_code=404, detail="No menus found for the given ingredient_id")
     menu_ids = [menu.menu_id for menu in menus]
     # 최적화 문제 해결
-    ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, db)
+    ingredient_solution = solve_ingredient_solution(menu_ids, ingredient_id, login_id, db)
 
     # optimal_sales_temp = {
     #     "test1" : 30.0,
@@ -39,7 +40,28 @@ async def get_ingredient_solution(request: Request, ingredient_id: int, db: Sess
 
     return ingredient_solution
 
-def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Session) -> IngredientSolutionResponse:
+def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, login_id: int, db: Session) -> IngredientSolutionResponse:
+    # 오늘 날짜 기준으로 최신 report 가져오기
+    today = func.current_date()
+    report = db.query(Reports).filter(
+        Reports.login_id == login_id,
+        func.date(Reports.created_at) == today
+    ).order_by(Reports.created_at.desc()).first()
+
+    if not report:
+        raise HTTPException(status_code=404, detail="No report found for the given login_id and date")
+    
+    # 해당 재료의 잔여량 가져오기
+    expiration_specific = db.query(ExpirationSpecifics).filter(
+        ExpirationSpecifics.report_id == report.report_id,
+        ExpirationSpecifics.ingredient_id == ingredient_id
+    ).first()
+
+    if not expiration_specific:
+        raise HTTPException(status_code=404, detail="No expiration specific found for the given ingredient_id")
+
+    remain_amount = expiration_specific.remain
+
     # 메뉴별 가격 및 이름 가져오기
     menus = db.query(Menus).filter(Menus.menu_id.in_(menu_ids)).all()
     menu_prices = {menu.menu_id: menu.menu_price for menu in menus}
@@ -53,15 +75,15 @@ def solve_ingredient_solution(menu_ids: List[int], ingredient_id: str, db: Sessi
     # 문제 정의
     model = LpProblem(name="Cafe_Product_Mix", sense=LpMaximize)
     # 변수 정의
-    variables = {menu_id: LpVariable(name=f"menu_{menu_id}", lowBound=0) for menu_id in menu_ids}
+    variables = {menu_id: LpVariable(name=f"menu_{menu_id}", lowBound=0, cat="Integer") for menu_id in menu_ids}
     # 목적 함수 (가격 기반)
     model += lpSum([menu_prices[menu_id] * variables[menu_id] for menu_id in menu_ids])
     # 제약 조건 (해당 재료의 총 사용량이 잔여량을 넘지 않도록)
-    model += lpSum([ingredient_usage[menu_id] * variables[menu_id] for menu_id in menu_ids]) <= 1000, f"{ingredient_id}_Usage"
+    model += lpSum([ingredient_usage[menu_id] * variables[menu_id] for menu_id in menu_ids]) <= remain_amount, f"{ingredient_id}_Usage"
     # 문제 풀기
     model.solve()
     # 결과 출력
-    optimal_sales = {menu_names[menu_id]: value(variables[menu_id]) for menu_id in menu_ids}
+    optimal_sales = {menu_names[menu_id]: value(variables[menu_id]) for menu_id in menu_ids if value(variables[menu_id]) is not None and value(variables[menu_id]) > 0}
     
     ingredient_solution = IngredientSolutionResponse(
         status=LpStatus[model.status],
