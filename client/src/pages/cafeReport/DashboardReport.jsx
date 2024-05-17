@@ -1,4 +1,4 @@
-import { ReportMonthGetApi } from "../../apis/server/ReportApi";
+import { ReportdayGetApi } from "../../apis/server/ReportApi";
 import ExpirationList from "./ExpirationList";
 
 const DashboardReport = () => {
@@ -7,12 +7,13 @@ const DashboardReport = () => {
     const month = today.getMonth() + 1;
     // const day = today.getDate();
     const day = 16;
+
     const {
-        data: monthReportData,
+        data: dayReportData,
         isLoading,
         isError,
         error,
-    } = ReportMonthGetApi(year, month, day);
+    } = ReportdayGetApi(year, month, day);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -22,11 +23,10 @@ const DashboardReport = () => {
         return <div>Error: {error.message}</div>;
     }
 
-    console.log(monthReportData);
     const formattedExpectedSales =
-        monthReportData[0].expected_monthly_sales.toLocaleString("ko-KR");
+        dayReportData[0].expected_monthly_sales.toLocaleString("ko-KR");
     const formattedCurrentSales =
-        monthReportData[0].current_monthly_sales.toLocaleString("ko-KR");
+        dayReportData[0].current_monthly_sales.toLocaleString("ko-KR");
 
     return (
         <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
@@ -71,7 +71,7 @@ const DashboardReport = () => {
                         배송중인 재료를 나타냅니다.
                     </div>
                     <div className="flex flex-justify pl-5 text-center justify-center gap-4">
-                        {monthReportData[0].on_delivery_ingredients.map(
+                        {dayReportData[0].on_delivery_ingredients.map(
                             (ingredient, index) => (
                                 <div
                                     key={index}
@@ -91,7 +91,7 @@ const DashboardReport = () => {
                         유통기한 임박 재료에 대한 솔루션을 제공합니다.
                     </div>
                     <div>
-                        {monthReportData[0].expiration_specifics.map((item) => (
+                        {dayReportData[0].expiration_specifics.map((item) => (
                             <ExpirationList
                                 key={item.ingredient_id}
                                 item={item}
