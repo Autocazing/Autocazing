@@ -32,15 +32,41 @@ const customStyles = {
         overflow: "auto",
     },
 };
-const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
+const MaterialManagementModal = ({
+    isOpen,
+    onClose,
+    initialValue,
+    cartList,
+    setCartList,
+}) => {
     const [count, setCount] = useState(initialValue.ingredientQuantity);
     const editStock = PutRestock(initialValue.restockOrderSpecificId);
-    const ButtonClick = () => {
-        console.log(initialValue.restockOrderSpecificId);
-        console.log(count);
-    };
 
     const handleEdit = (e) => {
+        // console.log(cartList);
+        // console.log(initialValue.restockOrderSpecificId);
+        const itemIndex = cartList.findIndex(
+            (item) =>
+                item.restockOrderSpecificId ===
+                initialValue.restockOrderSpecificId,
+        );
+
+        if (itemIndex !== -1) {
+            // cartList 복사본 생성
+            const updatedCartList = [...cartList];
+
+            // 해당 항목의 ingredientQuanrtity 값 변경
+            updatedCartList[itemIndex] = {
+                ...updatedCartList[itemIndex],
+                ingredientQuanrtity: count,
+            };
+
+            // 변경된 항목 출력
+            // console.log(updatedCartList[itemIndex]);
+
+            // setCartList에 업데이트된 cartList 저장
+            setCartList(updatedCartList);
+        }
         editStock.mutate({
             ingredientQuantity: count,
         });

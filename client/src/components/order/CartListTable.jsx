@@ -12,6 +12,10 @@ const CartListTable = ({ Basket }) => {
     const deleteStock = DelRestock(itemNo);
     const putStatus = PutStatus(4);
 
+    // useEffect(() => {
+    //     console.log(cartList);
+    // }, [cartList]);
+
     useEffect(() => {
         if (Basket !== undefined) {
             setCartList(Basket[0].specifics);
@@ -25,13 +29,19 @@ const CartListTable = ({ Basket }) => {
     };
 
     const deleteItem = (item) => {
+        const updatedCartList = cartList.filter(
+            (cartItem) =>
+                cartItem.restockOrderSpecificId !== item.restockOrderSpecificId,
+        );
+        setCartList(updatedCartList);
+
         setSelectedItem(item);
-        // console.log(item.restockOrderSpecificId);
         setItemNo(item.restockOrderSpecificId);
         deleteStock.mutate();
     };
 
     const Order = () => {
+        setCartList([]);
         putStatus.mutate({
             status: "ORDERED",
         });
@@ -143,6 +153,8 @@ const CartListTable = ({ Basket }) => {
                             </button>
                             {modalIsOpen && selectedItem && (
                                 <MaterialManagementModal
+                                    setCartList={setCartList}
+                                    cartList={cartList}
                                     isOpen={modalIsOpen}
                                     onClose={() => setModalIsOpen(false)}
                                     initialValue={{
