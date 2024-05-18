@@ -1,7 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/dasgboard/Dashboard";
-import Material from "./pages/cafeData/Material";
-import Menu from "./pages/cafeData/Menu";
 import Sales from "./pages/cafeData/Sales";
 import CafeData from "./pages/cafeData/CafeData";
 import CartList from "./pages/order/CartList";
@@ -28,11 +26,6 @@ function App() {
                     <Route element={<PrivateRoute />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/cafeData" element={<CafeData />}>
-                            <Route
-                                path="material"
-                                element={<Material />}
-                            ></Route>
-                            <Route path="menu" element={<Menu />}></Route>
                             <Route path="sales" element={<Sales />}></Route>
                         </Route>
                         <Route path="/order" element={<Order />}>
