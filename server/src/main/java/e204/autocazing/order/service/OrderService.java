@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,8 @@ public class OrderService {
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private MenuIngredientRepository menuIngredientRepository;
 
     public List<OrderResponseDto> getAllOrders(String loginId) {
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
@@ -111,11 +114,19 @@ public class OrderService {
 
     //자동발주
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void checkAndAddRestockOrderSpecifics(String loginId)  {
+    public void checkAndAddRestockOrderSpecifics(List<Integer> menuIdList,String loginId)  {
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
 
-        List<IngredientEntity> ingredients = ingredientRepository.findByStore(storeEntity);
+
+//        List<IngredientEntity> ingredients = ingredientRepository.findByStore(storeEntity);
+
+        List<IngredientEntity> ingredients = new ArrayList<>();
+        for (Integer menuId : menuIdList) {
+            List<IngredientEntity> ingredientsForMenu = menuIngredientRepository.findIngredientsByMenuId(menuId);
+            ingredients.addAll(ingredientsForMenu);
+        }
+
         ingredients.forEach(ingredient -> {
             //총 재고 조회 (같은 재료 유통기한만 다른것도)
             Integer totalQuantity = stockRepository.findTotalQuantityByIngredientId(ingredient.getIngredientId());

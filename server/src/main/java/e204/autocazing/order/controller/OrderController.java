@@ -1,9 +1,6 @@
 package e204.autocazing.order.controller;
 
-import e204.autocazing.order.dto.DetailOrderResponseDto;
-import e204.autocazing.order.dto.OrderRequestDto;
-import e204.autocazing.order.dto.OrderResponseDto;
-import e204.autocazing.order.dto.PostOrderDto;
+import e204.autocazing.order.dto.*;
 import e204.autocazing.order.service.OrderService;
 import e204.autocazing.sale.dto.SalesResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -72,7 +71,12 @@ public class OrderController {
         //주문 받기 및 재고 검사로 주문 받을 수 있는 지 검사 + 재고 재료 사용한만큼 줄이기.
         orderService.addOrder(postOrderDto,loginId);
         // 발주 검사 및 발주추가
-        orderService.checkAndAddRestockOrderSpecifics(loginId);
+        //주문받은 메뉴만
+        List<PostOrderSpecificDto> postOrderSpecificDtoList=postOrderDto.getOrderSpecifics();
+        List<Integer> menuIdList = postOrderSpecificDtoList.stream()
+                .map(PostOrderSpecificDto::getMenuId)
+                .collect(Collectors.toList());
+        orderService.checkAndAddRestockOrderSpecifics(menuIdList,loginId);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
