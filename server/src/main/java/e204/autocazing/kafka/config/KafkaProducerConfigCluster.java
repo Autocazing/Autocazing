@@ -1,6 +1,7 @@
 package e204.autocazing.kafka.config;
 
 import e204.autocazing.kafka.entity.solution.IngredientCreateEntity;
+import e204.autocazing.kafka.entity.solution.MenuCreateEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,5 +63,15 @@ public class KafkaProducerConfigCluster {
 	@Bean
 	public KafkaTemplate<String, IngredientCreateEntity> ingredientCreateKafkaTemplate() {
 		return new KafkaTemplate<>(ingredientCreateProducerFactory());
+	}
+
+	@Bean
+	public ProducerFactory<String, MenuCreateEntity> menuCreateProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, MenuCreateEntity> menuCreateKafkaTemplate() {
+		return new KafkaTemplate<>(menuCreateProducerFactory());
 	}
 }
