@@ -177,9 +177,15 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </button>
             </div>
-            <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                재료추가
-            </h1>
+            {Object.keys(initialValue).length === 0 ? (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재료 추가
+                </h1>
+            ) : (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재료 수정
+                </h1>
+            )}
             <div className="p-6.5">
                 <div className="mb-0.5 flex flex-col gap-6 xl:flex-row">
                     <div className="mb-4.5">
