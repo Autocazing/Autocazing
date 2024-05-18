@@ -294,7 +294,7 @@ public class StockService {
                 else{
                     System.out.println("추가할게 없나봅니다~");
                 }
-                kafkaProducerCluster.sendExpirationMessage("expiration", storeEntity.getLoginId(), kafkaExpirationEntity);
+                kafkaProducerCluster.sendExpirationMessage("expiration_ingredients", storeEntity.getLoginId(), kafkaExpirationEntity);
             });
 
             hashMap.put(storeEntity.getLoginId(),nearExpiredDtoList);
