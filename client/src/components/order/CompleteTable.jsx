@@ -35,7 +35,10 @@ const CompleteTable = ({ complete }) => {
                 Complete Order List
             </h4>
 
-            <div className="flex flex-col">
+            <div
+                style={{ height: "35rem" }}
+                className="flex flex-col overflow-auto"
+            >
                 <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
                     <div className="p-2.5 xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
@@ -69,7 +72,7 @@ const CompleteTable = ({ complete }) => {
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            도착예정일
+                            도착일
                         </h5>
                     </div>
                 </div>
@@ -130,7 +133,7 @@ const CompleteTable = ({ complete }) => {
 
                                 <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {formatDate(specific.arrivedAt)}{" "}
+                                        {formatDate(specific.updatedAt)}{" "}
                                         {/* 도착예정일 */}
                                     </p>
                                 </div>

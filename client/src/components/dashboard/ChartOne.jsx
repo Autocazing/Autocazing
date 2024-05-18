@@ -1,6 +1,41 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { PiMoonStarsDuotone } from "react-icons/pi";
 // 테스트
+
+const getDayOfWeek = (calday) => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const date = new Date(calday);
+    const week = date.getDay();
+    return days[week];
+};
+
+const getKoreanDateString = (date) => {
+    return date
+        .toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+        .replace(/. /g, "-")
+        .replace(".", "");
+};
+
+const LastWeekDays = () => {
+    const labels = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+        const pastDate = new Date(today);
+        pastDate.setDate(today.getDate() - i);
+        const dateString = getKoreanDateString(pastDate);
+        const dayOfWeek = getDayOfWeek(dateString);
+        labels.push(dayOfWeek);
+    }
+
+    return labels;
+};
+
 const options = {
     legend: {
         show: false,
@@ -81,7 +116,7 @@ const options = {
     },
     xaxis: {
         type: "category",
-        categories: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
+        categories: LastWeekDays(),
         axisBorder: {
             show: false,
         },
@@ -100,9 +135,28 @@ const options = {
     },
 };
 
+const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
+};
+
+const getLastWeekDate = () => {
+    const today = new Date();
+    const sixDaysAgo = new Date(today);
+    sixDaysAgo.setDate(today.getDate() - 6); // 6일 전 날짜 설정
+    return getFormattedDate(sixDaysAgo);
+};
+
 const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     const [maxSize, setMaxSize] = useState(0);
     // const [minSize, setMinSize] = useState(0);
+
+    const today = getFormattedDate(new Date());
+
+    const lastweek = getLastWeekDate();
 
     const [state, setState] = useState({
         series: [
@@ -119,11 +173,11 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     });
 
     useEffect(() => {
-        // console.log(thisMonthAvgSold);
+        // console.log(thisWeekSold);
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
 
         if (thisWeekSold.length > 0) {
-            // console.log(thisWeekSold);
+            console.log(thisWeekSold);
             // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
             const productOneData = thisWeekSold.map((item) => item.totalSales);
 
@@ -147,6 +201,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     }, [thisWeekSold]);
 
     useEffect(() => {
+        // console.log(thisMonthAvgSold);
         const length = Object.keys(thisMonthAvgSold).length;
         if (length > 0) {
             // Update Product Two data with thisMonthAvgSold
@@ -175,7 +230,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
 
     return (
         <div className="col-span-8 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
-            <div className="flex flex-nowrap items-start justify-between gap-3 sm:flex-nowrap">
+            <div className="mt-8 flex flex-nowrap items-start justify-between gap-3 sm:flex-nowrap">
                 <div className="flex w-full flex-wrap gap-3 sm:gap-5">
                     <div className="flex min-w-47.5">
                         <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
@@ -184,9 +239,6 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                         <div className="w-full">
                             <p className="font-semibold text-primary">
                                 최근 7일 매출 현황
-                            </p>
-                            <p className="text-sm font-medium">
-                                12.04.2022 - 12.05.2022
                             </p>
                         </div>
                     </div>
@@ -197,9 +249,6 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                         <div className="w-full">
                             <p className="font-semibold text-secondary">
                                 최근 1달 요일별 매출
-                            </p>
-                            <p className="text-sm font-medium">
-                                12.04.2022 - 12.05.2022
                             </p>
                         </div>
                     </div>
@@ -218,6 +267,9 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                     </div>
                 </div> */}
             </div>
+            <p className="font-bold text-center mt-2">
+                {lastweek} ~ {today}
+            </p>
 
             <div>
                 <div id="chartOne" className="-ml-5">
