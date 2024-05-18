@@ -45,7 +45,7 @@ public class RestockOrderSpecificEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RestockOrderSpecificEntity.RestockSpecificStatus status;
+    private RestockOrderSpecificEntity.RestockSpecificStatus status = RestockSpecificStatus.WRITING;
 
     public enum RestockSpecificStatus {
         WRITING, ORDERED, ON_DELIVERY, ARRIVED, COMPLETE

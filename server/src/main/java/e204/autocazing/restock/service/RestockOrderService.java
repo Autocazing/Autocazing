@@ -289,6 +289,7 @@ public class RestockOrderService {
         // 새로운 RestockOrderSpecific 생성 및 추가
         RestockOrderSpecificEntity restockOrderSpecific = new RestockOrderSpecificEntity();
         restockOrderSpecific.setRestockOrder(restockOrder);
+        restockOrderSpecific.setIngredientId(ingredient.getIngredientId());
         //재료 알아내기
         restockOrderSpecific.setIngredientName(ingredient.getIngredientName());
         restockOrderSpecific.setIngredientQuantity(quantity);
