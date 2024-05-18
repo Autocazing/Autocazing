@@ -75,7 +75,7 @@ public class RestockSpecificService {
                 .build();
     }
 
-    // Update
+    // 발주 재료  수정(수량,상태)
     @Transactional
     public RestockSpecificResponseDto updateRestockOrderSpecific(Integer restockOrderSpecificId, UpdateRestockSpecificDto updatedRestockOrderSpecific) {
 
@@ -88,7 +88,14 @@ public class RestockSpecificService {
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found with ingredientId" + restockOrderSpecificEntity.getIngredientId()));
 
         // 업데이트 로직
-        restockOrderSpecificEntity.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
+        if(updatedRestockOrderSpecific.getIngredientQuantity() != null){
+            restockOrderSpecificEntity.setIngredientQuantity(updatedRestockOrderSpecific.getIngredientQuantity());
+        }
+        if(updatedRestockOrderSpecific.getStatus() != null){
+            restockOrderSpecificEntity.setStatus(updatedRestockOrderSpecific.getStatus());
+        }
+
+
         restockOrderSpecificEntity.setIngredientPrice(ingredientEntity.getIngredientPrice() * updatedRestockOrderSpecific.getIngredientQuantity());
 
         restockOrderSpecificRepository.save(restockOrderSpecificEntity);
