@@ -7,6 +7,8 @@ import e204.autocazing.kafka.cluster.KafkaProducerCluster;
 import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
 import e204.autocazing.kafka.entity.alert.IngredientWarnInfoEntity;
 import e204.autocazing.kafka.entity.ProducerEntity;
+import e204.autocazing.kafka.entity.solution.order.KafkaOrderSpecific;
+import e204.autocazing.kafka.entity.solution.order.OrderCreateEntity;
 import e204.autocazing.order.dto.*;
 import e204.autocazing.restock.dto.AddSpecificRequest;
 import e204.autocazing.restock.service.RestockOrderService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,6 +84,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
 
         order.setStore(storeEntity);
+        OrderCreateEntity kafkaOrderCreateEntity = new OrderCreateEntity(1, new ArrayList<>());
         List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
                 .map(detail -> {
                     MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
@@ -95,7 +99,8 @@ public class OrderService {
                     } else {
                         price = menu.getMenuPrice();
                     }
-
+                    // kafka order entity에 order specific 저장
+                    kafkaOrderCreateEntity.getOrderSpecifics().add(new KafkaOrderSpecific(menu.getMenuId(), menu.getMenuName(), detail.getMenuQuantity(), menu.getMenuPrice()));
                     return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
                 })
                 .toList();
@@ -109,10 +114,11 @@ public class OrderService {
             });
         });
 
-        orderRepository.save(order);
+        kafkaOrderCreateEntity.setOrderId(orderRepository.save(order).getOrderId());    // kafka message에 orderId 설정
 
         // kafka message 발신
         kafkaProducerCluster.sendProducerMessage("sales_refresh", loginId, new ProducerEntity("SALES", "Refresh sales"));
+        kafkaProducerCluster.sendOrderCreateMessage("order", loginId, kafkaOrderCreateEntity);
     }
 
 
