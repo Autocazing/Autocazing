@@ -4,6 +4,7 @@ import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.IngredientWarnEntity;
 import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.order.dto.*;
 import e204.autocazing.restock.dto.AddSpecificRequest;
@@ -138,7 +139,9 @@ public class OrderService {
 //                addSpecificRequest.setRestockOrderId(restockOrderEntity.getRestockOrderId());
                 addSpecificRequest.setIngredientId(ingredient.getIngredientId());
                 addSpecificRequest.setIngredientQuantity(ingredient.getOrderCount());
-                restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
+
+                kafkaProducerCluster.sendIngredientWarnMessage("ingredient_warn", loginId, new IngredientWarnEntity(restockOrderEntity.getRestockOrderId(), ingredient.getIngredientId(), ingredient.getOrderCount()));
+//                restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
 //                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
             }
         });
