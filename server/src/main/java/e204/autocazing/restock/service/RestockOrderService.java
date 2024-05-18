@@ -257,7 +257,7 @@ public class RestockOrderService {
         updatedRestockDto.setStatus(restockOrderEntity.getStatus());
 
         // kafka 메시지 "delivery_refresh"에 발행
-        kafkaProducerCluster.sendDeliveryRefreshMessage("delivery_refresh", loginId, new ProducerEntity("DELIVERY", "Refresh delivery status"));
+        kafkaProducerCluster.sendProducerMessage("delivery_refresh", loginId, new ProducerEntity("DELIVERY", "Refresh delivery status"));
 
         return updatedRestockDto;
     }
