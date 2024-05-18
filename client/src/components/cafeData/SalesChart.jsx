@@ -81,20 +81,7 @@ let options = {
     },
     xaxis: {
         type: "category",
-        categories: [
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-        ],
+        categories: [],
         axisBorder: {
             show: false,
         },
@@ -114,6 +101,8 @@ let options = {
 };
 
 const SalesChart = ({ dayData, weekData, monthData }) => {
+    const [headContent, setHeadContent] = useState("day");
+
     const [state, setState] = useState({
         series: [
             {
@@ -204,6 +193,7 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
 
     const handleButtonClick = (button) => {
         setSelectedButton(button);
+        setHeadContent(button);
     };
 
     return (
@@ -211,6 +201,19 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
             className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-12"
             style={{ height: "40rem" }}
         >
+            {headContent === "day" ? (
+                <div className="mt-8 text-center font-bold text-lg">
+                    2024.01.01 ~ 2024.01.01 (day, 수정예정)
+                </div>
+            ) : headContent === "week" ? (
+                <div className="mt-8 text-center font-bold text-lg">
+                    2024.01.01 ~ 2024.01.01 (week, 수정예정)
+                </div>
+            ) : headContent === "month" ? (
+                <div className="mt-8 text-center font-bold text-lg">
+                    2024.01.01 ~ 2024.01.01 (month, 수정예정)
+                </div>
+            ) : null}
             <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mt-16">
                 <div className="flex w-full flex-wrap gap-3 sm:gap-5">
                     <div className="flex min-w-47.5">
