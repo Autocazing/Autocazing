@@ -114,7 +114,7 @@ const ReportModal = ({ isOpen, onClose, data }) => {
                                 )}
                             </div>
                         ) : (
-                            <div className="flex flex-justify pl-5 text-center justify-center gap-4">
+                            <div className="flex flex-justify my-8 pl-5 text-center justify-center gap-4">
                                 배송중인 재료가 없습니다.
                             </div>
                         )}
@@ -133,12 +133,12 @@ const ReportModal = ({ isOpen, onClose, data }) => {
                                     <ExpirationList
                                         key={item.ingredient_id}
                                         item={item}
-                                        reportId={data.report_id}
+                                        solution={data.ingredient_solutions}
                                     />
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex flex-justify pl-5 text-center justify-center gap-4">
+                            <div className="flex flex-justify pl-5 my-8 text-center justify-center gap-4">
                                 유통기한 임박 재료가 없습니다.
                             </div>
                         )}
@@ -146,7 +146,7 @@ const ReportModal = ({ isOpen, onClose, data }) => {
                 </div>
                 <button
                     onClick={onClose}
-                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    className="flex w-full mt-8 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
                 >
                     닫기
                 </button>
