@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientWarnEntity {
-	private String type;
-	private IngredientWarnInfoEntity ingredientWarnInfoEntity;
+public class IngredientWarnInfoEntity {
+
+    private Integer restockOrderId;
+    private Integer ingredientId;
+    private Integer ingredientQuantity;
 
 }
