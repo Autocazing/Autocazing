@@ -1,10 +1,9 @@
 package e204.autocazing.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import e204.autocazing.kafka.cluster.KafkaProducerCluster;
-import e204.autocazing.kafka.entity.DeliveryRefreshEntity;
+import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.IngredientWarnEntity;
 import e204.autocazing.kafka.entity.SalesRefreshEntity;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,11 +29,10 @@ public class KafkaTestController {
 	}
 
 	@PostMapping("/kafka/produce/deliveryRefresh")
-	public String sendMessage(@RequestBody DeliveryRefreshEntity testDto, HttpServletRequest httpServletRequest) throws JsonProcessingException {
+	public String sendMessage(@RequestBody ProducerEntity testDto, HttpServletRequest httpServletRequest) throws JsonProcessingException {
 		String loginId = httpServletRequest.getHeader("loginId");
 
-		DeliveryRefreshEntity kafkaEntity = new DeliveryRefreshEntity(testDto.getMessage());
-		producer.sendDeliveryRefreshMessage("delivery_refresh", loginId, kafkaEntity);
+		producer.sendDeliveryRefreshMessage("delivery_refresh", loginId, testDto);
 
 		return "ok";
 	}

@@ -13,7 +13,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-import e204.autocazing.kafka.entity.DeliveryRefreshEntity;
+import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.IngredientWarnEntity;
 import e204.autocazing.kafka.entity.SalesRefreshEntity;
 
@@ -53,12 +53,12 @@ public class KafkaProducerConfigCluster {
 	}
 
 	@Bean
-	public ProducerFactory<String, DeliveryRefreshEntity> deliveryRefreshProducerFactory() {
+	public ProducerFactory<String, ProducerEntity> deliveryRefreshProducerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
 	}
 
 	@Bean
-	public KafkaTemplate<String, DeliveryRefreshEntity> deliveryRefreshKafkaTemplate() {
+	public KafkaTemplate<String, ProducerEntity> deliveryRefreshKafkaTemplate() {
 		return new KafkaTemplate<>(deliveryRefreshProducerFactory());
 	}
 }

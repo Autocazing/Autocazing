@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryRefreshEntity {
-	String message;
+public class ProducerEntity {
+
+	private String type;
+	private String message;
+
 }

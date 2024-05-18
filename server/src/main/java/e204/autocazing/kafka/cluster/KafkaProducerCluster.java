@@ -2,7 +2,7 @@ package e204.autocazing.kafka.cluster;
 
 import java.util.concurrent.CompletableFuture;
 
-import e204.autocazing.kafka.entity.DeliveryRefreshEntity;
+import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.IngredientWarnEntity;
 import e204.autocazing.kafka.entity.SalesRefreshEntity;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class KafkaProducerCluster {
 
 	private final KafkaTemplate<String, IngredientWarnEntity> ingredientWarnKafkaTemplate;
 	private final KafkaTemplate<String, SalesRefreshEntity> salesRefreshKafkaTemplate;
-	private final KafkaTemplate<String, DeliveryRefreshEntity> deliveryRefreshKafkaTemplate;
+	private final KafkaTemplate<String, ProducerEntity> deliveryRefreshKafkaTemplate;
 
 	public void sendIngredientWarnMessage(String topicName, String loginId, IngredientWarnEntity message) {
 		sendMessage(ingredientWarnKafkaTemplate, topicName, loginId, message);
@@ -31,7 +31,7 @@ public class KafkaProducerCluster {
 		sendMessage(salesRefreshKafkaTemplate, topicName, loginId, message);
 	}
 
-	public void sendDeliveryRefreshMessage(String topicName, String loginId, DeliveryRefreshEntity message) {
+	public void sendDeliveryRefreshMessage(String topicName, String loginId, ProducerEntity message) {
 		sendMessage(deliveryRefreshKafkaTemplate, topicName, loginId, message);
 	}
 
