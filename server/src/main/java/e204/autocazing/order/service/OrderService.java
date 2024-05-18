@@ -3,6 +3,8 @@ package e204.autocazing.order.service;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.order.dto.*;
 import e204.autocazing.restock.dto.AddSpecificRequest;
 import e204.autocazing.restock.service.RestockOrderService;
@@ -37,6 +39,8 @@ public class OrderService {
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
 
     public List<OrderResponseDto> getAllOrders(String loginId) {
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
@@ -67,44 +71,46 @@ public class OrderService {
     }
 
 
-        @Transactional
-        public void addOrder(PostOrderDto postOrderDto, String loginId) {
+    @Transactional
+    public void addOrder(PostOrderDto postOrderDto, String loginId) {
 
-            OrderEntity order = new OrderEntity();
-            StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+        OrderEntity order = new OrderEntity();
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
 
-            order.setStore(storeEntity);
-            List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
-                    .map(detail -> {
-                        MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
-                        if (menu == null) {
-                            throw new IllegalStateException("Menu not found: " + detail.getMenuId());
-                        }
+        order.setStore(storeEntity);
+        List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
+                .map(detail -> {
+                    MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
+                    if (menu == null) {
+                        throw new IllegalStateException("Menu not found: " + detail.getMenuId());
+                    }
 
-                        //menu가 할인된 상품이면 할인 가격 적용
-                        Integer price = 0;
-                        if (menu.getOnEvent() != null && menu.getOnEvent()) {
-                            price = (int) (menu.getMenuPrice() * (1 - (menu.getDiscountRate() / 100.0)));
-                        } else {
-                            price = menu.getMenuPrice();
-                        }
+                    //menu가 할인된 상품이면 할인 가격 적용
+                    Integer price = 0;
+                    if (menu.getOnEvent() != null && menu.getOnEvent()) {
+                        price = (int) (menu.getMenuPrice() * (1 - (menu.getDiscountRate() / 100.0)));
+                    } else {
+                        price = menu.getMenuPrice();
+                    }
 
-                        return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
-                    })
-                    .toList();
-            order.setOrderSpecific(orderSpecifics);
+                    return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
+                })
+                .toList();
+        order.setOrderSpecific(orderSpecifics);
 
-            // 재료와 재고 처리 로직
-            postOrderDto.getOrderSpecifics().forEach(detail -> {
-                MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
-                menu.getMenuIngredients().forEach(menuIngredient -> {
-                    stockService.decreaseStock(menuIngredient.getIngredient().getIngredientId(), menuIngredient.getCapacity() * detail.getMenuQuantity());
-                });
+        // 재료와 재고 처리 로직
+        postOrderDto.getOrderSpecifics().forEach(detail -> {
+            MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
+            menu.getMenuIngredients().forEach(menuIngredient -> {
+                stockService.decreaseStock(menuIngredient.getIngredient().getIngredientId(), menuIngredient.getCapacity() * detail.getMenuQuantity());
             });
+        });
 
-            orderRepository.save(order);
+        orderRepository.save(order);
 
+        // kafka message 발신
+        kafkaProducerCluster.sendProducerMessage("sales_refresh", loginId, new ProducerEntity("SALES", "Refresh sales"));
     }
 
 
