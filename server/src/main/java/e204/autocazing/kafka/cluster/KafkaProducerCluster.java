@@ -2,6 +2,7 @@ package e204.autocazing.kafka.cluster;
 
 import java.util.concurrent.CompletableFuture;
 
+import e204.autocazing.kafka.entity.solution.expiration.ExpirationEntity;
 import e204.autocazing.kafka.entity.solution.ingredient.IngredientCreateEntity;
 import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
@@ -28,6 +29,7 @@ public class KafkaProducerCluster {
 	private final KafkaTemplate<String, MenuCreateEntity> menuCreateEntityKafkaTemplate;
 	private final KafkaTemplate<String, OrderCreateEntity> orderCreateEntityKafkaTemplate;
 	private final KafkaTemplate<String, RestockOrderCreateEntity> restockOrderCreateEntityKafkaTemplate;
+	private final KafkaTemplate<String, ExpirationEntity> expirationKafkaTemplate;
 
 	public void sendIngredientWarnMessage(String topicName, String loginId, IngredientWarnEntity message) {
 		sendMessage(ingredientWarnKafkaTemplate, topicName, loginId, message);
@@ -51,6 +53,10 @@ public class KafkaProducerCluster {
 
 	public void sendRestockOrderCreateMessage(String topicName, String loginId, RestockOrderCreateEntity restockOrderCreateEntity) {
 		sendMessage(restockOrderCreateEntityKafkaTemplate, topicName, loginId, restockOrderCreateEntity);
+	}
+
+	public void sendExpirationMessage(String topicName, String loginId, ExpirationEntity expirationEntity) {
+		sendMessage(expirationKafkaTemplate, topicName, loginId, expirationEntity);
 	}
 
 	private <T> void sendMessage(KafkaTemplate<String, T> kafkaTemplate, String topicName, String loginId, T message) {

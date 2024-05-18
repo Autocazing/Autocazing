@@ -11,6 +11,9 @@ import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.solution.expiration.ExpirationEntity;
+import e204.autocazing.kafka.entity.solution.expiration.ExpirationIngredients;
 import e204.autocazing.restock.service.RestockOrderService;
 import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
 import e204.autocazing.restockSpecific.service.RestockSpecificService;
@@ -45,6 +48,8 @@ public class StockService {
     private RestockSpecificService restockSpecificService;
     @Autowired
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
 
     @Transactional
     public void createStock(PostRequestDto postRequestDto, String loginId) {
@@ -261,6 +266,9 @@ public class StockService {
             List<IngredientEntity> ingredients = ingredientRepository.findAllByStore(storeEntity);
             LocalDate today = LocalDate.now();
             List<NearExpiredDto> nearExpiredDtoList = new ArrayList<>();
+            // kafka 메시지 전송에 쓰일 객체
+            ExpirationEntity kafkaExpirationEntity = new ExpirationEntity(new ArrayList<>());
+
             ingredients.forEach(ingredient -> {
                 LocalDate expireDay = today.plusDays(ingredient.getDeliveryTime()); // 배송기한 포함 계산
                 int totalQuantity = stockRepository.sumQuantityByIngredient(ingredient.getIngredientId());
@@ -275,7 +283,8 @@ public class StockService {
                     nearExpiredDto.setIngredientName(ingredient.getIngredientName());
                     nearExpiredDto.setQuantity(expiredQuantity);
                     nearExpiredDtoList.add(nearExpiredDto);
-
+                    // kafka 메시지 전송을 위한 객체
+                    kafkaExpirationEntity.getExpirationIngredients().add(new ExpirationIngredients(ingredient.getIngredientId(), ingredient.getIngredientName(), expiredQuantity));
 
                     //유통기한 임박상품 재고 수량이 기준치보다 작다면 발주
 //                    if (quantity <= ingredient.getMinimumCount()) {
@@ -285,6 +294,7 @@ public class StockService {
                 else{
                     System.out.println("추가할게 없나봅니다~");
                 }
+                kafkaProducerCluster.sendExpirationMessage("expiration", storeEntity.getLoginId(), kafkaExpirationEntity);
             });
 
             hashMap.put(storeEntity.getLoginId(),nearExpiredDtoList);
