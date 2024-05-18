@@ -347,22 +347,20 @@ public class RestockOrderService {
         if(type.equals("auto")){
             System.out.println("자동발주");
             specific.setIngredientQuantity(ingredientEntity.getOrderCount());
+
         }
         //수동 발주 일땐
         else if(type.equals("manual")){
             System.out.println("수동발주");
             specific.setIngredientQuantity(addDto.getIngredientQuantity());
         }
-        boolean exists = restockOrderSpecificRepository.existsByRestockOrderAndIngredientId(restockOrder, ingredientEntity.getIngredientId());
+        Boolean exists = restockOrderSpecificRepository.existsByRestockOrderAndIngredientId(restockOrder, ingredientEntity.getIngredientId());
         specific.setIngredientPrice(ingredientEntity.getIngredientPrice() * addDto.getIngredientQuantity());
         specific.setIngredientId(ingredientEntity.getIngredientId());
         specific.setRestockOrder(restockOrder);
         specific.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.WRITING);
-        if(exists){
-            throw new IngredientAlreadyExistsException("Ingredient with id " + ingredientEntity.getIngredientId() + " already exists in the restock order.");
 
-        }
-        else if(!exists) {//존재하지 않을때만 save
+        if(!exists) {//존재하지 않을때만 save
             restockOrderSpecificRepository.save(specific);
         }
 
