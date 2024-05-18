@@ -194,6 +194,43 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
     const handleButtonClick = (button) => {
         setSelectedButton(button);
         setHeadContent(button);
+
+        let categories = [];
+        if (button === "day") {
+            categories = [
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+            ];
+        } else if (button === "week") {
+            categories = ["Week 1", "Week 2", "Week 3", "Week 4"];
+        } else if (button === "month") {
+            categories = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+        }
+
+        options.xaxis.categories = categories;
     };
 
     return (
