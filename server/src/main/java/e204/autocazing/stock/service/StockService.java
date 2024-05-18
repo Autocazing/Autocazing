@@ -159,6 +159,7 @@ public class StockService {
     public void decreaseStock(Integer ingredientId, Integer quantity) {
         int requiredQuantity = quantity;
         List<StockEntity> stocks = stockRepository.findByIngredientIngredientIdOrderByExpirationDateAsc(ingredientId);
+        System.out.println("stocks SIZE : " + stocks.size());
         if (stocks.isEmpty()) {
             throw new RuntimeException("No stock found for ingredient ID: " + ingredientId);
         }
@@ -183,7 +184,7 @@ public class StockService {
 
             //필요한 재료량이 현재 stock의 총 재고보다 적을때
             if(currentTotal <= requiredQuantity){
-                requiredQuantity -= currentQuantity; // 이 재고를 모두 사용
+                requiredQuantity -= currentTotal; // 이 재고를 모두 사용
                 stock.setQuantity(0); // 재고 소진
                 stockRepository.delete(stock);
             }
@@ -195,7 +196,7 @@ public class StockService {
                     int unUsedStock = ingredientCapacity - stock.getUsed();
                     //필요량 < 현재 남은 헌것
                     if(requiredQuantity <= unUsedStock){
-                        unUsedStock = unUsedStock - requiredQuantity;
+                        //unUsedStock = unUsedStock - requiredQuantity;
                         //사용량 = 기존사용량 + 필요량
                         stock.setUsed(stock.getUsed() + requiredQuantity);
                         stockRepository.save(stock);
@@ -205,13 +206,16 @@ public class StockService {
                     else{
                         requiredQuantity -= unUsedStock;
                         stock.setUsed(stock.getUsed() + unUsedStock);
-                        if (Objects.equals(stock.getStockId(), ingredientCapacity)){
+                        if (Objects.equals(stock.getUsed(), ingredientCapacity)){
                             stock.setQuantity(stock.getQuantity()-1);
                             stock.setUsed(0);
                         }
                         if(stock.getQuantity() == 0) {
                             stockRepository.delete(stock);
                             break;
+                        }else{
+                            System.out.println("여기 들어올 일이 있나?");
+                            stockRepository.save(stock);
                         }
                     }
                 }
