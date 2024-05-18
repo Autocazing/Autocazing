@@ -6,6 +6,9 @@ import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
+import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.restock.dto.UpdatedRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.PostRestockSpecificDto;
 import e204.autocazing.restockSpecific.dto.RestockSpecificResponseDto;
@@ -29,7 +32,12 @@ public class RestockSpecificService {
     private IngredientRepository ingredientRepository;
 
     @Autowired
+    private StoreRepository storeRepository;
+
+    @Autowired
     private RestockOrderRepository restockOrderRepository;
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
 
     @Transactional
     public void createRestockOrderSpecific(PostRestockSpecificDto postRestockSpecificDto) {
@@ -108,9 +116,16 @@ public class RestockSpecificService {
         List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList = new ArrayList<>();
 
         // 발주 상세 리스트의 재료 ID
+        String loginId = "";    // kafka message 발신에 쓰일 loginId
         for(RestockOrderSpecificEntity restockOrderSpecificEntity : restockOrderSpecificEntityList) {
             Integer ingredientId = restockOrderSpecificEntity.getIngredientId();
-            Integer specificVenderId = ingredientRepository.findByIngredientId(ingredientId);
+//            Integer specificVenderId = ingredientRepository.findByIngredientId(ingredientId); // 민이가 해놓은 거 kafka때문에 걍 객체 불러와서 뽑는 걸로 수정해뒀음
+            IngredientEntity ingredientEntity = ingredientRepository.findIngredientByIngredientId(ingredientId);
+            Integer specificVenderId = ingredientEntity.getVender().getVenderId();
+            if (loginId.equals("")) {   // kafka message 발신에 쓰일 loginId 불러오기
+                Integer storeId = ingredientEntity.getStore().getStoreId();
+                loginId = storeRepository.findLoginIdByStoreId(storeId);
+            }
 
             if (Objects.equals(venderId, specificVenderId)) {
                 restockOrderSpecificEntity.setStatus(status);
@@ -119,6 +134,9 @@ public class RestockSpecificService {
                 updatedRestockSpecificDtoList.add(dto);
             }
         }
+
+        // kafka 메시지 "delivery_refresh"에 발행
+        kafkaProducerCluster.sendProducerMessage("delivery_refresh", loginId, new ProducerEntity("DELIVERY", "Refresh delivery status"));
         return updatedRestockSpecificDtoList;
     }
 
