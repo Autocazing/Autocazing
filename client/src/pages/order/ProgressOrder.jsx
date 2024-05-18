@@ -15,11 +15,6 @@ const ProgressOrder = () => {
                 </ol>
             </div>
             <ProgressOrderTable Ordered={Ordered} />
-            <div className="flex justify-end mt-6">
-                <button className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded">
-                    수령 처리
-                </button>
-            </div>
         </>
     );
 };
