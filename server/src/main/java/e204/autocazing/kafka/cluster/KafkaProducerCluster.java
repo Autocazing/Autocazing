@@ -2,6 +2,7 @@ package e204.autocazing.kafka.cluster;
 
 import java.util.concurrent.CompletableFuture;
 
+import e204.autocazing.kafka.entity.IngredientCreateEntity;
 import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.IngredientWarnEntity;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class KafkaProducerCluster {
 
 	private final KafkaTemplate<String, IngredientWarnEntity> ingredientWarnKafkaTemplate;
 	private final KafkaTemplate<String, ProducerEntity> producerKafkaTemplate;
+	private final KafkaTemplate<String, IngredientCreateEntity> ingredientCreateKafkaTemplate;
 
 	public void sendIngredientWarnMessage(String topicName, String loginId, IngredientWarnEntity message) {
 		sendMessage(ingredientWarnKafkaTemplate, topicName, loginId, message);
@@ -27,6 +29,10 @@ public class KafkaProducerCluster {
 
 	public void sendProducerMessage(String topicName, String loginId, ProducerEntity message) {	// 배송, 매출 갱신 메시지 전송에 쓰임
 		sendMessage(producerKafkaTemplate, topicName, loginId, message);
+	}
+
+	public void sendIngredientCreateMessage(String topicName, String loginId, IngredientCreateEntity ingredientCreateEntity) {
+		sendMessage(ingredientCreateKafkaTemplate, topicName, loginId, ingredientCreateEntity);
 	}
 
 	private <T> void sendMessage(KafkaTemplate<String, T> kafkaTemplate, String topicName, String loginId, T message) {

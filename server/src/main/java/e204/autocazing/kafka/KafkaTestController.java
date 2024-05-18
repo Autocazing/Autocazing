@@ -37,11 +37,11 @@ public class KafkaTestController {
 
 	@PostMapping("/kafka/produce/ingredientWarn")
 	public String sendMessage(@RequestBody IngredientWarnEntity testDto, HttpServletRequest httpServletRequest) throws JsonProcessingException {
-		String loginId = httpServletRequest.getHeader("loginId");
-
-		IngredientWarnEntity kafkaEntity = new IngredientWarnEntity(testDto.getRestockOrderId(), testDto.getIngredientId(), testDto.getIngredientQuantity());
-		producer.sendIngredientWarnMessage("ingredient_warn", loginId, kafkaEntity);
-
+//		String loginId = httpServletRequest.getHeader("loginId");
+//
+//		IngredientWarnEntity kafkaEntity = new IngredientWarnEntity(testDto.getRestockOrderId(), testDto.getIngredientId(), testDto.getIngredientQuantity());
+//		producer.sendIngredientWarnMessage("ingredient_warn", loginId, kafkaEntity);
+//
 		return "ok";
 	}
 

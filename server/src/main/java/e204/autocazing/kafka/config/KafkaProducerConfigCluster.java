@@ -1,5 +1,6 @@
 package e204.autocazing.kafka.config;
 
+import e204.autocazing.kafka.entity.IngredientCreateEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class KafkaProducerConfigCluster {
 		return props;
 	}
 
+	// to alert service
 	@Bean
 	public ProducerFactory<String, IngredientWarnEntity> ingredientWarnProducerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
@@ -49,5 +51,16 @@ public class KafkaProducerConfigCluster {
 	@Bean
 	public KafkaTemplate<String, ProducerEntity> producerRefreshKafkaTemplate() {
 		return new KafkaTemplate<>(producerRefreshProducerFactory());
+	}
+
+	// to solutino service
+	@Bean
+	public ProducerFactory<String, IngredientCreateEntity> ingredientCreateProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, IngredientCreateEntity> ingredientCreateKafkaTemplate() {
+		return new KafkaTemplate<>(ingredientCreateProducerFactory());
 	}
 }

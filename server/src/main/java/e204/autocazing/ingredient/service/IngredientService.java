@@ -13,6 +13,8 @@ import e204.autocazing.ingredient.dto.IngredientDetails;
 import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.ScaleDto;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.IngredientCreateEntity;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
 import e204.autocazing.scale.service.IngredientScaleService;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,6 +38,8 @@ public class IngredientService {
     private IngredientScaleRepository scaleRepository;
     @Autowired
     private IngredientScaleService ingredientScaleService;
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
 
     public void createIngredient(PostIngredientDto postIngredientDto,String loginId) {
 
@@ -73,7 +77,11 @@ public class IngredientService {
 
         ingredient.setStore(storeEntity);
         ingredient.setVender(venderEntity);
-        ingredientRepository.save(ingredient);
+        IngredientEntity savedIngredientEntity = ingredientRepository.save(ingredient);
+
+        // kafka message 발신
+        kafkaProducerCluster.sendIngredientCreateMessage("ingredient", loginId,
+                new IngredientCreateEntity(savedIngredientEntity.getIngredientId(), savedIngredientEntity.getIngredientName(), savedIngredientEntity.getIngredientPrice(), savedIngredientEntity.getOrderCount()));
     }
 
 
