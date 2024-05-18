@@ -93,9 +93,16 @@ const CompanyManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </button>
             </div>
-            <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                업체추가
-            </h1>
+            {Object.keys(initialValue).length === 0 ? (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    업체 추가
+                </h1>
+            ) : (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    업체 추가
+                </h1>
+            )}
+
             <form action="#">
                 <div className="p-6.5">
                     <div className="mb-4.5">
