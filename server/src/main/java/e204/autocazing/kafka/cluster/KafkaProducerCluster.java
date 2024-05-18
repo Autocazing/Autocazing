@@ -2,9 +2,9 @@ package e204.autocazing.kafka.cluster;
 
 import java.util.concurrent.CompletableFuture;
 
-import e204.autocazing.kafka.entity.IngredientCreateEntity;
+import e204.autocazing.kafka.entity.solution.IngredientCreateEntity;
 import e204.autocazing.kafka.entity.ProducerEntity;
-import e204.autocazing.kafka.entity.IngredientWarnEntity;
+import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

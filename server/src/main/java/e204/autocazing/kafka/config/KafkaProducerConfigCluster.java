@@ -1,6 +1,6 @@
 package e204.autocazing.kafka.config;
 
-import e204.autocazing.kafka.entity.IngredientCreateEntity;
+import e204.autocazing.kafka.entity.solution.IngredientCreateEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import e204.autocazing.kafka.entity.ProducerEntity;
-import e204.autocazing.kafka.entity.IngredientWarnEntity;
+import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
 
 @Configuration
 public class KafkaProducerConfigCluster {

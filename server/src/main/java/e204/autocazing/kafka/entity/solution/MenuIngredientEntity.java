@@ -1,4 +1,4 @@
-package e204.autocazing.kafka.entity;
+package e204.autocazing.kafka.entity.solution;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientWarnInfoEntity {
+public class MenuIngredientEntity {
 
-    private Integer restockOrderId;
     private Integer ingredientId;
-    private Integer orderCount;
+    private Integer capacity;
 
 }

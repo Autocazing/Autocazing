@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import e204.autocazing.kafka.cluster.KafkaProducerCluster;
 import e204.autocazing.kafka.entity.ProducerEntity;
-import e204.autocazing.kafka.entity.IngredientWarnEntity;
+import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
