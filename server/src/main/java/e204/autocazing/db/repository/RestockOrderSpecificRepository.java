@@ -26,4 +26,9 @@ public interface RestockOrderSpecificRepository extends JpaRepository<RestockOrd
     // @Query("SELECT r.restockOrderSpecific FROM RestockOrderEntity r WHERE r.restockOrderId = :restockOrderId ")
     // List<RestockOrderSpecificEntity> findOrderSpecificByRestockOrderId(Integer restockOrderId);
 
+    @Query("SELECT s FROM RestockOrderSpecificEntity s WHERE s.ingredientId = :ingredientId AND s.status = :status ORDER BY s.createdAt ASC")
+    Optional<RestockOrderSpecificEntity> findTopByIngredientIdAndStatusOrderByCreatedAtAsc(
+            @Param("ingredientId") Integer ingredientId,
+            @Param("status") RestockOrderSpecificEntity.RestockSpecificStatus status
+    );
 }

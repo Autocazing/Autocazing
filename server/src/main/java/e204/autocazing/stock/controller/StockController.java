@@ -1,9 +1,6 @@
 package e204.autocazing.stock.controller;
 
-import e204.autocazing.stock.dto.NearExpiredDto;
-import e204.autocazing.stock.dto.PostStockDto;
-import e204.autocazing.stock.dto.StockDetailsDto;
-import e204.autocazing.stock.dto.UpdateStockDto;
+import e204.autocazing.stock.dto.*;
 import e204.autocazing.stock.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,9 +35,9 @@ public class StockController {
                     )
     })
     @PostMapping("")
-    public ResponseEntity<Void> createStock(@RequestBody List<PostStockDto> postStockDtos, HttpServletRequest httpServletRequest){
+    public ResponseEntity<Void> createStock(@RequestBody PostRequestDto postRequestDto, HttpServletRequest httpServletRequest){
         String loginId = httpServletRequest.getHeader("loginId");
-        stockService.createStock(postStockDtos,loginId);
+        stockService.createStock(postRequestDto,loginId);
         return new ResponseEntity<>(HttpStatus.CREATED);
 
     }

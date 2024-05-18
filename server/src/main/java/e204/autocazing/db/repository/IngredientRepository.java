@@ -4,6 +4,7 @@ import e204.autocazing.db.entity.IngredientEntity;
 import e204.autocazing.db.entity.StoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public interface IngredientRepository extends JpaRepository<IngredientEntity, In
 
 	String findIngredientNameByIngredientId(Integer ingredientId);
 
-
-	Integer findIngredientCapacityByIngredientId(Integer ingredientId);
+	@Query("SELECT i.ingredientCapacity FROM IngredientEntity i WHERE i.ingredientId = :ingredientId")
+	Integer findIngredientCapacityByIngredientId(@Param("ingredientId") Integer ingredientId);
 
 	List<IngredientEntity> findAllByStore(StoreEntity storeEntity);
 }

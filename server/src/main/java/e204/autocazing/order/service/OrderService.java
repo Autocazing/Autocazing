@@ -94,7 +94,7 @@ public class OrderService {
                     })
                     .toList();
             order.setOrderSpecific(orderSpecifics);
-
+            System.out.println("여까지는 되냐?");
             // 재료와 재고 처리 로직
             postOrderDto.getOrderSpecifics().forEach(detail -> {
                 MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
@@ -103,6 +103,7 @@ public class OrderService {
                 });
             });
 
+            System.out.println();
             orderRepository.save(order);
 
     }
