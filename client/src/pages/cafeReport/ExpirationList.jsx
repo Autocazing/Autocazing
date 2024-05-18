@@ -4,9 +4,6 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import "./TooltipStyle.css";
 
 const ExpirationList = ({ item, solution }) => {
-    // console.log(item, reportId);
-    console.log(item, solution);
-
     return (
         <div className="flex flex-row justify-between items-center mb-2 mx-4">
             <div className="text-black text-title-sm font-semibold">

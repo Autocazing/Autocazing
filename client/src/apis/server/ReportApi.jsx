@@ -5,7 +5,7 @@ const ReportdayGetApi = (year, month, day) => {
         axiosInstance.get(
             `/solution/report?year=${year}&month=${month}&day=${day}`,
         );
-    console.log("일일 리포트 axios");
+
     return useQuery({
         queryKey: ["GetMonthReport", day],
         queryFn: fetchGet,
@@ -19,7 +19,7 @@ const ReportdayGetApi = (year, month, day) => {
 const ReportMonthGetApi = (year, month) => {
     const fetchGet = () =>
         axiosInstance.get(`/solution/report?year=${year}&month=${month}`);
-    console.log("달 리포트 axios");
+
     return useQuery({
         queryKey: ["GetMonthReport", year, month],
         queryFn: fetchGet,

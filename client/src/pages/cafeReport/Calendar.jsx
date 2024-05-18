@@ -18,9 +18,6 @@ const Calendar = () => {
         error,
     } = ReportMonthGetApi(year, month);
 
-    useEffect(() => {
-        console.log(monthReportData);
-    }, [monthReportData]);
     const events =
         monthReportData?.map((data) => ({
             title: `${data.created_at.split("T")[0]} 리포트`, // YYYY-MM-DD 포맷

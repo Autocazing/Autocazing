@@ -15,8 +15,6 @@ const DashboardReport = () => {
         error,
     } = ReportdayGetApi(year, month, day);
 
-    console.log(dayReportData);
-
     if (isLoading) {
         return <div>Loading...</div>;
     }

@@ -1,8 +1,9 @@
 const SolutionTooltip = ({ item, solution }) => {
-    console.log(solution);
     const filteredSolutions = solution.filter(
         (sol) => sol.ingredient_id === item.ingredient_id,
     );
+    console.log("Solution data: ", solution);
+    console.log("Filtered Solutions: ", filteredSolutions);
 
     return (
         <div>
@@ -24,8 +25,8 @@ const SolutionTooltip = ({ item, solution }) => {
                         </thead>
                         <tbody>
                             {filteredSolutions.map(
-                                ({ menu_name, sale_quantity }) => (
-                                    <tr key={menu_name}>
+                                ({ menu_name, sale_quantity }, index) => (
+                                    <tr key={index}>
                                         <td className="px-2 py-1 text-black">
                                             {menu_name}
                                         </td>
@@ -38,7 +39,7 @@ const SolutionTooltip = ({ item, solution }) => {
                         </tbody>
                     </table>
                 ) : (
-                    <div className="text-center">
+                    <div className="text-center text-black">
                         해당 재료에 대한 솔루션이 없습니다.
                     </div>
                 )}
