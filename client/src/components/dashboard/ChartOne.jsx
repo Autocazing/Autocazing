@@ -119,7 +119,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     });
 
     useEffect(() => {
-        // console.log(thisMonthAvgSold);
+        console.log(thisWeekSold);
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
 
         if (thisWeekSold.length > 0) {
@@ -147,6 +147,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     }, [thisWeekSold]);
 
     useEffect(() => {
+        console.log(thisMonthAvgSold);
         const length = Object.keys(thisMonthAvgSold).length;
         if (length > 0) {
             // Update Product Two data with thisMonthAvgSold
