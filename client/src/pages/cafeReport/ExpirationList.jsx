@@ -13,7 +13,7 @@ const ExpirationList = ({ item, reportId }) => {
         error,
     } = SolutionGetApi(reportId, item.ingredient_id);
 
-    console.log(item, reportId);
+    // console.log(item, reportId);
 
     return (
         <div className="flex flex-row justify-between items-center mb-2 mx-4">
