@@ -1,19 +1,20 @@
 package e204.autocazing.stock.service;
 
 import e204.autocazing.db.entity.IngredientEntity;
+import e204.autocazing.db.entity.RestockOrderSpecificEntity;
 import e204.autocazing.db.entity.StockEntity;
 import e204.autocazing.db.entity.StoreEntity;
 import e204.autocazing.db.repository.IngredientRepository;
+import e204.autocazing.db.repository.RestockOrderSpecificRepository;
 import e204.autocazing.db.repository.StockRepository;
 import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.service.RestockOrderService;
-import e204.autocazing.stock.dto.NearExpiredDto;
-import e204.autocazing.stock.dto.PostStockDto;
-import e204.autocazing.stock.dto.StockDetailsDto;
-import e204.autocazing.stock.dto.UpdateStockDto;
+import e204.autocazing.restockSpecific.dto.UpdateRestockSpecificDto;
+import e204.autocazing.restockSpecific.service.RestockSpecificService;
+import e204.autocazing.stock.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springdoc.core.providers.HateoasHalProvider;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,14 +41,18 @@ public class StockService {
     private IngredientRepository ingredientRepository;
     @Autowired
     private RestockOrderService restockOrderService;
-
+    @Autowired
+    private RestockSpecificService restockSpecificService;
+    @Autowired
+    private RestockOrderSpecificRepository restockOrderSpecificRepository;
 
     @Transactional
-    public void createStock(List<PostStockDto> postStockDtos,String loginId) {
+    public void createStock(PostRequestDto postRequestDto, String loginId) {
         //StoreId 조회
         Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
+        List<PostStockDto> postStockDtoList=postRequestDto.getPostStockDtoList();
         // PostStockDto 리스트를 순회하며 StockEntity 저장
-        for (PostStockDto postStockDto : postStockDtos) {
+        for (PostStockDto postStockDto : postStockDtoList) {
             // IngredientEntity 조회
             IngredientEntity ingredientEntity = ingredientRepository.findById(postStockDto.getIngredientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + postStockDto.getIngredientId()));
@@ -59,7 +65,22 @@ public class StockService {
             stockEntity.setStoreId(storeId); // StoreId 설정
 
             stockRepository.save(stockEntity);
+            //재고 반영 후 , 자동발주로 추가된 재료들은 COMPLETE처리하기.
+            //엑셀로 처리할때
+            if(postRequestDto.getOnExcel()){
+                //발주된 재료 완료하러가기
+                //(restockOrderSpecificId,UpdateRestockSpecificDto)
+                //재료id , StoreId
+                Integer ingredientId = ingredientEntity.getIngredientId();
+                RestockOrderSpecificEntity restockOrderSpecificEntity = restockOrderSpecificRepository.findTopByIngredientIdAndStatusOrderByCreatedAtAsc(
+                                ingredientId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED)
+                        .orElseThrow(() -> new RuntimeException("No ARRIVED restock order specific found for ingredientId: " + ingredientId));
+                UpdateRestockSpecificDto updateRestockSpecificDto = new UpdateRestockSpecificDto();
+                updateRestockSpecificDto.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
+                restockSpecificService.updateRestockOrderSpecific(restockOrderSpecificEntity.getRestockOrderSpecificId(),updateRestockSpecificDto);
+            }
         }
+
     }
 
     // 전체 재고 조회
@@ -131,16 +152,22 @@ public class StockService {
     //주문 들어온 메뉴의 들어가는 재료를 재고에서 빼기.
     //뺀 후에 재고 체크를 통해 자동 발주 신청 까지.
     @Transactional
-    public void decreaseStock(Integer ingredientId, Integer requiredQuantity) {
+    public void decreaseStock(Integer ingredientId, Integer quantity) {
+        int requiredQuantity = quantity;
         List<StockEntity> stocks = stockRepository.findByIngredientIngredientIdOrderByExpirationDateAsc(ingredientId);
         if (stocks.isEmpty()) {
             throw new RuntimeException("No stock found for ingredient ID: " + ingredientId);
         }
+        System.out.println("decrese 인데 여기는 오니?");
+
         Integer ingredientCapacity = ingredientRepository.findIngredientCapacityByIngredientId(ingredientId);
+
         System.out.println("ingredientId : " + ingredientId);
         System.out.println("ingredientCapacity : " + ingredientCapacity);
+        System.out.println("check Stock");
         //재고를 체크하는 로직
         for (StockEntity stock : stocks) {
+            System.out.println("start");
             if (requiredQuantity <= 0) {
                 break; // 필요한 재고를 모두 사용했으면 반복 종료
             }
@@ -168,12 +195,13 @@ public class StockService {
                         //사용량 = 기존사용량 + 필요량
                         stock.setUsed(stock.getUsed() + requiredQuantity);
                         stockRepository.save(stock);
+                        requiredQuantity = 0;
                     }
                     //필요량 > 현재남은 헌것 (새거 개봉해야됨)
                     else{
                         requiredQuantity -= unUsedStock;
                         stock.setUsed(stock.getUsed() + unUsedStock);
-                        if (stock.getStockId() == ingredientCapacity){
+                        if (Objects.equals(stock.getStockId(), ingredientCapacity)){
                             stock.setQuantity(stock.getQuantity()-1);
                             stock.setUsed(0);
                         }
@@ -184,7 +212,10 @@ public class StockService {
                     }
                 }
             }
+            System.out.println("end");
         }
+        System.out.println("checkout End");
+        System.out.println("탈출 못하나?");
         String name = ingredientRepository.findIngredientNameByIngredientId(ingredientId);
         //재고 부족
         if (requiredQuantity > 0) {
