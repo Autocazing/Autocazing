@@ -27,7 +27,7 @@ const Header = (props) => {
                                 Authorization: `Bearer ${token}`,
                             },
                             withCredentials: true,
-                            heartbeatTimeout: 1500000,
+                            heartbeatTimeout: 150000000,
                         },
                     );
 
