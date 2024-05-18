@@ -26,8 +26,8 @@ public interface IngredientRepository extends JpaRepository<IngredientEntity, In
 
 	IngredientEntity findIngredientByIngredientId(Integer ingredientId);
 
-	String findIngredientNameByIngredientId(Integer ingredientId);
-
+	@Query("SELECT i.ingredientName FROM IngredientEntity i WHERE i.ingredientId = :ingredientId")
+	String findIngredientNameByIngredientId(@Param("ingredientId") Integer ingredientId);
 	@Query("SELECT i.ingredientCapacity FROM IngredientEntity i WHERE i.ingredientId = :ingredientId")
 	Integer findIngredientCapacityByIngredientId(@Param("ingredientId") Integer ingredientId);
 

@@ -152,7 +152,8 @@ public class StockService {
     //주문 들어온 메뉴의 들어가는 재료를 재고에서 빼기.
     //뺀 후에 재고 체크를 통해 자동 발주 신청 까지.
     @Transactional
-    public void decreaseStock(Integer ingredientId, Integer requiredQuantity) {
+    public void decreaseStock(Integer ingredientId, Integer quantity) {
+        int requiredQuantity = quantity;
         List<StockEntity> stocks = stockRepository.findByIngredientIngredientIdOrderByExpirationDateAsc(ingredientId);
         if (stocks.isEmpty()) {
             throw new RuntimeException("No stock found for ingredient ID: " + ingredientId);
@@ -194,6 +195,7 @@ public class StockService {
                         //사용량 = 기존사용량 + 필요량
                         stock.setUsed(stock.getUsed() + requiredQuantity);
                         stockRepository.save(stock);
+                        requiredQuantity = 0;
                     }
                     //필요량 > 현재남은 헌것 (새거 개봉해야됨)
                     else{
