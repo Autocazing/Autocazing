@@ -13,5 +13,6 @@ public class RestockOrderCreateEntity {
 
     private Integer restockOrderId;
     private List<KafkaRestockOrderSpecific> restockOrderSpecifics;
+    private String status;
 
 }
