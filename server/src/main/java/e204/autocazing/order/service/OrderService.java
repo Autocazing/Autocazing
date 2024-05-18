@@ -142,7 +142,8 @@ public class OrderService {
                 addSpecificRequest.setIngredientQuantity(ingredient.getOrderCount());
 
                 kafkaProducerCluster.sendIngredientWarnMessage("ingredient_warn", loginId, new IngredientWarnEntity("INGREDIENT_WARN", new IngredientWarnInfoEntity(restockOrderEntity.getRestockOrderId(), ingredient.getIngredientId(), ingredient.getOrderCount())));
-//                restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
+                // 프론트한테 이 알림 받으면 /api/restocks/specifics로 요청 보내는데, type을 auto로 줘라고 하기
+                restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
 //                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
             }
         });
