@@ -17,7 +17,8 @@ const LoginPage = () => {
             { loginId: Id, password: Pw },
             (res) => {
                 if (res) {
-                    // console.log(res.headers.token);
+                    console.log(res);
+                    console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
                     localStorage.setItem("userId", Id);
                     navigate("/dashboard"); // 메인페이지 이동
@@ -75,9 +76,9 @@ const LoginPage = () => {
                             </p>
                         </div>
                         <div className="mt-8 text-center">
-                            <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
+                            {/* <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
                                 문의하기
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div
