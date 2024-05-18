@@ -192,46 +192,26 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
     }, [dayData, weekData, monthData, selectedButton]);
 
     const handleButtonClick = (button) => {
-        setSelectedButton(button);
         setHeadContent(button);
-
-        let categories = [];
-        if (button === "day") {
-            categories = [
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-            ];
-        } else if (button === "week") {
-            categories = ["Week 1", "Week 2", "Week 3", "Week 4"];
-        } else if (button === "month") {
-            categories = [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-            ];
-        }
-
-        options.xaxis.categories = categories;
+        setSelectedButton(button);
     };
+    const getFormattedDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}.${month}.${day}`;
+    };
+
+    const getLastWeekDate = () => {
+        const today = new Date();
+        const sixDaysAgo = new Date(today);
+        sixDaysAgo.setDate(today.getDate() - 6); // 6일 전 날짜 설정
+        return getFormattedDate(sixDaysAgo);
+    };
+
+    const dayst = getLastWeekDate();
+    const dayed = getFormattedDate(new Date());
 
     return (
         <div
@@ -239,15 +219,15 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
             style={{ height: "40rem" }}
         >
             {headContent === "day" ? (
-                <div className="mt-8 text-center font-bold text-lg">
-                    2024.01.01 ~ 2024.01.01 (day, 수정예정)
+                <div className="mt-2 text-center font-bold text-lg">
+                    {dayst} ~ {dayed}
                 </div>
             ) : headContent === "week" ? (
-                <div className="mt-8 text-center font-bold text-lg">
+                <div className="mt-2 text-center font-bold text-lg">
                     2024.01.01 ~ 2024.01.01 (week, 수정예정)
                 </div>
             ) : headContent === "month" ? (
-                <div className="mt-8 text-center font-bold text-lg">
+                <div className="mt-2 text-center font-bold text-lg">
                     2024.01.01 ~ 2024.01.01 (month, 수정예정)
                 </div>
             ) : null}
