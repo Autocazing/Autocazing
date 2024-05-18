@@ -11,6 +11,7 @@ const Header = (props) => {
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
+    const storeName = localStorage.getItem("userId");
 
     const queryClient = useQueryClient();
 
@@ -27,7 +28,7 @@ const Header = (props) => {
                                 Authorization: `Bearer ${token}`,
                             },
                             withCredentials: true,
-                            heartbeatTimeout: 1500000,
+                            heartbeatTimeout: 150000000,
                         },
                     );
 
@@ -117,7 +118,10 @@ const Header = (props) => {
                         action="https://formbold.com/s/unique_form_id"
                         method="POST"
                     >
-                        <div className="relative">오토카징</div>
+                        <div className="font-bold relative">
+                            지점명: {storeName} (아이디를 지점명으로 설정하면
+                            어떨까요?)
+                        </div>
                     </form>
                 </div>
 
