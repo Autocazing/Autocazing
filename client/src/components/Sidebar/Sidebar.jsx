@@ -335,6 +335,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </li>
                                                     <li>
                                                         <NavLink
+                                                            to="/order/completeOrder"
+                                                            className={({
+                                                                isActive,
+                                                            }) =>
+                                                                "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white " +
+                                                                (isActive &&
+                                                                    "!text-white")
+                                                            }
+                                                        >
+                                                            완료된 발주
+                                                        </NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink
                                                             to="/order/orderList"
                                                             className={({
                                                                 isActive,

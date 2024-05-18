@@ -18,6 +18,7 @@ import Pos from "./pages/pos/Pos";
 
 import DefaultLayout from "./layout/DefaultLayout";
 import PrivateRoute from "./PrivateRoute";
+import CompleteOrder from "./pages/order/CompleteOrder";
 
 function App() {
     return (
@@ -42,6 +43,10 @@ function App() {
                             <Route
                                 path="progressOrder"
                                 element={<ProgressOrder />}
+                            ></Route>
+                            <Route
+                                path="completeOrder"
+                                element={<CompleteOrder />}
                             ></Route>
                         </Route>
                         <Route path="/cafeReport" element={<CafeReport />} />

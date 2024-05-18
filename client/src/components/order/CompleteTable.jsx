@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 
-const ProgressOrderTable = ({ Ordered }) => {
-    const [ProgressOrder, setProgressOrder] = useState([]);
+const CompleteTable = ({ complete }) => {
+    const [CompleteOrder, setCompleteOrder] = useState([]);
     // name: "우유(1L)",
     // amount: 10,
     // price: "20000",
@@ -21,16 +22,17 @@ const ProgressOrderTable = ({ Ordered }) => {
     };
 
     useEffect(() => {
-        if (Ordered !== undefined) {
-            if (Ordered.length > 0) {
-                setProgressOrder(Ordered);
+        if (complete !== undefined) {
+            if (complete.length > 0) {
+                setCompleteOrder(complete);
             }
         }
     });
+
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-                Progress Order List
+                Complete Order List
             </h4>
 
             <div className="flex flex-col">
@@ -72,12 +74,12 @@ const ProgressOrderTable = ({ Ordered }) => {
                     </div>
                 </div>
 
-                {ProgressOrder.map((order, orderIndex) => (
+                {CompleteOrder.map((order, orderIndex) => (
                     <div key={orderIndex}>
                         {order.specifics.map((specific, specificIndex) => (
                             <div
                                 className={`grid grid-cols-3 sm:grid-cols-7 ${
-                                    orderIndex === ProgressOrder.length - 1 &&
+                                    orderIndex === CompleteOrder.length - 1 &&
                                     specificIndex === order.specifics.length - 1
                                         ? ""
                                         : "border-b border-stroke dark:border-strokedark"
@@ -107,14 +109,8 @@ const ProgressOrderTable = ({ Ordered }) => {
                                 <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                                     <p className="text-black dark:text-white">
                                         {specific.restockSpecificStatus ===
-                                        "ORDERED"
-                                            ? "배달전"
-                                            : specific.restockSpecificStatus ===
-                                              "ON_DELIVERY"
-                                            ? "배달중"
-                                            : specific.restockSpecificStatus ===
-                                              "ARRIVED"
-                                            ? "배달완료"
+                                        "COMPLETE"
+                                            ? "발주완료"
                                             : specific.restockSpecificStatus}
                                     </p>
                                 </div>
@@ -147,4 +143,4 @@ const ProgressOrderTable = ({ Ordered }) => {
     );
 };
 
-export default ProgressOrderTable;
+export default CompleteTable;
