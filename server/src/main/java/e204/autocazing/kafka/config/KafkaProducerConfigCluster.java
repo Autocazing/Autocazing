@@ -15,7 +15,6 @@ import java.util.Map;
 
 import e204.autocazing.kafka.entity.ProducerEntity;
 import e204.autocazing.kafka.entity.IngredientWarnEntity;
-import e204.autocazing.kafka.entity.SalesRefreshEntity;
 
 @Configuration
 public class KafkaProducerConfigCluster {
@@ -43,22 +42,12 @@ public class KafkaProducerConfigCluster {
 	}
 
 	@Bean
-	public ProducerFactory<String, SalesRefreshEntity> salesRefreshProducerFactory() {
+	public ProducerFactory<String, ProducerEntity> producerRefreshProducerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
 	}
 
 	@Bean
-	public KafkaTemplate<String, SalesRefreshEntity> salesRefreshKafkaTemplate() {
-		return new KafkaTemplate<>(salesRefreshProducerFactory());
-	}
-
-	@Bean
-	public ProducerFactory<String, ProducerEntity> deliveryRefreshProducerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
-	}
-
-	@Bean
-	public KafkaTemplate<String, ProducerEntity> deliveryRefreshKafkaTemplate() {
-		return new KafkaTemplate<>(deliveryRefreshProducerFactory());
+	public KafkaTemplate<String, ProducerEntity> producerRefreshKafkaTemplate() {
+		return new KafkaTemplate<>(producerRefreshProducerFactory());
 	}
 }
