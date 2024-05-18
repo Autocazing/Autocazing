@@ -1,6 +1,41 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { PiMoonStarsDuotone } from "react-icons/pi";
 // 테스트
+
+const getDayOfWeek = (calday) => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const date = new Date(calday);
+    const week = date.getDay();
+    return days[week];
+};
+
+const getKoreanDateString = (date) => {
+    return date
+        .toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+        .replace(/. /g, "-")
+        .replace(".", "");
+};
+
+const LastWeekDays = () => {
+    const labels = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+        const pastDate = new Date(today);
+        pastDate.setDate(today.getDate() - i);
+        const dateString = getKoreanDateString(pastDate);
+        const dayOfWeek = getDayOfWeek(dateString);
+        labels.push(dayOfWeek);
+    }
+
+    return labels;
+};
+
 const options = {
     legend: {
         show: false,
@@ -81,7 +116,7 @@ const options = {
     },
     xaxis: {
         type: "category",
-        categories: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
+        categories: LastWeekDays(),
         axisBorder: {
             show: false,
         },
@@ -119,7 +154,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     });
 
     useEffect(() => {
-        console.log(thisWeekSold);
+        // console.log(thisWeekSold);
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
 
         if (thisWeekSold.length > 0) {
@@ -147,7 +182,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     }, [thisWeekSold]);
 
     useEffect(() => {
-        console.log(thisMonthAvgSold);
+        // console.log(thisMonthAvgSold);
         const length = Object.keys(thisMonthAvgSold).length;
         if (length > 0) {
             // Update Product Two data with thisMonthAvgSold

@@ -95,7 +95,7 @@ const Dashboard = () => {
                 }
             }
             setThisWeekSold(thisWeekData);
-            console.log(thisWeekData);
+            // console.log(thisWeekData);
             // console.log(thisWeekData);
         }
     }, [SalesDay]);
