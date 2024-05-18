@@ -1,5 +1,6 @@
 package e204.autocazing.kafka.config;
 
+import e204.autocazing.kafka.entity.solution.expiration.ExpirationEntity;
 import e204.autocazing.kafka.entity.solution.ingredient.IngredientCreateEntity;
 import e204.autocazing.kafka.entity.solution.menu.MenuCreateEntity;
 import e204.autocazing.kafka.entity.solution.order.OrderCreateEntity;
@@ -95,6 +96,16 @@ public class KafkaProducerConfigCluster {
 	@Bean
 	public KafkaTemplate<String, RestockOrderCreateEntity> restockOrderCreateKafkaTemplate() {
 		return new KafkaTemplate<>(restockOrderCreateProducerFactory());
+	}
+
+	@Bean
+	public ProducerFactory<String, ExpirationEntity> expirationProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, ExpirationEntity> expirationKafkaTemplate() {
+		return new KafkaTemplate<>(expirationProducerFactory());
 	}
 
 }
