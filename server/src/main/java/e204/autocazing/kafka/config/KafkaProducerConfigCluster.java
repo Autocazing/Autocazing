@@ -1,7 +1,7 @@
 package e204.autocazing.kafka.config;
 
-import e204.autocazing.kafka.entity.solution.IngredientCreateEntity;
-import e204.autocazing.kafka.entity.solution.MenuCreateEntity;
+import e204.autocazing.kafka.entity.solution.ingredient.IngredientCreateEntity;
+import e204.autocazing.kafka.entity.solution.menu.MenuCreateEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

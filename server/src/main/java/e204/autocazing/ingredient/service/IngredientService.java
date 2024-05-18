@@ -14,7 +14,7 @@ import e204.autocazing.ingredient.dto.PatchIngredientDto;
 import e204.autocazing.ingredient.dto.PostIngredientDto;
 import e204.autocazing.ingredient.dto.ScaleDto;
 import e204.autocazing.kafka.cluster.KafkaProducerCluster;
-import e204.autocazing.kafka.entity.solution.IngredientCreateEntity;
+import e204.autocazing.kafka.entity.solution.ingredient.IngredientCreateEntity;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
 import e204.autocazing.scale.service.IngredientScaleService;
 import jakarta.persistence.EntityNotFoundException;

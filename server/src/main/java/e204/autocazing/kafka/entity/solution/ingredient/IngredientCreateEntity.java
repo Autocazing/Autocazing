@@ -1,4 +1,4 @@
-package e204.autocazing.kafka.entity.solution;
+package e204.autocazing.kafka.entity.solution.ingredient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
