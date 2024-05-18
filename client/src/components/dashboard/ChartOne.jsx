@@ -135,9 +135,28 @@ const options = {
     },
 };
 
+const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
+};
+
+const getLastWeekDate = () => {
+    const today = new Date();
+    const sixDaysAgo = new Date(today);
+    sixDaysAgo.setDate(today.getDate() - 6); // 6일 전 날짜 설정
+    return getFormattedDate(sixDaysAgo);
+};
+
 const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
     const [maxSize, setMaxSize] = useState(0);
     // const [minSize, setMinSize] = useState(0);
+
+    const today = getFormattedDate(new Date());
+
+    const lastweek = getLastWeekDate();
 
     const [state, setState] = useState({
         series: [
@@ -158,7 +177,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
 
         if (thisWeekSold.length > 0) {
-            // console.log(thisWeekSold);
+            console.log(thisWeekSold);
             // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
             const productOneData = thisWeekSold.map((item) => item.totalSales);
 
@@ -221,9 +240,6 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                             <p className="font-semibold text-primary">
                                 최근 7일 매출 현황
                             </p>
-                            <p className="text-sm font-medium">
-                                12.04.2022 - 12.05.2022
-                            </p>
                         </div>
                     </div>
                     <div className="flex min-w-47.5">
@@ -233,9 +249,6 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                         <div className="w-full">
                             <p className="font-semibold text-secondary">
                                 최근 1달 요일별 매출
-                            </p>
-                            <p className="text-sm font-medium">
-                                12.04.2022 - 12.05.2022
                             </p>
                         </div>
                     </div>
@@ -254,6 +267,9 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                     </div>
                 </div> */}
             </div>
+            <p className="font-bold">
+                {lastweek} ~ {today}
+            </p>
 
             <div>
                 <div id="chartOne" className="-ml-5">
