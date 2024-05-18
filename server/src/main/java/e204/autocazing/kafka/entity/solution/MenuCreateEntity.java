@@ -16,6 +16,6 @@ public class MenuCreateEntity {
     private Integer menuPrice;
     private Boolean onEvent;
     private Integer discountRate;
-    private List<MenuIngredientEntity> menuIngredients;
+    private List<KafkaMenuIngredientEntity> menuIngredients;
 
 }

@@ -9,6 +9,9 @@ import e204.autocazing.db.repository.MenuIngredientRepository;
 import e204.autocazing.db.repository.MenuRepository;
 import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.solution.KafkaMenuIngredientEntity;
+import e204.autocazing.kafka.entity.solution.MenuCreateEntity;
 import e204.autocazing.menu.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +43,9 @@ public class MenuService {
     @Autowired
     private StoreRepository storeRepository;
 
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
+
     @Transactional
     public void createMenu(PostMenuDto postMenuDto,String loginId) {
         MenuEntity menu = new MenuEntity();
@@ -55,6 +60,8 @@ public class MenuService {
         menu.setStore(storeEntity);
         // 저장 후 ID를 얻기 위해 먼저 메뉴를 저장
         menu = menuRepository.save(menu);
+        // kafka 메시지 전송에 쓰일 객체 생성
+        MenuCreateEntity kafkaMenuCreateEntity = new MenuCreateEntity(menu.getMenuId(), menu.getMenuName(), menu.getMenuPrice(), menu.getOnEvent(), menu.getDiscountRate(), new ArrayList<>());
         // 메뉴와 재료의 관계 설정
         if (postMenuDto.getIngredients() != null) {
             for (MenuIngredientDto ingredientDto : postMenuDto.getIngredients()) {
@@ -64,9 +71,14 @@ public class MenuService {
                 menuIngredient.setMenu(menu);
                 menuIngredient.setIngredient(ingredient);
                 menuIngredient.setCapacity(ingredientDto.getCapacity());
-                menuIngredientRepository.save(menuIngredient);
+                MenuIngredientEntity menuIngredientEntity = menuIngredientRepository.save(menuIngredient);
+                // kafka 메시지 전송에 쓰일 객체 메뉴 재료 리스트에 재료 id, 용량 추가
+                kafkaMenuCreateEntity.getMenuIngredients().add(new KafkaMenuIngredientEntity(menuIngredientEntity.getIngredient().getIngredientId(), menuIngredientEntity.getIngredient().getIngredientCapacity()));
             }
         }
+
+        // kafka 메시지 발신
+        kafkaProducerCluster.sendMenuCreateMessage("menu", loginId, kafkaMenuCreateEntity);
     }
 
 
