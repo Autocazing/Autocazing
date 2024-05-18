@@ -15,7 +15,7 @@ const DashboardReport = () => {
         error,
     } = ReportdayGetApi(year, month, day);
 
-    // console.log(dayReportData);
+    console.log(dayReportData);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -97,7 +97,7 @@ const DashboardReport = () => {
                             <ExpirationList
                                 key={item.ingredient_id}
                                 item={item}
-                                reportId={dayReportData[0].report_id}
+                                solution={dayReportData[0].ingredient_solutions}
                             />
                         ))}
                     </div>

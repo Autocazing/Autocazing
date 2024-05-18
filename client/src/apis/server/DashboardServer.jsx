@@ -23,7 +23,6 @@ const GetSalesDay = () => {
 
 const GetSalesMonth = () => {
     const fetchGet = () => axiosInstance.get("/sales?type=month");
-
     return useQuery({
         queryKey: ["GetSalesMonth"],
         queryFn: fetchGet,

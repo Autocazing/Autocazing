@@ -1,19 +1,8 @@
-const SolutionTooltip = ({ item, SolutionData }) => {
-    if (SolutionData && SolutionData.detail) {
-        return (
-            <div>
-                <h4 className="text-title-sm mb-4 text-black">
-                    {item.ingredient_name}에 대한 솔루션
-                </h4>
-                <div className="text-center text-primary font-semibold">
-                    {SolutionData.detail} // 사용자에게 오류 메시지 표시
-                </div>
-            </div>
-        );
-    }
-
-    console.log(SolutionData);
-    const salesData = SolutionData?.optimal_sales;
+const SolutionTooltip = ({ item, solution }) => {
+    console.log(solution);
+    const filteredSolutions = solution.filter(
+        (sol) => sol.ingredient_id === item.ingredient_id,
+    );
 
     return (
         <div>
@@ -21,31 +10,38 @@ const SolutionTooltip = ({ item, SolutionData }) => {
                 {item.ingredient_name}에 대한 솔루션
             </h4>
             <div className="flex justify-center w-full">
-                <table className="text-center w-auto">
-                    <thead>
-                        <tr>
-                            <th className="px-2 py-1 text-primary font-semibold">
-                                메뉴명
-                            </th>
-                            <th className="px-2 py-1 text-primary font-semibold">
-                                잔 수
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {salesData &&
-                            Object.entries(salesData).map(([key, value]) => (
-                                <tr key={key}>
-                                    <td className="px-2 py-1 text-black">
-                                        {key}
-                                    </td>
-                                    <td className="px-2 py-1 text-black">
-                                        {value}
-                                    </td>
-                                </tr>
-                            ))}
-                    </tbody>
-                </table>
+                {filteredSolutions.length > 0 ? (
+                    <table className="text-center w-auto">
+                        <thead>
+                            <tr>
+                                <th className="px-2 py-1 text-primary font-semibold">
+                                    메뉴명
+                                </th>
+                                <th className="px-2 py-1 text-primary font-semibold">
+                                    잔 수
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredSolutions.map(
+                                ({ menu_name, sale_quantity }) => (
+                                    <tr key={menu_name}>
+                                        <td className="px-2 py-1 text-black">
+                                            {menu_name}
+                                        </td>
+                                        <td className="px-2 py-1 text-black">
+                                            {sale_quantity}
+                                        </td>
+                                    </tr>
+                                ),
+                            )}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div className="text-center">
+                        해당 재료에 대한 솔루션이 없습니다.
+                    </div>
+                )}
             </div>
         </div>
     );
