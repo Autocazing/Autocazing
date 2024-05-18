@@ -10,6 +10,8 @@ const ProgressOrderTable = ({ Ordered }) => {
     // orderdate: "2024.04.26",
     // arrivedate: "2024.05.01",
 
+    console.log(Ordered);
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -132,7 +134,8 @@ const ProgressOrderTable = ({ Ordered }) => {
 
                                 <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {order.arrivedate} {/* 도착예정일 */}
+                                        {formatDate(specific.arrivedAt)}{" "}
+                                        {/* 도착예정일 */}
                                     </p>
                                 </div>
                             </div>
