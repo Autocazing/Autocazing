@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IngredientWarnEntity {
 	private String type;
-	private IngredientWarnInfoEntity ingredientWarnInfoEntity;
+	private IngredientWarnInfoEntity ingredientWarnInfo;
 
 }

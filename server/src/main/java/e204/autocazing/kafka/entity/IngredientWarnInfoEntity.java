@@ -11,6 +11,6 @@ public class IngredientWarnInfoEntity {
 
     private Integer restockOrderId;
     private Integer ingredientId;
-    private Integer ingredientQuantity;
+    private Integer orderCount;
 
 }
