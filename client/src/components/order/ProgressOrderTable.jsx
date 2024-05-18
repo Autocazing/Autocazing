@@ -10,6 +10,14 @@ const ProgressOrderTable = ({ Ordered }) => {
     // orderdate: "2024.04.26",
     // arrivedate: "2024.05.01",
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}.${month}.${day}`;
+    };
+
     useEffect(() => {
         if (Ordered !== undefined) {
             if (Ordered.length > 0) {
@@ -117,7 +125,8 @@ const ProgressOrderTable = ({ Ordered }) => {
 
                                 <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                                     <p className="text-black dark:text-white">
-                                        {specific.updatedAt} {/* 발주일자 */}
+                                        {formatDate(specific.updatedAt)}{" "}
+                                        {/* 발주일자 */}
                                     </p>
                                 </div>
 
