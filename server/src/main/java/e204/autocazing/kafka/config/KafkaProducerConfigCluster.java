@@ -3,6 +3,7 @@ package e204.autocazing.kafka.config;
 import e204.autocazing.kafka.entity.solution.ingredient.IngredientCreateEntity;
 import e204.autocazing.kafka.entity.solution.menu.MenuCreateEntity;
 import e204.autocazing.kafka.entity.solution.order.OrderCreateEntity;
+import e204.autocazing.kafka.entity.solution.restock.RestockOrderCreateEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,6 +85,16 @@ public class KafkaProducerConfigCluster {
 	@Bean
 	public KafkaTemplate<String, OrderCreateEntity> orderCreateKafkaTemplate() {
 		return new KafkaTemplate<>(orderCreateProducerFactory());
+	}
+
+	@Bean
+	public ProducerFactory<String, RestockOrderCreateEntity> restockOrderCreateProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, RestockOrderCreateEntity> restockOrderCreateKafkaTemplate() {
+		return new KafkaTemplate<>(restockOrderCreateProducerFactory());
 	}
 
 }
