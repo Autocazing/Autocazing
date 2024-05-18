@@ -1,5 +1,6 @@
 package e204.autocazing.stock.controller;
 
+import e204.autocazing.stock.dto.NearExpiredDto;
 import e204.autocazing.stock.dto.PostStockDto;
 import e204.autocazing.stock.dto.StockDetailsDto;
 import e204.autocazing.stock.dto.UpdateStockDto;
@@ -13,11 +14,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -111,5 +114,13 @@ public class StockController {
         return ResponseEntity.ok().build();
     }
 
+    //유통기한 임박상품 조회
+
+
+    @GetMapping("/schedule")
+    public ResponseEntity<HashMap<String,List<NearExpiredDto>>> test(){
+        HashMap<String,List<NearExpiredDto>> list = stockService.checkAndOrderNearExpiryProducts();
+        return ResponseEntity.ok(list);
+    }
 
 }
