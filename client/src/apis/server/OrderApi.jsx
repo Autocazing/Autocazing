@@ -25,7 +25,7 @@ const GetComplete = () => {
     const fetchGet = () => axiosInstance.get("/restocks?status=COMPLETE");
 
     return useQuery({
-        queryKey: ["GetBasket"],
+        queryKey: ["GetComplete"],
         queryFn: fetchGet,
         select: (data) => data.data,
     });
@@ -97,4 +97,11 @@ const PutStatus = (specificsId) => {
     return mutation;
 };
 
-export { GetOredered, GetBasket, PutRestock, DelRestock, PutStatus };
+export {
+    GetOredered,
+    GetBasket,
+    GetComplete,
+    PutRestock,
+    DelRestock,
+    PutStatus,
+};
