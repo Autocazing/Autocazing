@@ -155,9 +155,15 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </button>
             </div>
-            <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                재고추가
-            </h1>
+            {Object.keys(initialValue).length === 0 ? (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재고 추가
+                </h1>
+            ) : (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재고 수정
+                </h1>
+            )}
             <div className="p-6.5">
                 {Array.isArray(stockPostData) &&
                 stockPostData.some((item) => item.quantity > 0) ? (
