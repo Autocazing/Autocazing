@@ -8,7 +8,6 @@ import e204.autocazing.db.repository.IngredientRepository;
 import e204.autocazing.db.repository.RestockOrderSpecificRepository;
 import e204.autocazing.db.repository.StockRepository;
 import e204.autocazing.db.repository.StoreRepository;
-import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.kafka.cluster.KafkaProducerCluster;

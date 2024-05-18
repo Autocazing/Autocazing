@@ -3,6 +3,7 @@ package e204.autocazing.scale.service;
 import e204.autocazing.db.entity.IngredientScaleEntity;
 import e204.autocazing.db.repository.IngredientScaleRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.exception.InvalidUnitException;
 import e204.autocazing.scale.dto.IngredientScaleDto;
 import e204.autocazing.scale.dto.PatchIngredientScaleDto;
 import e204.autocazing.scale.dto.PostIngredientScaleDto;
@@ -27,6 +28,13 @@ public class IngredientScaleService {
 
         // DB에서 해당 Unit이 있는지 확인
         IngredientScaleEntity existingScale = ingredientScaleRepository.findByUnitAndStoreId(postScaleDto.getUnit(), storeId);
+
+        // 유효한 Unit 값인지 확인
+        String unit = postScaleDto.getUnit().toLowerCase();
+        if ("l".equals(unit) || "kg".equals(unit)) {
+            throw new InvalidUnitException("Invalid unit value: " + postScaleDto.getUnit());
+        }
+
 
         // 해당 Unit이 없으면 새로운 Entity 생성 및 저장
         if (existingScale == null) {

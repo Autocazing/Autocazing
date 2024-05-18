@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(InvalidUnitException.class)
+    public ResponseEntity<String> handleInvalidUnitException(InvalidUnitException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
 
 
