@@ -1,6 +1,6 @@
-package com.e204.autocazing_alert.alert.db;
+package com.e204.autocazing_alert.db.entity;
 
-
+import com.e204.autocazing_alert.kafka.entity.IngredientWarnEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +14,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "alerts")
 public class AlertEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer alertId;
-
     @Column(nullable = false)
     private String content;
+    @Column(nullable = false)
+    private String loginId;
     @Column(nullable = false)
     private Boolean completed;
     @CreationTimestamp
@@ -30,3 +32,4 @@ public class AlertEntity {
 
 
 }
+

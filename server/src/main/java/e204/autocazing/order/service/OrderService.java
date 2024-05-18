@@ -3,6 +3,12 @@ package e204.autocazing.order.service;
 import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.alert.IngredientWarnEntity;
+import e204.autocazing.kafka.entity.alert.IngredientWarnInfoEntity;
+import e204.autocazing.kafka.entity.ProducerEntity;
+import e204.autocazing.kafka.entity.solution.order.KafkaOrderSpecific;
+import e204.autocazing.kafka.entity.solution.order.OrderCreateEntity;
 import e204.autocazing.order.dto.*;
 import e204.autocazing.restock.dto.AddSpecificRequest;
 import e204.autocazing.restock.service.RestockOrderService;
@@ -39,6 +45,8 @@ public class OrderService {
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
+    @Autowired
     private MenuIngredientRepository menuIngredientRepository;
 
     public List<OrderResponseDto> getAllOrders(String loginId) {
@@ -70,45 +78,49 @@ public class OrderService {
     }
 
 
-        @Transactional
-        public void addOrder(PostOrderDto postOrderDto, String loginId) {
+    @Transactional
+    public void addOrder(PostOrderDto postOrderDto, String loginId) {
 
-            OrderEntity order = new OrderEntity();
-            StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+        OrderEntity order = new OrderEntity();
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
 
-            order.setStore(storeEntity);
-            List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
-                    .map(detail -> {
-                        MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
-                        if (menu == null) {
-                            throw new IllegalStateException("Menu not found: " + detail.getMenuId());
-                        }
+        order.setStore(storeEntity);
+        OrderCreateEntity kafkaOrderCreateEntity = new OrderCreateEntity(1, new ArrayList<>());
+        List<OrderSpecific> orderSpecifics = postOrderDto.getOrderSpecifics().stream()
+                .map(detail -> {
+                    MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
+                    if (menu == null) {
+                        throw new IllegalStateException("Menu not found: " + detail.getMenuId());
+                    }
 
-                        //menu가 할인된 상품이면 할인 가격 적용
-                        Integer price = 0;
-                        if (menu.getOnEvent() != null && menu.getOnEvent()) {
-                            price = (int) (menu.getMenuPrice() * (1 - (menu.getDiscountRate() / 100.0)));
-                        } else {
-                            price = menu.getMenuPrice();
-                        }
+                    //menu가 할인된 상품이면 할인 가격 적용
+                    Integer price = 0;
+                    if (menu.getOnEvent() != null && menu.getOnEvent()) {
+                        price = (int) (menu.getMenuPrice() * (1 - (menu.getDiscountRate() / 100.0)));
+                    } else {
+                        price = menu.getMenuPrice();
+                    }
+                    // kafka order entity에 order specific 저장
+                    kafkaOrderCreateEntity.getOrderSpecifics().add(new KafkaOrderSpecific(menu.getMenuId(), menu.getMenuName(), detail.getMenuQuantity(), menu.getMenuPrice()));
+                    return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
+                })
+                .toList();
+        order.setOrderSpecific(orderSpecifics);
 
-                        return new OrderSpecific(detail.getMenuId(), detail.getMenuQuantity(), price);
-                    })
-                    .toList();
-            order.setOrderSpecific(orderSpecifics);
-            System.out.println("여까지는 되냐?");
-            // 재료와 재고 처리 로직
-            postOrderDto.getOrderSpecifics().forEach(detail -> {
-                MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
-                menu.getMenuIngredients().forEach(menuIngredient -> {
-                    stockService.decreaseStock(menuIngredient.getIngredient().getIngredientId(), menuIngredient.getCapacity() * detail.getMenuQuantity());
-                });
+        // 재료와 재고 처리 로직
+        postOrderDto.getOrderSpecifics().forEach(detail -> {
+            MenuEntity menu = menuRepository.findByMenuId(detail.getMenuId());
+            menu.getMenuIngredients().forEach(menuIngredient -> {
+                stockService.decreaseStock(menuIngredient.getIngredient().getIngredientId(), menuIngredient.getCapacity() * detail.getMenuQuantity());
             });
+        });
 
-            System.out.println();
-            orderRepository.save(order);
+        kafkaOrderCreateEntity.setOrderId(orderRepository.save(order).getOrderId());    // kafka message에 orderId 설정
 
+        // kafka message 발신
+        kafkaProducerCluster.sendProducerMessage("sales_refresh", loginId, new ProducerEntity("SALES", "Refresh sales"));
+        kafkaProducerCluster.sendOrderCreateMessage("order", loginId, kafkaOrderCreateEntity);
     }
 
 
@@ -144,6 +156,9 @@ public class OrderService {
 //                addSpecificRequest.setRestockOrderId(restockOrderEntity.getRestockOrderId());
                 addSpecificRequest.setIngredientId(ingredient.getIngredientId());
                 addSpecificRequest.setIngredientQuantity(ingredient.getOrderCount());
+
+                kafkaProducerCluster.sendIngredientWarnMessage("ingredient_warn", loginId, new IngredientWarnEntity("INGREDIENT_WARN", new IngredientWarnInfoEntity(restockOrderEntity.getRestockOrderId(), ingredient.getIngredientId(), ingredient.getOrderCount())));
+                // 프론트한테 이 알림 받으면 /api/restocks/specifics로 요청 보내는데, type을 auto로 줘라고 하기
                 restockOrderService.addSpecific("auto",addSpecificRequest,loginId);
 //                restockOrderService.addRestockOrderSpecific(ingredient, ingredient.getOrderCount());
             }

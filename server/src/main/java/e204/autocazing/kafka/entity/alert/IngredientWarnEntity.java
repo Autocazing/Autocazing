@@ -1,4 +1,4 @@
-package e204.autocazing.kafka.entity;
+package e204.autocazing.kafka.entity.alert;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IngredientWarnEntity {
-	private Integer restockOrderId;
-	private Integer ingredientId;
-	private Integer ingredientQuantity;
+	private String type;
+	private IngredientWarnInfoEntity ingredientWarnInfo;
 
 }

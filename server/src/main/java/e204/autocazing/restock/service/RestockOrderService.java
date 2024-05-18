@@ -5,6 +5,10 @@ import e204.autocazing.db.entity.*;
 import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.IngredientAlreadyExistsException;
 import e204.autocazing.exception.ResourceNotFoundException;
+import e204.autocazing.kafka.cluster.KafkaProducerCluster;
+import e204.autocazing.kafka.entity.ProducerEntity;
+import e204.autocazing.kafka.entity.solution.restock.KafkaRestockOrderSpecific;
+import e204.autocazing.kafka.entity.solution.restock.RestockOrderCreateEntity;
 import e204.autocazing.restock.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +38,8 @@ public class RestockOrderService {
     private SmsUtil smsUtil;
     @Autowired
     private VenderRepository venderRepository;
+    @Autowired
+    private KafkaProducerCluster kafkaProducerCluster;
 
     // 장바구니생성
     @Transactional
@@ -243,6 +249,9 @@ public class RestockOrderService {
                     requestDtoList.add(requestDto);
                 }
                 smsUtil.sendOne(requestDtoList,restockOrderId,storeName);
+
+                // kafka 메시지 로직
+                sendKafkaRestockOrder(restockOrderEntity, loginId);
             }
         }
 
@@ -251,7 +260,19 @@ public class RestockOrderService {
         updatedRestockDto.setCreatedAt(restockOrderEntity.getCreatedAt());
         updatedRestockDto.setUpdatedAt(restockOrderEntity.getUpdatedAt());
         updatedRestockDto.setStatus(restockOrderEntity.getStatus());
+
+        // kafka 메시지 "delivery_refresh"에 발행
+        kafkaProducerCluster.sendProducerMessage("delivery_refresh", loginId, new ProducerEntity("DELIVERY", "Refresh delivery status"));
+
         return updatedRestockDto;
+    }
+
+    public void sendKafkaRestockOrder(RestockOrderEntity restockOrderEntity, String loginId) {
+        RestockOrderCreateEntity restockOrderCreateEntity = new RestockOrderCreateEntity(restockOrderEntity.getRestockOrderId(), new ArrayList<>(), restockOrderEntity.getStatus().toString());
+        for (RestockOrderSpecificEntity originRestockOrderSpecific : restockOrderEntity.getRestockOrderSpecific()) {
+            restockOrderCreateEntity.getRestockOrderSpecifics().add(new KafkaRestockOrderSpecific(originRestockOrderSpecific.getIngredientName(), originRestockOrderSpecific.getIngredientQuantity(), originRestockOrderSpecific.getIngredientPrice(), originRestockOrderSpecific.getStatus().toString()));
+        }
+        kafkaProducerCluster.sendRestockOrderCreateMessage("restock_order", loginId, restockOrderCreateEntity);
     }
 
     //발주완료 재고반영
