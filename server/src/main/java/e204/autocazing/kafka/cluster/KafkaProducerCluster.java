@@ -33,7 +33,7 @@ public class KafkaProducerCluster {
 		Message<T> kafkaMessage = MessageBuilder
 			.withPayload(message)
 			.setHeader(KafkaHeaders.TOPIC, topicName)
-			.setHeader(KafkaHeaders.RECEIVED_KEY, loginId)
+			.setHeader(KafkaHeaders.KEY, loginId)
 			.build();
 
 		CompletableFuture<SendResult<String, T>> future = kafkaTemplate.send(kafkaMessage);

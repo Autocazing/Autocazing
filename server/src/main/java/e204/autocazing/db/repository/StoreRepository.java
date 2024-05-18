@@ -16,5 +16,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity,Integer> {
 	@Query("SELECT s FROM StoreEntity s WHERE s.loginId = :loginId")
 	Optional<StoreEntity> findByLoginId(String loginId);
 
-	String findLoginIdByStoreId(Integer storeID);	// kafka 메시지 발신 때문에 어쩔 수 없이 만듬 ㅜ
+	@Query("SELECT s.loginId FROM StoreEntity s WHERE s.StoreId = :storeId")
+	String findLoginIdByStoreId(Integer storeId);	// kafka 메시지 발신 때문에 어쩔 수 없이 만듬 ㅜ
 }
