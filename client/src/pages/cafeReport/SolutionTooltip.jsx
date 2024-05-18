@@ -1,4 +1,18 @@
 const SolutionTooltip = ({ item, SolutionData }) => {
+    if (SolutionData && SolutionData.detail) {
+        return (
+            <div>
+                <h4 className="text-title-sm mb-4 text-black">
+                    {item.ingredient_name}에 대한 솔루션
+                </h4>
+                <div className="text-center text-primary font-semibold">
+                    {SolutionData.detail} // 사용자에게 오류 메시지 표시
+                </div>
+            </div>
+        );
+    }
+
+    console.log(SolutionData);
     const salesData = SolutionData?.optimal_sales;
 
     return (
