@@ -24,12 +24,14 @@ const ReportMonthGetApi = (year, month) => {
     });
 };
 
-const SolutionGetApi = (ingredient_id) => {
+const SolutionGetApi = (report_id, ingredient_id) => {
     const fetchGet = () =>
-        axiosInstance.get(`/solution/ingredient-solution/${ingredient_id}`);
+        axiosInstance.get(
+            `/solution/${report_id}/ingredient-solution/${ingredient_id}`,
+        );
 
     return useQuery({
-        queryKey: ["GetSolution", ingredient_id],
+        queryKey: ["GetSolution", report_id, ingredient_id],
         queryFn: fetchGet,
         select: (data) => data.data,
     });
