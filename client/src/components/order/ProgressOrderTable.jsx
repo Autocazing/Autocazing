@@ -10,7 +10,7 @@ const ProgressOrderTable = ({ Ordered }) => {
     // orderdate: "2024.04.26",
     // arrivedate: "2024.05.01",
 
-    console.log(Ordered);
+    //console.log(Ordered);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);

@@ -21,6 +21,16 @@ const GetBasket = () => {
     });
 };
 
+const GetComplete = () => {
+    const fetchGet = () => axiosInstance.get("/restocks?status=COMPLETE");
+
+    return useQuery({
+        queryKey: ["GetBasket"],
+        queryFn: fetchGet,
+        select: (data) => data.data,
+    });
+};
+
 const PutRestock = (specificsId) => {
     const queryClient = useQueryClient();
 
