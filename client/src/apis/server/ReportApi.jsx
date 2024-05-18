@@ -9,6 +9,8 @@ const ReportdayGetApi = (year, month, day) => {
     return useQuery({
         queryKey: ["GetMonthReport", day],
         queryFn: fetchGet,
+        staleTime: 5 * 60 * 1000, // 5분 동안 새로고침 없음
+        cacheTime: 15 * 60 * 1000, // 15분 동안 캐시 유지
         select: (data) => data.data,
     });
 };
@@ -20,17 +22,23 @@ const ReportMonthGetApi = (year, month) => {
     return useQuery({
         queryKey: ["GetMonthReport", year, month],
         queryFn: fetchGet,
+        staleTime: 5 * 60 * 1000, // 5분 동안 새로고침 없음
+        cacheTime: 15 * 60 * 1000, // 15분 동안 캐시 유지
         select: (data) => data.data,
     });
 };
 
-const SolutionGetApi = (ingredient_id) => {
+const SolutionGetApi = (report_id, ingredient_id) => {
     const fetchGet = () =>
-        axiosInstance.get(`/solution/ingredient-solution/${ingredient_id}`);
+        axiosInstance.get(
+            `/solution/${report_id}/ingredient-solution/${ingredient_id}`,
+        );
 
     return useQuery({
-        queryKey: ["GetSolution", ingredient_id],
+        queryKey: ["GetSolution", report_id, ingredient_id],
         queryFn: fetchGet,
+        staleTime: 5 * 60 * 1000, // 5분 동안 새로고침 없음
+        cacheTime: 15 * 60 * 1000, // 15분 동안 캐시 유지
         select: (data) => data.data,
     });
 };
