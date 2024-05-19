@@ -33,21 +33,23 @@ const customStyles = {
     },
 };
 const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
-    const [stockPostData, setStockPostData] = useState([
-        {
-            quantity: initialValue.quantity || 0,
-            expirationDate: initialValue.expirationDate || "",
-            ingredientId: initialValue.ingredientId || 0,
-        },
-    ]);
+    const [stockPostData, setStockPostData] = useState({
+        onExcel: false,
+        postStockDtoList: [
+            {
+                quantity: 0,
+                expirationDate: "",
+                ingredientId: 0,
+            },
+        ],
+    });
 
     const [productNames, setProductNames] = useState({});
 
-    // useEffect(() => {
-    //     console.log(stockPostData);
-    // }, [stockPostData]);
-
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
+    useEffect(() => {
+        console.log(stockPostData);
+    }, [stockPostData]);
     const postStock = StockPostApi();
     const editStock = StockEditApi(initialValue.stockId);
 
@@ -64,23 +66,36 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
         const newValue = type === "number" ? parseInt(value, 10) || 0 : value;
+
         setStockPostData((prevState) => ({
             ...prevState,
-            [name]: newValue,
+            onExcel: false,
+            postStockDtoList: [
+                {
+                    ...prevState.postStockDtoList[0],
+                    [name]: newValue,
+                },
+            ],
         }));
-        // console.log(stockPostData);
     };
 
     const handleSelectChange = (e) => {
+        const newValue = parseInt(e.target.value, 10);
+
         setStockPostData((prevState) => ({
             ...prevState,
-            ingredientId: parseInt(e.target.value, 10),
+            onExcel: false,
+            postStockDtoList: [
+                {
+                    ...prevState.postStockDtoList[0],
+                    ingredientId: newValue,
+                },
+            ],
         }));
     };
 
-    const handleFileSelect = (e) => {
+    const handleFileSelect = async (e) => {
         const selectedFile = e.target.files[0];
-
         const workbook = new ExcelJS.Workbook();
         const reader = new FileReader();
 
@@ -88,48 +103,50 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
             const data = new Uint8Array(e.target.result);
             await workbook.xlsx.load(data);
 
-            const worksheet = workbook.getWorksheet(1);
+            const worksheet =
+                workbook.getWorksheet(1) || workbook.getWorksheet("Sheet1"); // 예: 워크시트 이름을 'Sheet1'로 가정
+            if (!worksheet) {
+                console.error("Worksheet not found.");
+                return;
+            }
+
             const newData = [];
-            const newProductNames = {};
 
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return; // 첫 번째 행을 건너뜀
-                const rowData = row.values.filter((value) => value != null);
-                const [name, period, volume] = rowData.slice(0, 3);
+                if (rowNumber === 1) return; // 첫 번째 행은 헤더로 건너뜁니다.
 
-                const expirationDate =
-                    period instanceof Date
-                        ? `${period.getFullYear()}-${(period.getMonth() + 1)
-                              .toString()
-                              .padStart(2, "0")}-${period
-                              .getDate()
-                              .toString()
-                              .padStart(2, "0")}`
-                        : period;
+                const name = row.getCell(1).text.trim();
+                const period = row.getCell(2).text.trim();
+                const volume = row.getCell(3).value;
+
+                let expirationDate = new Date(period)
+                    .toISOString()
+                    .split("T")[0];
 
                 const ingredientData = materialInfo.find(
                     (material) => material.ingredientName === name,
                 );
-                const ingredientId = ingredientData
-                    ? ingredientData.ingredientId
-                    : null;
-
-                if (ingredientId !== null) {
-                    newData.push({
-                        ingredientId,
-                        quantity: volume,
-                        expirationDate,
-                    });
-                    newProductNames[ingredientId] = name;
+                if (!ingredientData) {
+                    console.error(`No ingredient found for name: ${name}`);
+                    return;
                 }
+
+                newData.push({
+                    ingredientId: ingredientData.ingredientId,
+                    quantity: parseInt(volume, 10),
+                    expirationDate,
+                });
             });
 
-            setStockPostData(newData);
-            setProductNames(newProductNames);
+            setStockPostData({
+                onExcel: true,
+                postStockDtoList: newData,
+            });
         };
 
         reader.readAsArrayBuffer(selectedFile);
     };
+
     return (
         <Modal
             isOpen={isOpen}
