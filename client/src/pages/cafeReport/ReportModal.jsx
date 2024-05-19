@@ -70,7 +70,7 @@ const ReportModal = ({ isOpen, onClose, data }) => {
                             예상 매출액
                         </div>
                         <div className="text-title-xsm">
-                            AI 할용해 매출액을 예상 합니다.
+                            AI 활용해 매출액을 예상 합니다.
                         </div>
                         <div className="flex flex-row justify-center gap-10 mt-3">
                             <div className="text-center">
