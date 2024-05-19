@@ -16,7 +16,7 @@ const customStyles = {
     },
     content: {
         width: "30rem",
-        height: "65%",
+        height: "45%",
         zIndex: "150",
         position: "absolute",
         top: "50%",
@@ -92,11 +92,9 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
                         value={stockPutData.ingredientId}
                         name="ingredientId"
                         onChange={handleChange}
+                        disabled={true}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option value="">
-                            재고 추가할 품목을 선택해주세요
-                        </option>
                         {materialInfo &&
                             materialInfo.map((material) => (
                                 <option
