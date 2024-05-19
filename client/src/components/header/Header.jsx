@@ -1,6 +1,6 @@
 import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { GetAlarmList } from "../../apis/server/Alarm";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ const Header = (props) => {
     const [orderName, setOrderName] = useState(); // 발주 데이터
 
     const token = localStorage.getItem("accessToken");
+
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
@@ -76,7 +77,7 @@ const Header = (props) => {
                 console.log("실시간 알람 통신 에러", err);
             }
         }
-    }, []);
+    }, [token]);
 
     if (posPage) {
         return <></>;
