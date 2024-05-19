@@ -9,7 +9,7 @@ import AlarmManagementModal from "./AlarmManagementModal";
 const Header = (props) => {
     // 알림 SSE 구현
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [orderData, setOrderData] = useState([]); // 발주 데이터
+    const [orderName, setOrderName] = useState(); // 발주 데이터
 
     const token = localStorage.getItem("accessToken");
     const [alarmlist, setAlarmlist] = useState([]);
@@ -43,17 +43,22 @@ const Header = (props) => {
                     );
 
                     eventSource.addEventListener("connect", (e) => {
-                        // console.log(e)
+                        console.log(e);
                         queryClient.invalidateQueries("Alarm");
                     });
 
                     eventSource.addEventListener("restock", (e) => {
                         console.log("restock", e);
+                        // console.log(
+                        //     "보낼 이름",
+                        //     e.ingredientWarnInfo.ingredientName,
+                        // );
+                        setOrderName(e.data.ingredientName);
                         setModalIsOpen(true);
                     });
 
                     eventSource.addEventListener("sales", (e) => {
-                        // console.log("sales 갱신", e);
+                        console.log("sales 갱신", e);
                         queryClient.invalidateQueries("GetSales");
                         queryClient.invalidateQueries("GetSalesDay");
                         queryClient.invalidateQueries("GetSalesMonth");
@@ -61,7 +66,7 @@ const Header = (props) => {
                     });
 
                     eventSource.addEventListener("delivering", (e) => {
-                        //console.log("delivery 갱신", e);
+                        console.log("delivery 갱신", e);
                     });
                 };
 
@@ -158,6 +163,7 @@ const Header = (props) => {
                 <AlarmManagementModal
                     isOpen={modalIsOpen}
                     onClose={() => setModalIsOpen(false)}
+                    orderName={orderName}
                 />
             )}
         </header>

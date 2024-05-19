@@ -19,8 +19,8 @@ const customStyles = {
         height: "24%",
         zIndex: "150",
         position: "absolute",
-        top: "50%",
-        left: "50%",
+        top: "90%",
+        left: "85%",
         transform: "translate(-50%, -50%)",
         borderRadius: "10px",
         boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.25)",
@@ -32,14 +32,13 @@ const customStyles = {
     },
 };
 
-const AlarmManagementModal = ({ isOpen, onClose }) => {
+const AlarmManagementModal = ({ isOpen, onClose, orderName }) => {
     const queryClient = useQueryClient();
     const [putNo, setPutNo] = useState(0);
 
     const handleOrder = () => {
         // 발주하는 코드
-
-        queryClient.invalidateQueries("GetBasket"); // 발주하고 장바구니 초기화
+        alert(`${orderName}이 장바구니에 추가되었습니다.`);
         onClose();
     };
 
@@ -69,7 +68,7 @@ const AlarmManagementModal = ({ isOpen, onClose }) => {
                 </button>
             </div>
             <div className="text-center text-xl text-black">
-                자동 발주를 진행하시겠습니까?
+                {orderName} 품목을 발주리스트에 추가하시겠습니까?
             </div>
             <div className="flex mt-5 space-x-4 justify-center">
                 <button

@@ -19,7 +19,7 @@ const CartListTable = ({ Basket }) => {
 
     useEffect(() => {
         if (Basket !== undefined) {
-            console.log(Basket[0].restockOrderId);
+            //console.log(Basket[0].restockOrderId);
             setPutNo(Basket[0].restockOrderId);
             setCartList(Basket[0].specifics);
         }
