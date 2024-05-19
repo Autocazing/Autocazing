@@ -183,7 +183,6 @@ function Pos() {
             }));
         console.log("Extracted Products:", extractedProducts);
         handleSubmit(extractedProducts);
-        MakeAlarm("sales");
     };
 
     useEffect(() => {

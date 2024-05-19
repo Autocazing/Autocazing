@@ -12,8 +12,15 @@ const Header = (props) => {
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
     const storeName = localStorage.getItem("userId");
-
     const queryClient = useQueryClient();
+
+    console.log(alarmInfo);
+
+    useEffect(() => {
+        if (alarmInfo) {
+            setAlarmlist(alarmInfo);
+        }
+    }, [alarmInfo]);
 
     useEffect(() => {
         if (token) {
@@ -33,18 +40,23 @@ const Header = (props) => {
                     );
 
                     eventSource.addEventListener("connect", (e) => {
-                        if (alarmInfo !== undefined) {
-                            setAlarmlist(alarmInfo);
-                        }
+                        // console.log(e)
                     });
 
                     eventSource.addEventListener("restock", (e) => {
-                        queryClient.invalidateQueries("Alarm");
-                        setAlarmlist(alarmInfo);
+                        console.log("restock", e);
                     });
 
                     eventSource.addEventListener("sales", (e) => {
                         console.log("sales 갱신", e);
+                        queryClient.invalidateQueries("GetSales");
+                        queryClient.invalidateQueries("GetSalesDay");
+                        queryClient.invalidateQueries("GetSalesMonth");
+                        queryClient.invalidateQueries("GetSalesMonthAvg");
+                    });
+
+                    eventSource.addEventListener("delivering", (e) => {
+                        console.log("delivery 갱신", e);
                     });
                 };
 
@@ -119,8 +131,7 @@ const Header = (props) => {
                         method="POST"
                     >
                         <div className="font-bold relative">
-                            지점명: {storeName} (아이디를 지점명으로 설정하면
-                            어떨까요?)
+                            지점명: SsataBucks
                         </div>
                     </form>
                 </div>
