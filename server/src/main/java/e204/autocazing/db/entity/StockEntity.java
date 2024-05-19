@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "stocks")
 public class StockEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +23,7 @@ public class StockEntity {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
-
-//    연관 관련
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ingredient_id", nullable = false)
-//    private IngredientEntity ingredient;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "vendor_id", nullable = false)
-//    private VendorEntity vendor;
+    @ManyToOne
+    @JoinColumn(name = "ingredient_id", nullable = false)
+    private IngredientEntity ingredient;
 }

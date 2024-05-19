@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "store")
+@Table(name = "stores")
 
 public class StoreEntity {
     //기본키
@@ -29,6 +29,7 @@ public class StoreEntity {
     //가게 이름
     @Column(nullable = false)
     private String storeName;
+
     //생성 시간
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

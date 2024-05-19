@@ -78,6 +78,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		response.addHeader("token", token);
 		response.addHeader("loginId", userDetails.getLoginId());
+
 	}
 
 	@Override

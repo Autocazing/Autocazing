@@ -9,8 +9,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.e204.autocazing_auth.filter.AuthenticationFilter;
 import com.e204.autocazing_auth.store.service.StoreService;
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
 	private final StoreService storeService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final Environment env;
@@ -32,9 +37,12 @@ public class SecurityConfig {
 
 		http
 			.csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
-			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입 api만 권한 없어도 접근 가능
-				.requestMatchers("/api/users/login").permitAll()
-				.requestMatchers("/api/users/register").permitAll()
+			.cors(AbstractHttpConfigurer::disable) // CORS 설정 적용
+			.authorizeHttpRequests(authorize -> authorize //로그인, 회원가입, swagger 권한 없어도 접근 가능
+				.requestMatchers("/api/users/login", "/api/users/register").permitAll()
+				.requestMatchers("/api/inventory-service/**","/api/inventory-service/**",
+					"/api/alert-service/**","/api/solution-service/**","/api/auth-server/**").permitAll()
+				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
 			.authenticationManager(authenticationManager)
@@ -45,8 +53,11 @@ public class SecurityConfig {
 					.frameOptions(
 						HeadersConfigurer.FrameOptionsConfig::sameOrigin
 					)
+			)
+			.sessionManagement((sessionManagement) ->
+				sessionManagement
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			);
-
 		return http.build();
 	}
 
@@ -60,4 +71,5 @@ public class SecurityConfig {
 	private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
 		return new AuthenticationFilter(authenticationManager, storeService, env);
 	}
+
 }

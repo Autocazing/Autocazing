@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "RestockOrderSpecifics")
 public class RestockOrderSpecificEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,18 @@ public class RestockOrderSpecificEntity {
     @Column(nullable = false)
     private Integer ingredientPrice;
 
-    //연관
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "restock_order_id")
-//    private RestockOrderEntity restockOrder;
+    @Column(nullable = false)
+    private String ingredientName;
+
+    @Column(nullable = false)
+    private Integer ingredientId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restock_order_id", nullable = false)
+    private RestockOrderEntity restockOrder;
+
+    //굳이 연관?
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id", nullable = false)
+    private IngredientEntity ingredient;
 }
