@@ -9,6 +9,7 @@ import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { GetMenu } from "../../apis/server/Pos";
 import { PostOrders } from "../../apis/server/Pos";
 import { MakeAlarm } from "../../apis/server/Alarm";
+import Swal from "sweetalert2";
 
 function Pos() {
     const [cart, setCart] = useState([]);
@@ -182,7 +183,26 @@ function Pos() {
                 quantity: item.quantity,
             }));
         console.log("Extracted Products:", extractedProducts);
-        handleSubmit(extractedProducts);
+
+        if (extractedProducts.length > 0) {
+            handleSubmit(extractedProducts); // 주문 데이터 서버로 전송
+            Swal.fire({
+                title: "주문 완료!",
+                text: "주문이 성공적으로 처리되었습니다.",
+                icon: "success",
+                iconColor: "#3C50E0", // 아이콘 색상 설정
+                confirmButtonText: "확인",
+                confirmButtonColor: "#3C50E0", // 버튼 색상 설정
+                buttonsStyling: true,
+            });
+        } else {
+            Swal.fire({
+                title: "주문 실패",
+                text: "주문할 상품을 선택해주세요.",
+                icon: "error",
+                confirmButtonText: "확인",
+            });
+        }
     };
 
     useEffect(() => {
