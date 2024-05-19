@@ -6,6 +6,8 @@ import {
     CompanyPostApi,
 } from "../../../apis/server/CompanyApi";
 
+import Swal from "sweetalert2";
+
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -60,13 +62,41 @@ const CompanyManagementModal = ({ isOpen, onClose, initialValue }) => {
     };
 
     const handleSubmit = (e) => {
-        postCompany.mutate(companyPostData);
-        onClose();
+        postCompany.mutate(companyPostData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "업체 추가 완료!",
+                    text: "업체 정보가 성공적으로 추가되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0",
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose(); // 모달 닫기
+                    }
+                });
+            },
+        });
     };
 
     const handleEdit = (e) => {
-        editCompany.mutate(companyPostData);
-        onClose();
+        editCompany.mutate(companyPostData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "업체 수정 완료!",
+                    text: "업체 정보가 성공적으로 수정되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0",
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose(); // 모달 닫기
+                    }
+                });
+            },
+        });
     };
     return (
         <Modal

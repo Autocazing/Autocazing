@@ -41,7 +41,7 @@ const DashboardReport = () => {
                         예상 매출액
                     </div>
                     <div className="text-title-xsm">
-                        AI 할용해 매출액을 예상 합니다.
+                        AI 활용해 매출액을 예상 합니다.
                     </div>
                     <div className="flex flex-row justify-center gap-10 mt-3">
                         <div className="text-center">
@@ -70,18 +70,24 @@ const DashboardReport = () => {
                     <div className="text-title-xsm mb-3">
                         배송중인 재료를 나타냅니다.
                     </div>
-                    <div className="flex flex-justify pl-5 text-center justify-center gap-4">
-                        {dayReportData[0].on_delivery_ingredients.map(
-                            (ingredient, index) => (
-                                <div
-                                    key={index}
-                                    className="text-primary text-title-sm font-semibold"
-                                >
-                                    {ingredient.ingredient_name}
-                                </div>
-                            ),
-                        )}
-                    </div>
+                    {dayReportData[0].on_delivery_ingredients.length > 0 ? (
+                        <div className="flex flex-justify pl-5 text-center justify-center gap-4">
+                            {dayReportData[0].on_delivery_ingredients.map(
+                                (ingredient, index) => (
+                                    <div
+                                        key={index}
+                                        className="text-primary text-title-sm font-semibold"
+                                    >
+                                        {ingredient.ingredient_name}
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex flex-justify my-8 pl-5 text-center justify-center gap-4">
+                            배송중인 재료가 없습니다.
+                        </div>
+                    )}
                 </div>
                 <div className="mb-4">
                     <div className="font-semibold text-black text-title-sm mb-0">
@@ -90,15 +96,26 @@ const DashboardReport = () => {
                     <div className="text-title-xsm mb-3">
                         유통기한 임박 재료에 대한 솔루션을 제공합니다.
                     </div>
-                    <div>
-                        {dayReportData[0].expiration_specifics.map((item) => (
-                            <ExpirationList
-                                key={item.ingredient_id}
-                                item={item}
-                                solution={dayReportData[0].ingredient_solutions}
-                            />
-                        ))}
-                    </div>
+                    {dayReportData[0].expiration_specifics.length > 0 ? (
+                        <div>
+                            {dayReportData[0].expiration_specifics.map(
+                                (item) => (
+                                    <ExpirationList
+                                        key={item.ingredient_id}
+                                        item={item}
+                                        solution={
+                                            dayReportData[0]
+                                                .ingredient_solutions
+                                        }
+                                    />
+                                ),
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex flex-justify pl-5 my-8 text-center justify-center gap-4">
+                            유통기한 임박 재료가 없습니다.
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

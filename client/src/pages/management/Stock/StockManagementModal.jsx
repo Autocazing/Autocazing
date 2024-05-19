@@ -4,7 +4,7 @@ import closeIcon from "../../../images/icon/close.svg";
 import ExcelJS from "exceljs";
 import { MaterialGetApi } from "../../../apis/server/MaterialApi";
 import { StockEditApi, StockPostApi } from "../../../apis/server/StockApi";
-
+import Swal from "sweetalert2";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -51,8 +51,30 @@ const StockManagementModal = ({ isOpen, onClose }) => {
     const postStock = StockPostApi();
 
     const handleSubmit = (e) => {
-        postStock.mutate(stockPostData);
-        onClose();
+        postStock.mutate(stockPostData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "재고 추가 완료!",
+                    text: "재고 정보가 성공적으로 추가되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0", // 아이콘 색상 설정
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0", // 버튼 색상 설정
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose(); // 모달 닫기
+                    }
+                });
+            },
+            onError: (error) => {
+                Swal.fire({
+                    title: "추가 실패",
+                    text: `재고 추가 중 오류 발생: ${error.message}`,
+                    icon: "error",
+                    confirmButtonText: "확인",
+                });
+            },
+        });
     };
 
     const handleInputChange = (e) => {
@@ -250,6 +272,7 @@ const StockManagementModal = ({ isOpen, onClose }) => {
                         name="quantity"
                         onChange={handleInputChange}
                         type="number"
+                        min={0}
                         placeholder="총량 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />

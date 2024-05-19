@@ -3,6 +3,7 @@ import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
 import { useEffect, useState } from "react";
 import { DelRestock, PutStatus } from "../../apis/server/OrderApi";
+import Swal from "sweetalert2";
 
 const CartListTable = ({ Basket }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -44,10 +45,24 @@ const CartListTable = ({ Basket }) => {
     };
 
     const Order = () => {
-        setCartList([]);
-        putStatus.mutate({
-            status: "ORDERED",
-        });
+        if (cartList.length > 0) {
+            putStatus.mutate(
+                { status: "ORDERED" },
+                {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: "발주 완료!",
+                            text: "발주가 성공적으로 처리되었습니다.",
+                            icon: "success",
+                            iconColor: "#3C50E0",
+                            confirmButtonText: "확인",
+                            confirmButtonColor: "#3C50E0",
+                        });
+                        setCartList([]); // Clear cart after order
+                    },
+                },
+            );
+        }
     };
 
     return (

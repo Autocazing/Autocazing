@@ -2,7 +2,7 @@ import modifyIcon from "../../../images/orderlist/modify.svg";
 import deleteIcon from "../../../images/orderlist/delete.svg";
 import checkbox from "../../../images/orderlist/checkbox.svg";
 import nocheck from "../../../images/orderlist/nocheck.svg";
-
+import Swal from "sweetalert2";
 import { useState } from "react";
 import { MenuDeleteApi } from "../../../apis/server/MenuApi";
 import MenuManagementModal from "./MenuManagementModal";
@@ -12,7 +12,38 @@ const MenuListInfo = ({ menu, isLastItem }) => {
     const deleteMenu = MenuDeleteApi(menu.menuId);
 
     const handleDelete = () => {
-        deleteMenu.mutate();
+        Swal.fire({
+            title: `"${menu.menuName}"를 삭제하시겠습니까?`,
+            text: "이 작업은 되돌릴 수 없습니다!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3C50E0",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "삭제",
+            cancelButtonText: "취소",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteMenu.mutate(null, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: "삭제 완료!",
+                            text: "메뉴가 성공적으로 삭제되었습니다.",
+                            icon: "success",
+                            confirmButtonColor: "#3C50E0", // 버튼 색상 설정
+                            iconColor: "#3C50E0", // 아이콘 색상 설정
+                        });
+                    },
+                    onError: () => {
+                        Swal.fire(
+                            "오류 발생!",
+                            "메뉴를 삭제하는 도중 오류가 발생했습니다.",
+                            "error",
+                        );
+                    },
+                });
+            }
+        });
     };
     //원화 포맷 함수 추가
     const formatPrice = (price) => {
