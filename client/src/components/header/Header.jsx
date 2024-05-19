@@ -4,17 +4,20 @@ import { useEffect, useState } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { GetAlarmList } from "../../apis/server/Alarm";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import AlarmManagementModal from "./AlarmManagementModal";
 
 const Header = (props) => {
     // 알림 SSE 구현
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [orderName, setOrderName] = useState(); // 발주 데이터
+
     const token = localStorage.getItem("accessToken");
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
-    const storeName = localStorage.getItem("userId");
     const queryClient = useQueryClient();
 
-    console.log(alarmInfo);
+    //console.log(alarmInfo);
 
     useEffect(() => {
         if (alarmInfo) {
@@ -40,11 +43,18 @@ const Header = (props) => {
                     );
 
                     eventSource.addEventListener("connect", (e) => {
-                        // console.log(e)
+                        console.log(e);
+                        queryClient.invalidateQueries("Alarm");
                     });
 
                     eventSource.addEventListener("restock", (e) => {
                         console.log("restock", e);
+                        // console.log(
+                        //     "보낼 이름",
+                        //     e.ingredientWarnInfo.ingredientName,
+                        // );
+                        setOrderName(e.data.ingredientName);
+                        setModalIsOpen(true);
                     });
 
                     eventSource.addEventListener("sales", (e) => {
@@ -148,6 +158,14 @@ const Header = (props) => {
                     {/* <!-- User Area --> */}
                 </div>
             </div>
+
+            {modalIsOpen && (
+                <AlarmManagementModal
+                    isOpen={modalIsOpen}
+                    onClose={() => setModalIsOpen(false)}
+                    orderName={orderName}
+                />
+            )}
         </header>
     );
 };

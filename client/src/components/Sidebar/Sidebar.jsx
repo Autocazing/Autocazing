@@ -63,7 +63,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             }`}
         >
             <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-                <div className="text-4xl text-fuchsia-50 ml-2">AutoCazing</div>
+                <NavLink
+                    to="/dashboard"
+                    className="text-4xl text-fuchsia-50 ml-2"
+                >
+                    AutoCazing
+                </NavLink>
             </div>
             <div className="no-scrollbar flex flex-col  duration-300 ease-linear -mt-8">
                 {/* <!-- Sidebar Menu --> */}
