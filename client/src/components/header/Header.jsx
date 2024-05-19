@@ -12,8 +12,15 @@ const Header = (props) => {
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
     const storeName = localStorage.getItem("userId");
-
     const queryClient = useQueryClient();
+
+    console.log(alarmInfo);
+
+    useEffect(() => {
+        if (alarmInfo) {
+            setAlarmlist(alarmInfo);
+        }
+    }, [alarmInfo]);
 
     useEffect(() => {
         if (token) {
@@ -33,9 +40,7 @@ const Header = (props) => {
                     );
 
                     eventSource.addEventListener("connect", (e) => {
-                        if (alarmInfo !== undefined) {
-                            setAlarmlist(alarmInfo);
-                        }
+                        // console.log(e)
                     });
 
                     eventSource.addEventListener("restock", (e) => {
