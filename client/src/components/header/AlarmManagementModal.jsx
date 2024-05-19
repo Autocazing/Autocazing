@@ -38,7 +38,7 @@ const AlarmManagementModal = ({ isOpen, onClose, orderName }) => {
 
     const handleOrder = () => {
         // 발주하는 코드
-        alert(`${orderName}이 장바구니에 추가되었습니다.`);
+        alert(`${orderName} 품목이 장바구니에 추가되었습니다.`);
         onClose();
     };
 
