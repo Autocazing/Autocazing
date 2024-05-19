@@ -114,7 +114,7 @@ public class StockService {
         List<StockDetailsDto> stockDetailsList = new ArrayList<>();
         log.info("재고 조회 전");
         for (StockEntity stock : stocks) {
-            int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
+            int deliveringCount = restockOrderService.isDelivering(stock.getIngredient(), loginId);
             log.info("재고 조회 deliveringCount");
             StockDetailsDto stockDetails = new StockDetailsDto();
             stockDetails.setStockId(stock.getStockId());
@@ -132,10 +132,10 @@ public class StockService {
     }
 
     // 재고 상세 조회
-    public StockDetailsDto findStockById(Integer stockId) {
+    public StockDetailsDto findStockById(Integer stockId, String loginId) {
         StockEntity stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new RuntimeException("Stock not found"));
-        int deliveringCount = restockOrderService.isDelivering(stock.getIngredient());
+        int deliveringCount = restockOrderService.isDelivering(stock.getIngredient(), loginId);
         System.out.println("@@StockService deliveringCount : " + deliveringCount);
         StockDetailsDto stockDetails = new StockDetailsDto();
         stockDetails.setStockId(stock.getStockId());

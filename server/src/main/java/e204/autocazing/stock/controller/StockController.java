@@ -71,8 +71,9 @@ public class StockController {
             )
     })
     @GetMapping("/{stockId}")
-    public ResponseEntity<StockDetailsDto> getStockById(@PathVariable(name = "stockId") Integer stockId) {
-        StockDetailsDto stock = stockService.findStockById(stockId);
+    public ResponseEntity<StockDetailsDto> getStockById(HttpServletRequest httpServletRequest,@PathVariable(name = "stockId") Integer stockId) {
+        String loginId= httpServletRequest.getHeader("loginId");
+        StockDetailsDto stock = stockService.findStockById(stockId,loginId);
         return ResponseEntity.ok(stock);
     }
 
