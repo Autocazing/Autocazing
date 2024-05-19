@@ -10,6 +10,7 @@ from db.mysql.models.menu_ingredients import MenuIngredients
 from db.mysql.models.orders import Orders, OrderSpecifics
 from db.mysql.models.restock_orders import RestockOrders, RestockOrderSpecifics
 from db.mysql.models.reports import Reports, ExpirationSpecifics, IngredientSolution
+from db.mysql.models.predicted_sales import PredictedSales
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpStatus, value
 
 
@@ -159,6 +160,7 @@ async def process_expiration_message(key: str, value: dict):
     try:
         today = datetime.utcnow().date()
         # Retrieve the report for today's date
+        year_month = f"{today.year:04d}{today.month:02d}"
         report = db.query(Reports).filter(
             extract('year', Reports.created_at) == today.year,
             extract('month', Reports.created_at) == today.month,
@@ -169,8 +171,16 @@ async def process_expiration_message(key: str, value: dict):
         if report is None:
             report = Reports(
                 login_id=key,
-                expected_monthly_sales=0,  # Initialize with appropriate default values
-                current_monthly_sales=0    # Initialize with appropriate default values
+                expected_monthly_sales = db.query(PredictedSales).filter(
+                    PredictedSales.year_month == year_month,
+                    PredictedSales.login_id == key
+                    ).first(),
+                current_monthly_sales = db.query(
+                    func.sum(OrderSpecifics.menu_price * OrderSpecifics.menu_quantity)
+                    ).join(Orders).filter(
+                        Orders.login_id == key,
+                        func.date_format(Orders.created_at, '%Y%m') == year_month
+                    ).scalar() or 0
             )
             db.add(report)
             db.commit()
