@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { GetAlarmList } from "../../apis/server/Alarm";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import AlarmManagementModal from "./AlarmManagementModal";
 
 const Header = (props) => {
     // 알림 SSE 구현
+    const [modalIsOpen, setModalIsOpen] = useState(true);
+    const [orderData, setOrderData] = useState([]); // 발주 데이터
+
     const token = localStorage.getItem("accessToken");
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
@@ -45,6 +49,7 @@ const Header = (props) => {
 
                     eventSource.addEventListener("restock", (e) => {
                         console.log("restock", e);
+                        setModalIsOpen(true);
                     });
 
                     eventSource.addEventListener("sales", (e) => {
@@ -148,6 +153,13 @@ const Header = (props) => {
                     {/* <!-- User Area --> */}
                 </div>
             </div>
+
+            {modalIsOpen && (
+                <AlarmManagementModal
+                    isOpen={modalIsOpen}
+                    onClose={() => setModalIsOpen(false)}
+                />
+            )}
         </header>
     );
 };
