@@ -11,7 +11,6 @@ const Header = (props) => {
     const [alarmlist, setAlarmlist] = useState([]);
     const { data: alarmInfo } = GetAlarmList();
     const posPage = window.location.pathname === "/pos";
-    const storeName = localStorage.getItem("userId");
     const queryClient = useQueryClient();
 
     console.log(alarmInfo);
@@ -41,6 +40,7 @@ const Header = (props) => {
 
                     eventSource.addEventListener("connect", (e) => {
                         // console.log(e)
+                        queryClient.invalidateQueries("Alarm");
                     });
 
                     eventSource.addEventListener("restock", (e) => {
