@@ -69,6 +69,7 @@ const Header = (props) => {
 
                     eventSource.addEventListener("delivering", (e) => {
                         console.log("delivery 갱신", e);
+                        queryClient.invalidateQueries("GetOredered");
                     });
                 };
 
