@@ -5,6 +5,7 @@ import lombok.*;
 @AllArgsConstructor
 public class IngredientWarnEntity {
 
-	private Integer ingredientId;    // 발주를 넣을 재료의 id
+	private String type;
+	private IngredientWarnInfoEntity ingredientWarnInfo;
 
 }

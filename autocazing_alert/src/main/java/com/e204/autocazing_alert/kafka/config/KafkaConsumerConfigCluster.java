@@ -63,4 +63,30 @@ public class KafkaConsumerConfigCluster {
 		return factory;
 	}
 
+	@Bean
+	public ConsumerFactory<String, IngredientWarnEntity> ingredientWarnEntityConsumerFactory() {
+		JsonDeserializer<IngredientWarnEntity> deserializer = new JsonDeserializer<>(IngredientWarnEntity.class);
+		deserializer.setRemoveTypeHeaders(false);
+		deserializer.addTrustedPackages("*");
+		deserializer.setUseTypeMapperForKey(true);
+
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, IngredientWarnEntity> ingredientWarnEntityKafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, IngredientWarnEntity> factory =
+				new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(ingredientWarnEntityConsumerFactory());
+		factory.setConcurrency(3);
+		return factory;
+	}
+
 }
