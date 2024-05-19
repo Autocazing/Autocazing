@@ -45,6 +45,14 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
         editStock.mutate(stockPutData);
         onClose();
     };
+    const handleChange = (e) => {
+        const { name, value, type } = e.target;
+        const newValue = type === "number" ? parseInt(value, 10) || 0 : value;
+        setStockPutData((prevState) => ({
+            ...prevState,
+            [name]: newValue,
+        }));
+    };
     return (
         <Modal
             isOpen={isOpen}
@@ -83,6 +91,7 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
                     <select
                         value={stockPutData.ingredientId}
                         name="ingredientId"
+                        onChange={handleChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
                         <option value="">
@@ -105,6 +114,7 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
                     </label>
                     <input
                         value={stockPutData.quantity}
+                        onChange={handleChange}
                         name="quantity"
                         type="number"
                         placeholder="총량 입력"
@@ -119,6 +129,7 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
                         value={stockPutData.expirationDate}
                         name="expirationDate"
                         type="date"
+                        onChange={handleChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div>
