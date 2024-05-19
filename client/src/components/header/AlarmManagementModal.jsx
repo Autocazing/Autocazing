@@ -1,5 +1,7 @@
 import Modal from "react-modal";
 import closeIcon from "../../images/icon/close.svg";
+import { useQueryClient } from "@tanstack/react-query";
+import { PutStatus } from "../../apis/server/OrderApi";
 
 const customStyles = {
     overlay: {
@@ -30,6 +32,14 @@ const customStyles = {
 };
 
 const AlarmManagementModal = ({ isOpen, onClose }) => {
+    const queryClient = useQueryClient();
+    const [putNo, setPutNo] = useState(0);
+
+    const handleOrder = () => {
+        queryClient.invalidateQueries("GetBasket"); // 발주하고 장바구니 초기화
+        onClose();
+    };
+
     return (
         <Modal
             isOpen={isOpen}
@@ -59,7 +69,10 @@ const AlarmManagementModal = ({ isOpen, onClose }) => {
                 자동 발주를 진행하시겠습니까?
             </div>
             <div className="flex mt-5 space-x-4 justify-center">
-                <button className="w-20 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
+                <button
+                    onClick={handleOrder}
+                    className="w-20 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                >
                     YES
                 </button>
                 <button
