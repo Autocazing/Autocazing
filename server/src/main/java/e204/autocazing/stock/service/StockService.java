@@ -1,13 +1,7 @@
 package e204.autocazing.stock.service;
 
-import e204.autocazing.db.entity.IngredientEntity;
-import e204.autocazing.db.entity.RestockOrderSpecificEntity;
-import e204.autocazing.db.entity.StockEntity;
-import e204.autocazing.db.entity.StoreEntity;
-import e204.autocazing.db.repository.IngredientRepository;
-import e204.autocazing.db.repository.RestockOrderSpecificRepository;
-import e204.autocazing.db.repository.StockRepository;
-import e204.autocazing.db.repository.StoreRepository;
+import e204.autocazing.db.entity.*;
+import e204.autocazing.db.repository.*;
 import e204.autocazing.exception.InsufficientStockException;
 import e204.autocazing.exception.ResourceNotFoundException;
 import e204.autocazing.restock.service.RestockOrderService;
@@ -44,6 +38,9 @@ public class StockService {
     private RestockSpecificService restockSpecificService;
     @Autowired
     private RestockOrderSpecificRepository restockOrderSpecificRepository;
+    @Autowired
+    private RestockOrderRepository restockOrderRepository;
+
 
     @Transactional
     public void createStock(PostRequestDto postRequestDto, String loginId) {
@@ -74,13 +71,31 @@ public class StockService {
                 RestockOrderSpecificEntity restockOrderSpecificEntity = restockOrderSpecificRepository.findTopByIngredientIdAndStatusOrderByCreatedAtAsc(
                                 ingredientId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED)
                         .orElseThrow(() -> new RuntimeException("No ARRIVED restock order specific found for ingredientId: " + ingredientId));
-//                UpdateRestockSpecificDto updateRestockSpecificDto = new UpdateRestockSpecificDto();
-//                updateRestockSpecificDto.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
-                //complete처리.
+
                 restockOrderSpecificEntity.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
                 restockOrderSpecificRepository.save(restockOrderSpecificEntity);
+                //여기서 RestockOrder COMPLETE 체크?
+                checkRestockComplete(restockOrderSpecificEntity.getRestockOrderSpecificId());
 //                restockSpecificService.updateRestockOrderSpecific(restockOrderSpecificEntity.getRestockOrderSpecificId(),RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
             }
+        }
+
+    }
+
+    private void checkRestockComplete(Integer restockOrderSpecificId) {
+
+        RestockOrderEntity restockOrderEntity = restockOrderSpecificRepository.findRestockOrderByRestockOrderSpecificId(restockOrderSpecificId);
+        // 해당 RestockOrderEntity의 모든 RestockOrderSpecificEntity를 가져옴
+        List<RestockOrderSpecificEntity> specifics = restockOrderSpecificRepository.findByRestockOrder_RestockOrderId(restockOrderEntity.getRestockOrderId());
+
+        // 모든 RestockOrderSpecificEntity의 상태가 COMPLETE인지 확인
+        boolean allComplete = specifics.stream()
+                .allMatch(specific -> specific.getStatus() == RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
+
+        // 모든 상태가 COMPLETE이면 RestockOrderEntity의 상태를 COMPLETE으로 변경
+        if (allComplete) {
+            restockOrderEntity.setStatus(RestockOrderEntity.RestockStatus.COMPLETE);
+            restockOrderRepository.save(restockOrderEntity);
         }
 
     }
