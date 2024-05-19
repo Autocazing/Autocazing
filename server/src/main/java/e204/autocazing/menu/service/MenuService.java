@@ -91,6 +91,29 @@ public class MenuService {
 
         return convertToMenuDto(menu);
     }
+
+    private MenuDto convertToMenuDto(MenuEntity menuEntity) {
+        MenuDto menuDto = new MenuDto();
+        menuDto.setMenuId(menuEntity.getMenuId());
+        menuDto.setMenuName(menuEntity.getMenuName());
+        menuDto.setMenuPrice(menuEntity.getMenuPrice());
+        menuDto.setOnEvent(menuEntity.getOnEvent());
+        menuDto.setDiscountRate(menuEntity.getDiscountRate());
+        menuDto.setImageUrl(menuEntity.getImageUrl());
+        menuDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);
+
+        List<MenuIngredientDto> ingredientDtos = menuEntity.getMenuIngredients()
+                .stream()
+                .map(ingredient -> new MenuIngredientDto(
+                        ingredient.getIngredient().getIngredientId(), // 가정: IngredientEntity에 getId() 메서드 존재
+                        ingredient.getCapacity()
+                ))
+                .collect(Collectors.toList());
+        menuDto.setIngredients(ingredientDtos);
+
+        return menuDto;
+    }
+
     private void changeMenuIngredients(MenuEntity menu, List<MenuIngredientDto> ingredientDtos) {
 
 
@@ -138,42 +161,40 @@ public class MenuService {
         return menuDto;
     }
 
-    public List<MenuDto> findAllMenus() {
+    public List<MenuDetailsDto> findAllMenus() {
         List<MenuEntity> menuEntities = menuRepository.findAll();
         return menuEntities.stream()
-                .map(this::convertToMenuDto)
+                .map(this::convertToMenuDetailsDto)
                 .collect(Collectors.toList());
     }
-
-    private MenuDto convertToMenuDto(MenuEntity menuEntity) {
-        MenuDto menuDto = new MenuDto();
-        menuDto.setMenuId(menuEntity.getMenuId());
-        menuDto.setMenuName(menuEntity.getMenuName());
-        menuDto.setMenuPrice(menuEntity.getMenuPrice());
-        menuDto.setOnEvent(menuEntity.getOnEvent());
-        menuDto.setDiscountRate(menuEntity.getDiscountRate());
-        menuDto.setImageUrl(menuEntity.getImageUrl());
-        menuDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);
-
-        List<MenuIngredientDto> ingredientDtos = menuEntity.getMenuIngredients()
-                .stream()
-                .map(ingredient -> new MenuIngredientDto(
-                        ingredient.getIngredient().getIngredientId(), // 가정: IngredientEntity에 getId() 메서드 존재
-                        ingredient.getCapacity()
-                ))
-                .collect(Collectors.toList());
-        menuDto.setIngredients(ingredientDtos);
-
-        return menuDto;
+    //List<MenuDetailsDto> 채우기
+    private MenuDetailsDto convertToMenuDetailsDto(MenuEntity menuEntity) {
+        MenuDetailsDto menuDetailsDto = new MenuDetailsDto();
+        menuDetailsDto.setMenuId(menuEntity.getMenuId());
+        menuDetailsDto.setMenuName(menuEntity.getMenuName());
+        menuDetailsDto.setMenuPrice(menuEntity.getMenuPrice());
+        menuDetailsDto.setOnEvent(menuEntity.getOnEvent());
+        menuDetailsDto.setDiscountRate(menuEntity.getDiscountRate());
+        menuDetailsDto.setImageUrl(menuEntity.getImageUrl());
+        menuDetailsDto.setStoreId(menuEntity.getStore() != null ? menuEntity.getStore().getStoreId() : null);
+        menuDetailsDto.setIngredientoDtoList(menuEntity.getMenuIngredients().stream()
+                .map(this::convertToIngredientoDto)
+                .collect(Collectors.toList()));
+        return menuDetailsDto;
     }
+    //전체 조회 IngredientDtoList 채우기
+    private IngredientoDto convertToIngredientoDto(MenuIngredientEntity menuIngredient) {
+        IngredientoDto ingredientoDto = new IngredientoDto();
+        ingredientoDto.setIngredientId(menuIngredient.getIngredient().getIngredientId());
+        ingredientoDto.setIngredientName(menuIngredient.getIngredient().getIngredientName());
+        ingredientoDto.setCapacity(menuIngredient.getCapacity()); // 메뉴에 들어가는 재료의 양
+        return ingredientoDto;
+    }
+
+
 
     public List<Map<String, Object>> getMenuSales(String type, Integer menuId) {
         List<Map<String, Object>> saleDtoList = new ArrayList<>();
-
-        //더미데이터 기준
-        String dateTimeString = "2024-05-08 17:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime baseDate = LocalDateTime.parse(dateTimeString, formatter);
 
         if(type.equals("day")){
             LocalDateTime currentTime = LocalDateTime.now().minusDays(30);
@@ -190,4 +211,5 @@ public class MenuService {
 
         return saleDtoList;
     }
+
 }

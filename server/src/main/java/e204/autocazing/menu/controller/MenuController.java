@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +74,7 @@ public class MenuController {
             })
         )
     })
-    @PutMapping("/{menuId}")
+    @PatchMapping("/{menuId}")
     public ResponseEntity updateMenu(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId
         ,@RequestBody UpdateMenuDto updateMenuDto){
         MenuDto menu = menuService.updateMenu(updateMenuDto,menuId);
@@ -111,13 +114,14 @@ public class MenuController {
     @Operation(summary = "메뉴 목록 조회 요청", description = "메뉴 목록 조회를 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "메뉴 목록 조회 성공",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDto.class)), examples = {
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = MenuDetailsDto.class)), examples = {
                 @ExampleObject(
                     name = "메뉴 목록 조회 body",
                     summary = "메뉴 목록 조회 body의 예시",
                     value = "[{\"menuId\": 1, \n"
                         + "\"menuName\": \"latte\",\n"
                         + "  \"menuPrice\": 5500,\n"
+                        + "\"imageUrl\": \"ASJKDLHJkasd.com\",\n"
                         + "  \"onEvent\": false,\n"
                         + "  \"discountRate\": 30,\n"
                         + "  \"ingredients\": [\n"
@@ -133,7 +137,7 @@ public class MenuController {
     })
     @GetMapping("")
     public ResponseEntity getAllmenus(){
-        List<MenuDto> menus = menuService.findAllMenus();
+        List<MenuDetailsDto> menus = menuService.findAllMenus();
         return ResponseEntity.ok(menus);
     }
 
@@ -162,7 +166,7 @@ public class MenuController {
             )
         )
     })
-    @GetMapping("/{menuId}/sales")
+    @GetMapping("/sales")
     public ResponseEntity getMenuSales(
         @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
             required = true,

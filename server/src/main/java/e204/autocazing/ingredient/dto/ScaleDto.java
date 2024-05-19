@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ScaleDto {
 
-    private Integer scaleId;
-    private String unit;
+	private Integer scaleId;
+	private String unit;
 }

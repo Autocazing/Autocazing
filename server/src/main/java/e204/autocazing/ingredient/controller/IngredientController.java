@@ -51,7 +51,7 @@ public class IngredientController {
                     summary = "재료 수정 반환 body의 예시",
                     value = "{\"ingredientId\": 1,\n"
                         + "    \"storeId\": 1,\n"
-                        + "    \"venderId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
                         + "    \"ingredientName\": \"milk\",\n"
                         + "    \"ingredientPrice\": 5000,\n"
                         + "    \"ingredientCapacity\": 5,\n"
@@ -63,7 +63,7 @@ public class IngredientController {
             })
         )
     })
-    @PutMapping("/{ingredientId}")
+    @PatchMapping("/{ingredientId}")
     public ResponseEntity<IngredientDetails> updateIngredient(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "ingredientId") Integer ingredientId, @RequestBody PatchIngredientDto ingredientDto) {
         IngredientDetails updateIngredient = ingredientService.updateIngredient(ingredientId, ingredientDto);
         return ResponseEntity.ok(updateIngredient);
@@ -89,7 +89,7 @@ public class IngredientController {
                     name = "재료 목록 조회 body",
                     summary = "재료 목록 조회 body의 예시",
                     value = "[{\"ingredientId\": 1,\n"
-                        + "    \"venderName\": 동민상사,\n"
+                        + "    \"vendorName\": 동민상사,\n"
                         + "    \"ingredientName\": \"milk\",\n"
                         + "    \"ingredientPrice\": 5000,\n"
                         + "    \"ingredientCapacity\": 5,\n"
@@ -117,7 +117,7 @@ public class IngredientController {
                     summary = "재료 조회 body의 예시",
                     value = "{\"ingredientId\": 1,\n"
                         + "    \"storeId\": 1,\n"
-                        + "    \"venderId\": 1,\n"
+                        + "    \"vendorId\": 1,\n"
                         + "    \"ingredientName\": \"milk\",\n"
                         + "    \"ingredientPrice\": 5000,\n"
                         + "    \"ingredientCapacity\": 5,\n"

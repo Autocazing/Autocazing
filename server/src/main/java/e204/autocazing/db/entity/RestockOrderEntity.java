@@ -36,9 +36,8 @@ public class RestockOrderEntity {
     @JoinColumn(name = "store_id")
     private StoreEntity store;
 
-    @OneToMany(mappedBy = "restockOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RestockOrderSpecificEntity> restockOrderSpecific;
-
+    @OneToMany(mappedBy = "restockOrder", cascade = CascadeType.ALL)
+    private List<RestockOrderSpecificEntity> restockOrderSpecifics;
     public enum RestockStatus {
         WRITING,ORDERED, ON_DELIVEREY,ARRIVED,COMPLETE
     }

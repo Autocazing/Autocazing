@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/venders")
+@RequestMapping("api/vendors")
 public class VenderController {
     @Autowired
     private VenderService venderService;
@@ -34,8 +34,8 @@ public class VenderController {
             )
     })
     @PostMapping("")
-    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto) {
-         venderService.createVender(postVenderDto);
+    public ResponseEntity createVendor(@RequestBody PostVenderDto postVenderDto) {
+         venderService.createVendor(postVenderDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -48,9 +48,9 @@ public class VenderController {
                     )
             )
     })
-    @PutMapping("/{venderId}")
-    public ResponseEntity updateVender(@PathVariable(name = "venderId") Integer venderId, @RequestBody PatchVenderDto patchVenderDto) {
-        VenderDto venderDto = venderService.updateVender(venderId, patchVenderDto);
+    @PatchMapping("/{vendorId}")
+    public ResponseEntity updateVendor(@PathVariable(name = "vendorId") Integer vendorId, @RequestBody PatchVenderDto patchVenderDto) {
+        VenderDto venderDto = venderService.updateVendor(vendorId, patchVenderDto);
         return ResponseEntity.ok(venderDto);
     }
 
@@ -60,16 +60,16 @@ public class VenderController {
             @ApiResponse(responseCode = "200", description = "발주 업체 삭제 성공",
                     content = @Content(examples = {
                             @ExampleObject(
-                                    name = "Vender 삭제 ",
-                                    summary = "Vender 삭제 body의 예시",
+                                    name = "Vendor 삭제 ",
+                                    summary = "Vendor 삭제 body의 예시",
                                     value = " "
                             )
                     })
             )
     })
-    @DeleteMapping("/{venderId}")
-    public ResponseEntity deleteVender(@PathVariable(name = "venderId") Integer venderId) {
-        venderService.deleteVender(venderId);
+    @DeleteMapping("/{vendorId}")
+    public ResponseEntity deleteVendor(@PathVariable(name = "vendorId") Integer vendorId) {
+        venderService.deleteVendor(vendorId);
         return ResponseEntity.ok().build();
     }
 
@@ -82,10 +82,10 @@ public class VenderController {
                     )
             )
     })
-    @GetMapping("/{venderId}")
-    public ResponseEntity<VenderDto> getVenderById(@PathVariable(name = "venderId") Integer venderId) {
-        VenderDto vender = venderService.getVenderById(venderId);
-        return ResponseEntity.ok(vender);
+    @GetMapping("/{vendorId}")
+    public ResponseEntity<VenderDto> getVendorById(@PathVariable(name = "vendorId") Integer vendorId) {
+        VenderDto vendor = venderService.getVendorById(vendorId);
+        return ResponseEntity.ok(vendor);
     }
 
     // 전체 재고 조회
@@ -97,8 +97,8 @@ public class VenderController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<VenderDto>> getAllVenders() {
-        List<VenderDto> venders = venderService.getAllVenders();
-        return ResponseEntity.ok(venders);
+    public ResponseEntity<List<VenderDto>> getAllVendors() {
+        List<VenderDto> vendors = venderService.getAllVendors();
+        return ResponseEntity.ok(vendors);
     }
 }

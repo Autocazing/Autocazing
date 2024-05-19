@@ -1,5 +1,6 @@
 package e204.autocazing.sale.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/sales")
@@ -57,8 +59,10 @@ public class SaleController {
 		@Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
 			required = true,
 			schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
-		@RequestParam("type") String type) { //type : 일별 day, 주별 week, 월별 month
-		List<Map<String, Object>> sales = saleService.getSales(type);
+		@RequestParam("type") String type, HttpServletRequest httpServletRequest) { //type : 일별 day, 주별 week, 월별 month
+		String loginId = httpServletRequest.getHeader("loginId");
+
+		List<Map<String, Object>> sales = saleService.getSales(type, loginId);
 		return ResponseEntity.ok(sales);
 	}
 
@@ -75,8 +79,11 @@ public class SaleController {
 		)
 	})
 	@GetMapping("/sold")
-	public ResponseEntity getSoldNumber() {
-		Integer soldNumber = saleService.getSoldNumber();
+	public ResponseEntity getSoldNumber(HttpServletRequest httpServletRequest) {
+		String loginId = httpServletRequest.getHeader("loginId");
+		Integer soldNumber = saleService.getSoldNumber(loginId);
+
+		if(soldNumber == null) soldNumber = 0;
 		return ResponseEntity.ok(soldNumber);
 	}
 
@@ -100,8 +107,23 @@ public class SaleController {
 
 	})
 	@GetMapping("/avg")
-	public ResponseEntity getAvgSales() {
-		Map<String, Double> sales = saleService.getAvgSales();
-		return ResponseEntity.ok(sales);
+	public ResponseEntity getAvgSales(HttpServletRequest httpServletRequest) {
+		String loginId = httpServletRequest.getHeader("loginId");
+		Map<String, Double> sales = saleService.getAvgSales(loginId);
+
+		Map<String, Double> defaultSales = new HashMap<>();
+		defaultSales.put("Monday", 0.0);
+		defaultSales.put("Tuesday", 0.0);
+		defaultSales.put("Wednesday", 0.0);
+		defaultSales.put("Thursday", 0.0);
+		defaultSales.put("Friday", 0.0);
+		defaultSales.put("Saturday", 0.0);
+		defaultSales.put("Sunday", 0.0);
+
+		for (Map.Entry<String, Double> entry : sales.entrySet()) {
+			defaultSales.put(entry.getKey(), entry.getValue());
+		}
+
+		return ResponseEntity.ok(defaultSales);
 	}
 }
