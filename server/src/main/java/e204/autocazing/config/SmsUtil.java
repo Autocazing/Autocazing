@@ -39,9 +39,9 @@ public class SmsUtil {
 		List<SingleMessageSentResponse> responses = new ArrayList<>();
 
 		for (SmsRequestDto order : orderList) {
-			// String to = order.getVenderManagerContact();
+			 String to = order.getVenderManagerContact();
 			//나중에 업체 번호 변경 해야 함.
-			String to = "01028287449";
+			//String to = "01028287449";
 			Integer venderId = order.getVenderId();
 
 			Message message = new Message();
@@ -68,10 +68,10 @@ public class SmsUtil {
 
 			message.setText(text.toString());
 
-			//SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+			SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
 			//시연할 때 주석 해제 해야 합니다!
-			//responses.add(response);
+			responses.add(response);
 		}
 		return responses;
 	}

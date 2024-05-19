@@ -195,7 +195,7 @@ public class StockService {
                     //현재 사용중인 남은 헌 것
                     int unUsedStock = ingredientCapacity - stock.getUsed();
                     //필요량 < 현재 남은 헌것
-                    if(requiredQuantity <= unUsedStock){
+                    if(requiredQuantity < unUsedStock){
                         //unUsedStock = unUsedStock - requiredQuantity;
                         //사용량 = 기존사용량 + 필요량
                         stock.setUsed(stock.getUsed() + requiredQuantity);
