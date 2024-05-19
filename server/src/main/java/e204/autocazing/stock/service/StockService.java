@@ -74,9 +74,12 @@ public class StockService {
                 RestockOrderSpecificEntity restockOrderSpecificEntity = restockOrderSpecificRepository.findTopByIngredientIdAndStatusOrderByCreatedAtAsc(
                                 ingredientId, RestockOrderSpecificEntity.RestockSpecificStatus.ARRIVED)
                         .orElseThrow(() -> new RuntimeException("No ARRIVED restock order specific found for ingredientId: " + ingredientId));
-                UpdateRestockSpecificDto updateRestockSpecificDto = new UpdateRestockSpecificDto();
-                updateRestockSpecificDto.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
-                restockSpecificService.updateRestockOrderSpecific(restockOrderSpecificEntity.getRestockOrderSpecificId(),updateRestockSpecificDto);
+//                UpdateRestockSpecificDto updateRestockSpecificDto = new UpdateRestockSpecificDto();
+//                updateRestockSpecificDto.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
+                //complete처리.
+                restockOrderSpecificEntity.setStatus(RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
+                restockOrderSpecificRepository.save(restockOrderSpecificEntity);
+//                restockSpecificService.updateRestockOrderSpecific(restockOrderSpecificEntity.getRestockOrderSpecificId(),RestockOrderSpecificEntity.RestockSpecificStatus.COMPLETE);
             }
         }
 
@@ -243,7 +246,7 @@ public class StockService {
     //유통기한 지난 상품 삭제
     //todo : 트리거 설정을 어떻게 해야할지 정해야함.
     @Transactional
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+    @Scheduled(cron = "0 5 12 * * ?") // 매일 자정에 실행
     public void removeExpiredStocks() {
         //모든 유저한테 해당
         LocalDate today = LocalDate.now();
@@ -254,7 +257,7 @@ public class StockService {
 
     //    @Scheduled(cron = "0 0 1 * * ?") //매일 새벽 1시에 실행
     @Transactional
-    @Scheduled(cron = "0 35 1 * * ?") // 매일 오전 12시 46분에 실행
+    @Scheduled(cron = "0 5 12 * * ?") // 매일 오전 12시 46분에 실행
     public HashMap<String,List<NearExpiredDto>> checkAndOrderNearExpiryProducts() {
         System.out.println("시작하겠습니다");
         List<StoreEntity> storeEntities = storeRepository.findAll();

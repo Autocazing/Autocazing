@@ -117,8 +117,6 @@ public class OrderService {
     public void checkAndAddRestockOrderSpecifics(List<Integer> menuIdList,String loginId)  {
         StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
-
-
 //        List<IngredientEntity> ingredients = ingredientRepository.findByStore(storeEntity);
 
         List<IngredientEntity> ingredients = new ArrayList<>();
