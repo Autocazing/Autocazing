@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://lab.ssafy.com/eagle7449/autocazing_config_file.git
+          username: eagle7449@naver.com
+          password: WygQo6yx2GHvziz2CXpy
+          default-label: master # gitlab의 기본 브랜치가 master이기 때문에 master로 명시해줘야 함.
+          search-paths:
+            - 'test/**'

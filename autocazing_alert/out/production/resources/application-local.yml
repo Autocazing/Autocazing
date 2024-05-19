@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/autocazing_alert?serverTimezone=Asia/Seoul
+    username: root
+    password: ssafy
+  jpa:
+    database: mysql
+    hibernate.ddl-auto: none
+    show-sql: true
+  kafka:
+    bootstrap-servers:
+      localhost:10000, localhost:10001, localhost:10002
+    consumer:
+      group-id: alert-service
+      auto-offset-reset: earliest  # 추가
+
+#eureka:
+#  client:
+#    registerWithEureka: true
+#    fetchRegistry: true
+#    serviceUrl:
+#      defaultZone: http://discovery-server:8761/eureka
