@@ -143,7 +143,7 @@ public class OrderService {
             System.out.println("@@@@@@@@@@@@@@@totalQuantity : " + totalQuantity);
 //            StockEntity stock = stockRepository.findByIngredient(ingredient);
             //배송중인 물품 수
-            int totalDelivering = restockOrderService.isDelivering(ingredient);
+            int totalDelivering = restockOrderService.isDelivering(ingredient, loginId);
             System.out.println("@@@@@@@@@@@@@@@totalDelivering : " + totalDelivering);
             //minimumCount 보다 낮을때 발주에 재료 등록
             if (totalQuantity + totalDelivering <= ingredient.getMinimumCount()) {

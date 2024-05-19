@@ -39,5 +39,8 @@ public interface RestockOrderSpecificRepository extends JpaRepository<RestockOrd
     // 특정 RestockOrderEntity의 모든 RestockOrderSpecificEntity를 조회하는 메서드
     List<RestockOrderSpecificEntity> findByRestockOrder_RestockOrderId(Integer restockOrderId);
 
+    @Query("SELECT s FROM RestockOrderSpecificEntity s WHERE s.restockOrder.restockOrderId = :restockOrderId AND s.status <> 'COMPLETE'")
+    List<RestockOrderSpecificEntity> findByRestockOrderIdAndStatusNotComplete(@Param("restockOrderId") Integer restockOrderId);
+
 
 }

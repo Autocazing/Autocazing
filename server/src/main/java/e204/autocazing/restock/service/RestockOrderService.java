@@ -319,18 +319,30 @@ public class RestockOrderService {
     }
 
     //배송중인지 체크하기 (재고에서 배송중인 재료수량 체크하기 위함)
-    public int isDelivering(IngredientEntity ingredient) {
+//배송중인지 체크하기 (재고에서 배송중인 재료수량 체크하기 위함)
+    public int isDelivering(IngredientEntity ingredient,String loginId) {
+        StoreEntity storeEntity = storeRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with loginId: " + loginId));
+
         int deliverdCount = 0 ;
         //완료처리 안된 발주목록 가져오기.
+//        // RestockOrderRepository 호출
+//        List<RestockOrderEntity> incompleteRestocks = restockOrderRepository.findByStatusNot(
+//                EnumSet.of(RestockOrderEntity.RestockStatus.COMPLETE, RestockOrderEntity.RestockStatus.WRITING)
+//        );
         // RestockOrderRepository 호출
-        List<RestockOrderEntity> incompleteRestocks = restockOrderRepository.findByStatusNot(
+        // RestockOrderRepository 호출
+        List<RestockOrderEntity> incompleteRestocks = restockOrderRepository.findByStoreAndStatusNotIn(
+                storeEntity,
                 EnumSet.of(RestockOrderEntity.RestockStatus.COMPLETE, RestockOrderEntity.RestockStatus.WRITING)
         );
         // 각 RestockOrder에 대해 상세 조회하여 재료를 주문한 경우를 확인
         for (RestockOrderEntity restockOrder : incompleteRestocks) {
             // RestockOrder에 해당하는 RestockOrderSpecificEntity 리스트 조회
-            List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrder.getRestockOrderId());
-
+//            List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderRestockOrderId(restockOrder.getRestockOrderId());
+            List<RestockOrderSpecificEntity> restockOrderSpecifics = restockOrderSpecificRepository.findByRestockOrderIdAndStatusNotComplete(
+                    restockOrder.getRestockOrderId()
+            );
             // 해당 RestockOrder에 주문한 재료가 있는지 확인 (있으면 카운트)
 
             for (RestockOrderSpecificEntity specific : restockOrderSpecifics) {
@@ -346,7 +358,7 @@ public class RestockOrderService {
             }
         }
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            System.out.println("deliverdCount : " + deliverdCount);
+        System.out.println("deliverdCount : " + deliverdCount);
         return deliverdCount;
 
     }
