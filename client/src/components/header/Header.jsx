@@ -53,7 +53,8 @@ const Header = (props) => {
                         //     "보낼 이름",
                         //     e.ingredientWarnInfo.ingredientName,
                         // );
-                        setOrderName(e.data.ingredientName);
+                        const parsedData = JSON.parse(e.data);
+                        setOrderName(parsedData.ingredientName);
                         setModalIsOpen(true);
                     });
 
