@@ -31,4 +31,13 @@ public interface RestockOrderSpecificRepository extends JpaRepository<RestockOrd
             @Param("ingredientId") Integer ingredientId,
             @Param("status") RestockOrderSpecificEntity.RestockSpecificStatus status
     );
+
+    // restockOrderSpecificId로 RestockOrderEntity를 찾는 메서드 정의
+    @Query("SELECT r.restockOrder FROM RestockOrderSpecificEntity r WHERE r.restockOrderSpecificId = :restockOrderSpecificId")
+    RestockOrderEntity findRestockOrderByRestockOrderSpecificId(@Param("restockOrderSpecificId") Integer restockOrderSpecificId);
+
+    // 특정 RestockOrderEntity의 모든 RestockOrderSpecificEntity를 조회하는 메서드
+    List<RestockOrderSpecificEntity> findByRestockOrder_RestockOrderId(Integer restockOrderId);
+
+
 }
