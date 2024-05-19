@@ -20,7 +20,7 @@ public class OrderEntity {
     //기본키
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private Integer OrderId;
     //생성시간
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

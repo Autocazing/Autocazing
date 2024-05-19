@@ -21,7 +21,7 @@ public class PostIngredientDto {
 
     private ScaleDto scale;
 
-//    private Integer scaleId;
+    //    private Integer scaleId;
     private Integer minimumCount;
 
     private Integer deliveryTime;

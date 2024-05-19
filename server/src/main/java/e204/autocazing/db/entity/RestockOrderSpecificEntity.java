@@ -52,8 +52,7 @@ public class RestockOrderSpecificEntity {
     }
 
     //굳이 연관?
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ingredient_id", nullable = false)
-//    private IngredientEntity ingredient;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id", nullable = false)
+    private IngredientEntity ingredient;
 }

@@ -6,19 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//발주 상태 수정
-public class UpdatedRestockDto {
-
-    private Integer restockOrderId;
+public class RestockOrderStatusDto {
     private RestockOrderEntity.RestockStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private List<UpdatedRestockSpecificDto> updatedRestockSpecificDtoList;
 }
