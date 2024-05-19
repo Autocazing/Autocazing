@@ -235,6 +235,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             value={materialPostData.ingredientPrice}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="재료 가격 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -251,6 +252,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             value={materialPostData.ingredientCapacity}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="제품 용량 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -300,6 +302,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             value={materialPostData.minimumCount}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="임계점 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -314,6 +317,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                             value={materialPostData.orderCount}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="자동 발주 수량 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -328,6 +332,7 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
                         value={materialPostData.deliveryTime}
                         onChange={handleInputChange}
                         type="number"
+                        min={0}
                         placeholder="배송 소요 기간 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
