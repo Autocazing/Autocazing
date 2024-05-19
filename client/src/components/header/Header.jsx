@@ -8,7 +8,7 @@ import AlarmManagementModal from "./AlarmManagementModal";
 
 const Header = (props) => {
     // 알림 SSE 구현
-    const [modalIsOpen, setModalIsOpen] = useState(true);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [orderData, setOrderData] = useState([]); // 발주 데이터
 
     const token = localStorage.getItem("accessToken");
@@ -17,7 +17,7 @@ const Header = (props) => {
     const posPage = window.location.pathname === "/pos";
     const queryClient = useQueryClient();
 
-    console.log(alarmInfo);
+    //console.log(alarmInfo);
 
     useEffect(() => {
         if (alarmInfo) {
@@ -53,7 +53,7 @@ const Header = (props) => {
                     });
 
                     eventSource.addEventListener("sales", (e) => {
-                        console.log("sales 갱신", e);
+                        // console.log("sales 갱신", e);
                         queryClient.invalidateQueries("GetSales");
                         queryClient.invalidateQueries("GetSalesDay");
                         queryClient.invalidateQueries("GetSalesMonth");
@@ -61,7 +61,7 @@ const Header = (props) => {
                     });
 
                     eventSource.addEventListener("delivering", (e) => {
-                        console.log("delivery 갱신", e);
+                        //console.log("delivery 갱신", e);
                     });
                 };
 

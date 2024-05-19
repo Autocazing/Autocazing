@@ -1,4 +1,5 @@
 import Modal from "react-modal";
+import { useState } from "react";
 import closeIcon from "../../images/icon/close.svg";
 import { useQueryClient } from "@tanstack/react-query";
 import { PutStatus } from "../../apis/server/OrderApi";
@@ -36,6 +37,8 @@ const AlarmManagementModal = ({ isOpen, onClose }) => {
     const [putNo, setPutNo] = useState(0);
 
     const handleOrder = () => {
+        // 발주하는 코드
+
         queryClient.invalidateQueries("GetBasket"); // 발주하고 장바구니 초기화
         onClose();
     };
