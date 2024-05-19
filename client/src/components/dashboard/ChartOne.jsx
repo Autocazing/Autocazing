@@ -180,7 +180,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
         // thisWeekSold의 길이가 0보다 큰 경우에만 데이터를 업데이트합니다.
 
         if (thisWeekSold.length > 0) {
-            console.log(thisWeekSold);
+            // console.log(thisWeekSold);
             // thisWeekSold의 값을 사용하여 "Product One"의 데이터를 업데이트합니다.
             const productOneData = thisWeekSold.map((item) => item.totalSales);
 
@@ -197,8 +197,15 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
             }));
 
             const maxVal = Math.max(...productOneData);
+            if (maxVal > maxSize) {
+                setMaxSize(maxVal);
+            }
+            // console.log("여기는 일일");
+            // console.log(maxVal);
+            // console.log(maxSize);
+            // console.log("여기는 일일");
             // const minVal = Math.min(...productOneData);
-            setMaxSize(maxVal);
+            // setMaxSize(maxVal);
             // setMinSize(minVal);
         }
     }, [thisWeekSold]);
@@ -219,6 +226,18 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
                     },
                 ],
             }));
+            const maxVal = Math.max(...productTwoData);
+            if (maxVal > maxSize) {
+                setMaxSize(maxVal);
+            }
+            //
+            // console.log("여기는 월월");
+            // console.log(maxVal);
+            // console.log(maxSize);
+            // console.log("여기는 월월");
+            // const minVal = Math.min(...productOneData);
+            // setMaxSize(maxVal);
+            // setMinSize(minVal);
         }
     }, [thisMonthAvgSold]);
 
