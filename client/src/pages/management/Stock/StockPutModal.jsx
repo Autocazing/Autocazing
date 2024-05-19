@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import closeIcon from "../../../images/icon/close.svg";
 import { MaterialGetApi } from "../../../apis/server/MaterialApi";
 import { StockEditApi } from "../../../apis/server/StockApi";
-
+import Swal from "sweetalert2";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -42,8 +42,31 @@ const StockPutModal = ({ isOpen, onClose, initialValue }) => {
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
     const editStock = StockEditApi(initialValue.stockId);
     const handleEdit = (e) => {
-        editStock.mutate(stockPutData);
-        onClose();
+        editStock.mutate(stockPutData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "재고 수정 완료!",
+                    text: "재고 정보가 성공적으로 수정되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0", // 아이콘 색상 설정
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0", // 버튼 색상 설정
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose(); // 모달 닫기
+                        window.location.reload();
+                    }
+                });
+            },
+            onError: (error) => {
+                Swal.fire({
+                    title: "수정 실패",
+                    text: `재고 수정 중 오류 발생: ${error.message}`,
+                    icon: "error",
+                    confirmButtonText: "다시 시도",
+                });
+            },
+        });
     };
     const handleChange = (e) => {
         const { name, value, type } = e.target;
