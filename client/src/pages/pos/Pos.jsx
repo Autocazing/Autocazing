@@ -24,7 +24,7 @@ function Pos() {
         console.log(products);
     }
     const handleSubmit = (extractedProducts) => {
-        console.log(extractedProducts);
+        // console.log(extractedProducts);
         postOrders.mutate({
             storeId: 1,
             orderSpecifics: extractedProducts.map((product) => ({
@@ -139,7 +139,7 @@ function Pos() {
                           (item) => item.menuId === productId,
                       ).quantity,
                       realPrice:
-                          p.realPrice +
+                          p.realPrice -
                           newProd.find((item) => item.menuId === productId)
                               .realPrice,
                   }
