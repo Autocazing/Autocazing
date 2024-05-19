@@ -220,15 +220,15 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
         >
             {headContent === "day" ? (
                 <div className="mt-2 text-center font-bold text-lg">
-                    {dayst} ~ {dayed}
+                    일별 매출데이터
                 </div>
             ) : headContent === "week" ? (
                 <div className="mt-2 text-center font-bold text-lg">
-                    2024.01.01 ~ 2024.01.01 (week, 수정예정)
+                    주별 매출데이터
                 </div>
             ) : headContent === "month" ? (
                 <div className="mt-2 text-center font-bold text-lg">
-                    2024.01.01 ~ 2024.01.01 (month, 수정예정)
+                    월별 매출데이터
                 </div>
             ) : null}
             <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mt-16">

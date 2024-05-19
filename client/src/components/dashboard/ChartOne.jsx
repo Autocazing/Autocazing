@@ -130,8 +130,11 @@ const options = {
                 fontSize: "0px",
             },
         },
-        min: 0,
-        max: 100,
+        labels: {
+            formatter(value) {
+                return value.toFixed(0);
+            },
+        },
     },
 };
 
