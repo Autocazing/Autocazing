@@ -1,0 +1,31 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: inventory-service
+  profiles:
+    active: ${profile}
+  jpa:
+    database: mysql
+    hibernate.ddl-auto: update
+    show-sql: true
+  output:
+    ansi:
+      enabled: always
+  config:
+    import: optional:configserver:http://config-server:8888
+
+#swagger
+springdoc:
+  packages-to-scan: e204.autocazing
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/inventory-service/api-docs
+  swagger-ui:
+    path: /api/inventory-service/docs # Swagger 페이지로 접속할 경로
+    disable-swagger-default-url: true   # 기본 페이지로 리디렉션 되지 않게 하는 설정입니다
+    operations-sorter: alpha    # API를 엔드 포인트들의 알파벳 순서로 정렬
+    enabled: true   # 외부에서 접속 가능하게 하는 설정
+
