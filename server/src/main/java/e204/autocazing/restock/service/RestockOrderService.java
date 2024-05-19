@@ -346,7 +346,7 @@ public class RestockOrderService {
             }
         }
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println("deliverdCount : " + deliverdCount);
+            System.out.println("deliverdCount : " + deliverdCount);
         return deliverdCount;
 
     }
