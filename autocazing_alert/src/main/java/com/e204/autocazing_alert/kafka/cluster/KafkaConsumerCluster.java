@@ -21,27 +21,27 @@ public class KafkaConsumerCluster {
 	@Autowired
 	private SseService sseService;
 
-	@KafkaListener(topics = "ingredient_warn", groupId = "${spring.kafka.consumer.group-id}")
-	public void ingredientWarn(@Payload ConsumerEntity message,
-		@Headers MessageHeaders messageHeaders,
-		@Header(KafkaHeaders.RECEIVED_KEY) String key) {
-		log.info("consumer ingreidnet_warn: success >>> key: {}, message: {}, headers: {}", key, message.toString(), messageHeaders);
-		sseService.sendRestockNotification(key, new IngredientWarnEntity(Integer.valueOf(message.getMessage())));	// 받은 kafka 메시지 클라이언트에 전달
+	@KafkaListener(topics = "ingredient_warn", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "ingredientWarnEntityKafkaListenerContainerFactory")
+	public void ingredientWarn(@Payload IngredientWarnEntity message,
+							   @Headers MessageHeaders messageHeaders,
+							   @Header(KafkaHeaders.RECEIVED_KEY) String key) {
+		log.info("consumer ingredient_warn: success >>> key: {}, message: {}, headers: {}", key, message.toString(), messageHeaders);
+		sseService.sendRestockNotification(key, message.getIngredientWarnInfo());
 	}
 
-	@KafkaListener(topics = "sales_refresh", groupId = "${spring.kafka.consumer.group-id}")
+	@KafkaListener(topics = "sales_refresh", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "kafkaListenerContainerFactory")
 	public void salesRefresh(@Payload ConsumerEntity message,
-		@Headers MessageHeaders messageHeaders,
-		@Header(KafkaHeaders.RECEIVED_KEY) String key) {
+							 @Headers MessageHeaders messageHeaders,
+							 @Header(KafkaHeaders.RECEIVED_KEY) String key) {
 		log.info("consumer sales_refresh: success >>> key: {}, message: {}, headers: {}", key, message.toString(), messageHeaders);
-		sseService.sendDeliveringNotification(key, message.getMessage());	// 받은 kafka 메시지 클라이언트에 전달
+		sseService.sendSalesNotification(key, message.getMessage());
 	}
 
-	@KafkaListener(topics = "delivery_refresh", groupId = "${spring.kafka.consumer.group-id}")
+	@KafkaListener(topics = "delivery_refresh", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "kafkaListenerContainerFactory")
 	public void deliveryRefresh(@Payload ConsumerEntity message,
-		@Headers MessageHeaders messageHeaders,
-		@Header(KafkaHeaders.RECEIVED_KEY) String key) {
+								@Headers MessageHeaders messageHeaders,
+								@Header(KafkaHeaders.RECEIVED_KEY) String key) {
 		log.info("consumer delivery_refresh: success >>> key: {}, message: {}, headers: {}", key, message.toString(), messageHeaders);
-		sseService.sendSalesNotification(key, message.getMessage());	// 받은 kafka 메시지 클라이언트에 전달
+		sseService.sendDeliveringNotification(key, message.getMessage());
 	}
 }
