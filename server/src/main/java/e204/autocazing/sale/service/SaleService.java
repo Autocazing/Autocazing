@@ -3,6 +3,7 @@ package e204.autocazing.sale.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import e204.autocazing.db.repository.OrderRepository;
 import e204.autocazing.db.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SaleService {
 
 	@Autowired
@@ -28,20 +31,18 @@ public class SaleService {
 	private StoreRepository storeRepository;
 
 	public List<Map<String, Object>> getSales(String type, String loginId) {
-		List<Map<String, Object>> saleDtoList = new ArrayList<>();
-		LocalDateTime currentTime = LocalDateTime.now();
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 
-		Integer storeId = storeRepository.findByLoginId(loginId);
+		List<Map<String, Object>> saleDtoList = new ArrayList<>();
+		LocalDateTime currentTime = LocalDateTime.now().plusHours(9);
 
 		if (type.equals("day")) {
 			LocalDateTime startTime = currentTime.minusDays(30);
-			System.out.println("storeId : "+storeId);
+
 			saleDtoList = orderRepository.calculateDailySales(startTime, storeId);
 
-			//System.out.println("Initial data from DB: " + saleDtoList);
+			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.from(LocalDateTime.now().plusHours(9)));
 
-			fillMissingDays(saleDtoList, startTime.toLocalDate(), LocalDate.now());
-			//System.out.println("after: " + saleDtoList);
 			Collections.sort(saleDtoList, new Comparator<Map<String, Object>>() {
 				@Override
 				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
@@ -153,33 +154,56 @@ public class SaleService {
 		}
 	}
 
-	public Integer getSoldNumber(String loginId) {
-		Integer storeId = storeRepository.findByLoginId(loginId);
-		LocalDate currentDay = LocalDate.from(LocalDateTime.now());
-		return orderRepository.getSoldNumber(currentDay, storeId);
+	public Map<String, Integer> getSoldNumber(String loginId) {
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
+
+		LocalDate today = LocalDate.from(LocalDateTime.now().plusHours(9));
+		LocalDate yesterday = today.minusDays(1);
+
+		List<Map<String, Object>> salesData = orderRepository.getSalesByDay(today, yesterday, storeId);
+
+		Map<String, Integer> salesComparison = new HashMap<>();
+		salesComparison.put("yesterdaySold", 0);
+		salesComparison.put("todaySold", 0);
+
+		salesData.forEach(map -> {
+			String day = (String) map.get("day");
+			Number totalSales = (Number) map.get("totalSales");
+			if (totalSales != null)
+				salesComparison.put(day, totalSales.intValue());
+		});
+
+		return salesComparison;
 	}
 
 	public Map<String, Double> getAvgSales(String loginId) {
-		Integer storeId = storeRepository.findByLoginId(loginId);
+		Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
 		List<Map<String, Object>> saleDtoList = new ArrayList<>();
 
-		LocalDateTime startDate = LocalDateTime.now().minusMonths(1);
-		LocalDateTime endDate = LocalDateTime.now();
+		LocalDateTime startDate = LocalDateTime.now().plusHours(9).minusMonths(1);
+		LocalDateTime endDate = LocalDateTime.now().plusHours(9);
 		saleDtoList = orderRepository.getAvgSales(startDate, endDate, storeId);
 
 		Map<String, List<Double>> salesByDay = new HashMap<>();
-		for(Map<String, Object> record : saleDtoList) {
+		String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		for (String day : daysOfWeek) {
+			salesByDay.put(day, new ArrayList<>());
+		}
+
+		for (Map<String, Object> record : saleDtoList) {
 			String dayOfWeek = (String) record.get("dayOfWeek");
 			Double totalSales = ((Number) record.get("totalSales")).doubleValue();
-
 			salesByDay.computeIfAbsent(dayOfWeek, k -> new ArrayList<>()).add(totalSales);
 		}
 
 		Map<String, Double> salesAvgByDay = new HashMap<>();
-		salesByDay.forEach((dayOfWeek, totalSales)->{
-			salesAvgByDay.put(dayOfWeek, totalSales.stream().mapToDouble(Double::doubleValue).average().orElse(0.0));
-		});
+		for (String dayOfWeek : daysOfWeek) {
+			List<Double> totalSales = salesByDay.get(dayOfWeek);
 
+			long daysInMonth = startDate.until(endDate, ChronoUnit.DAYS);
+			long occurrences = (daysInMonth + startDate.getDayOfWeek().getValue() - 1) / 7;
+			salesAvgByDay.put(dayOfWeek, totalSales.stream().mapToDouble(Double::doubleValue).sum() / occurrences);
+		}
 		return salesAvgByDay;
 	}
 }

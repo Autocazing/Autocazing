@@ -12,10 +12,10 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +36,9 @@ public class MenuController {
         @ApiResponse(responseCode = "201", description = "메뉴 등록 성공")
     })
     @PostMapping
-    public ResponseEntity createMenu(@RequestBody PostMenuDto postMenuDto) {
-        menuService.createMenu(postMenuDto);
+    public ResponseEntity createMenu(@RequestBody PostMenuDto postMenuDto,HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        menuService.createMenu(postMenuDto,loginId);
         return new ResponseEntity(HttpStatus.CREATED);
 
     }
@@ -63,10 +64,12 @@ public class MenuController {
                         + "\"menuName\": \"latte\",\n"
                         + "  \"menuPrice\": 5500,\n"
                         + "  \"onEvent\": false,\n"
+                        + "  \"soldOut\": false,\n"
                         + "  \"ingredients\": [\n"
                         + "    {\n"
                         + "      \"ingredientId\": 1,\n"
                         + "      \"capacity\": 50\n"
+                        + "     \"ingredientName\": \"milk\",\n"
                         + "    }\n"
                         + "  ],\n"
                         + "  \"storeId\": 1}"
@@ -74,7 +77,7 @@ public class MenuController {
             })
         )
     })
-    @PatchMapping("/{menuId}")
+    @PutMapping("/{menuId}")
     public ResponseEntity updateMenu(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId
         ,@RequestBody UpdateMenuDto updateMenuDto){
         MenuDto menu = menuService.updateMenu(updateMenuDto,menuId);
@@ -106,7 +109,9 @@ public class MenuController {
         )
     })
     @GetMapping("/{menuId}")
-    public ResponseEntity getMenuById(@Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId){
+    public ResponseEntity getMenuById(@Parameter(in = ParameterIn.PATH)
+    @PathVariable(name = "menuId") Integer menuId, HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
         MenuDto menu = menuService.findMenuById(menuId);
         return ResponseEntity.ok(menu);
     }
@@ -123,6 +128,7 @@ public class MenuController {
                         + "  \"menuPrice\": 5500,\n"
                         + "\"imageUrl\": \"ASJKDLHJkasd.com\",\n"
                         + "  \"onEvent\": false,\n"
+                        + "  \"soldOut\": false,\n"
                         + "  \"discountRate\": 30,\n"
                         + "  \"ingredients\": [\n"
                         + "    {\n"
@@ -136,8 +142,9 @@ public class MenuController {
         )
     })
     @GetMapping("")
-    public ResponseEntity getAllmenus(){
-        List<MenuDetailsDto> menus = menuService.findAllMenus();
+    public ResponseEntity getAllmenus(HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<MenuDetailsDto> menus = menuService.findAllMenus(loginId);
         return ResponseEntity.ok(menus);
     }
 
@@ -166,14 +173,17 @@ public class MenuController {
             )
         )
     })
-    @GetMapping("/sales")
+    @GetMapping("/{menuId}/sales")
     public ResponseEntity getMenuSales(
         @Parameter(description = " 'day' 또는 'week' 또는 'month' 으로 요청할 수 있습니다.",
             required = true,
             schema = @Schema(type = "string", allowableValues = {"day", "week", "month"}))
         @RequestParam("type") String type,
-        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId") Integer menuId){ //type : 일별 day, 주별 week, 월별 month
-        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuId);
+        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "menuId")
+        Integer menuId, HttpServletRequest httpServletRequest){ //type : 일별 day, 주별 week, 월별 month
+
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<Map<String, Object>> sales = menuService.getMenuSales(type, menuId, loginId);
         return ResponseEntity.ok(sales);
     }
 }

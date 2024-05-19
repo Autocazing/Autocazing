@@ -30,17 +30,19 @@ public class IngredientScaleController {
 
     @Autowired
     private IngredientScaleService ingredientScaleService;
-
+    
     //단위 추가
     @Operation(summary = "단위 생성 요청", description = "직접 단위를 추가 했을 때 동작을 수행하는 API입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "단위 추가 성공")
     })
     @PostMapping("")
-    public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto) {
-        //        String loginId = httpServletRequest.getHeader("loginId");
-        ingredientScaleService.createIngredientScale(postScaleDto);
+    public ResponseEntity<IngredientScaleEntity> createIngredientScale(@RequestBody PostIngredientScaleDto postScaleDto,
+        HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        ingredientScaleService.createIngredientScale(postScaleDto, loginId);
         return new ResponseEntity(HttpStatus.CREATED);
+
     }
 
     // 단위 수정
@@ -72,7 +74,7 @@ public class IngredientScaleController {
     })
     @DeleteMapping("/{scaleId}")
     public ResponseEntity<Void> deleteIngredientScale(
-        @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId, HttpServletRequest httpServletRequest) {
+            @Parameter(in = ParameterIn.PATH) @PathVariable(name = "scaleId") Integer scaleId, HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
         System.out.println("loginId : " + loginId);
         ingredientScaleService.deleteIngredientScale(scaleId);
@@ -95,9 +97,7 @@ public class IngredientScaleController {
     @GetMapping("")
     public ResponseEntity<List<IngredientScaleDto>> getAllIngredientScales(HttpServletRequest httpServletRequest) {
         String loginId = httpServletRequest.getHeader("loginId");
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println("loginId : " + loginId);
-        List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales();
+        List<IngredientScaleDto> scales = ingredientScaleService.findAllIngredientScales(loginId);
         return ResponseEntity.ok(scales);
     }
 

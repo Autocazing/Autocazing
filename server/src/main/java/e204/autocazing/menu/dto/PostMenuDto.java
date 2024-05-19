@@ -16,7 +16,6 @@ public class PostMenuDto {
     private Integer menuPrice;
     private Boolean onEvent;
     private List<MenuIngredientDto> ingredients;
-    private Integer storeId;
     private int discountRate=0;
     private String imageUrl=" ";
 }

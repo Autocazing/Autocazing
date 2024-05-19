@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostIngredientDto {
 
-    private Integer storeId;
-
     private Integer venderId;
 
     private String ingredientName;

@@ -10,10 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostVenderDto {
-    private Integer storeId;
-    private String vendorName;
-    private String vendorManager;
-    private String vendorManagerContact;
-    private String vendorDescription;
+    private String venderName;
+    private String venderManager;
+    private String venderManagerContact;
+    private String venderDescription;
 
 }

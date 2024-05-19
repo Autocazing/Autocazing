@@ -1,10 +1,6 @@
 package e204.autocazing.stock.controller;
 
-import e204.autocazing.order.dto.OrderResponseDto;
-import e204.autocazing.order.dto.PostOrderDto;
-import e204.autocazing.stock.dto.PostStockDto;
-import e204.autocazing.stock.dto.StockDetailsDto;
-import e204.autocazing.stock.dto.UpdateStockDto;
+import e204.autocazing.stock.dto.*;
 import e204.autocazing.stock.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,11 +9,15 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -28,18 +28,18 @@ public class StockController {
     private StockService stockService;
 
 
-    @Operation(summary = "재고 요청", description = "재고 추가(재료)요청을 수행하는 API입니다.")
+    @Operation(summary = "재고 추가 요청", description = "재고 추가(재료)요청을 수행하는 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "주문 요청 성공",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PostStockDto.class)
+            @ApiResponse(responseCode = "201", description = "재고 추가 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostStockDto.class)))
                     )
-            )
     })
     @PostMapping("")
-    public ResponseEntity createStock(@RequestBody PostStockDto postStockDto){
-        stockService.createStock(postStockDto);
-        return ResponseEntity.ok(HttpStatus.CREATED);
+    public ResponseEntity<Void> createStock(@RequestBody PostRequestDto postRequestDto, HttpServletRequest httpServletRequest){
+        String loginId = httpServletRequest.getHeader("loginId");
+        stockService.createStock(postRequestDto,loginId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
     }
 
 
@@ -52,8 +52,11 @@ public class StockController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<StockDetailsDto>> getAllStocks() {
-        List<StockDetailsDto> stocks = stockService.findAllStocks();
+    public ResponseEntity<List<StockDetailsDto>> getAllStocks(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        System.out.println("request : " + httpServletRequest.toString());
+        System.out.println("loginId :" + loginId );
+        List<StockDetailsDto> stocks = stockService.findAllStocks(loginId);
         return ResponseEntity.ok(stocks);
     }
 
@@ -68,8 +71,9 @@ public class StockController {
             )
     })
     @GetMapping("/{stockId}")
-    public ResponseEntity<StockDetailsDto> getStockById(@PathVariable(name = "stockId") Integer stockId) {
-        StockDetailsDto stock = stockService.findStockById(stockId);
+    public ResponseEntity<StockDetailsDto> getStockById(HttpServletRequest httpServletRequest,@PathVariable(name = "stockId") Integer stockId) {
+        String loginId= httpServletRequest.getHeader("loginId");
+        StockDetailsDto stock = stockService.findStockById(stockId,loginId);
         return ResponseEntity.ok(stock);
     }
 
@@ -106,6 +110,15 @@ public class StockController {
     public ResponseEntity<Void> deleteStock(@PathVariable(name = "stockId") Integer stockId) {
         stockService.deleteStock(stockId);
         return ResponseEntity.ok().build();
+    }
+
+    //유통기한 임박상품 조회
+
+
+    @GetMapping("/schedule")
+    public ResponseEntity<HashMap<String,List<NearExpiredDto>>> test(){
+        HashMap<String,List<NearExpiredDto>> list = stockService.checkAndOrderNearExpiryProducts();
+        return ResponseEntity.ok(list);
     }
 
 }

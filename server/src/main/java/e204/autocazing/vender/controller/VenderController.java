@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/vendors")
+@RequestMapping("/api/venders")
 public class VenderController {
     @Autowired
     private VenderService venderService;
@@ -34,8 +36,9 @@ public class VenderController {
             )
     })
     @PostMapping("")
-    public ResponseEntity createVendor(@RequestBody PostVenderDto postVenderDto) {
-         venderService.createVendor(postVenderDto);
+    public ResponseEntity createVender(@RequestBody PostVenderDto postVenderDto, HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        venderService.createVender(postVenderDto, loginId);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -48,9 +51,9 @@ public class VenderController {
                     )
             )
     })
-    @PatchMapping("/{vendorId}")
-    public ResponseEntity updateVendor(@PathVariable(name = "vendorId") Integer vendorId, @RequestBody PatchVenderDto patchVenderDto) {
-        VenderDto venderDto = venderService.updateVendor(vendorId, patchVenderDto);
+    @PutMapping("/{venderId}")
+    public ResponseEntity updateVender(@PathVariable(name = "venderId") Integer venderId, @RequestBody PatchVenderDto patchVenderDto) {
+        VenderDto venderDto = venderService.updateVender(venderId, patchVenderDto);
         return ResponseEntity.ok(venderDto);
     }
 
@@ -60,16 +63,16 @@ public class VenderController {
             @ApiResponse(responseCode = "200", description = "발주 업체 삭제 성공",
                     content = @Content(examples = {
                             @ExampleObject(
-                                    name = "Vendor 삭제 ",
-                                    summary = "Vendor 삭제 body의 예시",
+                                    name = "Vender 삭제 ",
+                                    summary = "Vender 삭제 body의 예시",
                                     value = " "
                             )
                     })
             )
     })
-    @DeleteMapping("/{vendorId}")
-    public ResponseEntity deleteVendor(@PathVariable(name = "vendorId") Integer vendorId) {
-        venderService.deleteVendor(vendorId);
+    @DeleteMapping("/{venderId}")
+    public ResponseEntity deleteVender(@PathVariable(name = "venderId") Integer venderId) {
+        venderService.deleteVender(venderId);
         return ResponseEntity.ok().build();
     }
 
@@ -82,10 +85,10 @@ public class VenderController {
                     )
             )
     })
-    @GetMapping("/{vendorId}")
-    public ResponseEntity<VenderDto> getVendorById(@PathVariable(name = "vendorId") Integer vendorId) {
-        VenderDto vendor = venderService.getVendorById(vendorId);
-        return ResponseEntity.ok(vendor);
+    @GetMapping("/{venderId}")
+    public ResponseEntity<VenderDto> getVenderById(@PathVariable(name = "venderId") Integer venderId) {
+        VenderDto vender = venderService.getVenderById(venderId);
+        return ResponseEntity.ok(vender);
     }
 
     // 전체 재고 조회
@@ -97,8 +100,9 @@ public class VenderController {
             )
     })
     @GetMapping("")
-    public ResponseEntity<List<VenderDto>> getAllVendors() {
-        List<VenderDto> vendors = venderService.getAllVendors();
-        return ResponseEntity.ok(vendors);
+    public ResponseEntity<List<VenderDto>> getAllVenders(HttpServletRequest httpServletRequest) {
+        String loginId = httpServletRequest.getHeader("loginId");
+        List<VenderDto> venders = venderService.getAllVenders(loginId);
+        return ResponseEntity.ok(venders);
     }
 }

@@ -18,6 +18,7 @@ public class UpdateMenuDto {
     private Boolean onEvent;
     private int discountRate;
     private String imageUrl;
-    private List<MenuIngredientDto> ingredients;
+    private List<IngredientoDto> ingredients;
+    private Boolean soldOut;
 
 }

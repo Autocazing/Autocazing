@@ -17,7 +17,9 @@ public class StockDetailsDto {
     private Integer quantity;
     private LocalDate expirationDate;
     private Integer ingredientId;
+    private String ingredientName;
     private Integer deliveringCount;
+    private Integer used;
 
 
 }

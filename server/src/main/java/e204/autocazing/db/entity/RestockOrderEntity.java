@@ -39,6 +39,6 @@ public class RestockOrderEntity {
     @OneToMany(mappedBy = "restockOrder", cascade = CascadeType.ALL)
     private List<RestockOrderSpecificEntity> restockOrderSpecifics;
     public enum RestockStatus {
-        WRITING,ORDERED, ON_DELIVEREY,ARRIVED,COMPLETE
+        WRITING, ORDERED,COMPLETE
     }
 }

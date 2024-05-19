@@ -1,65 +1,85 @@
 package e204.autocazing.vender.service;
 
+import e204.autocazing.db.entity.StoreEntity;
 import e204.autocazing.db.entity.VenderEntity;
+import e204.autocazing.db.repository.StoreRepository;
 import e204.autocazing.db.repository.VenderRepository;
 import e204.autocazing.vender.dto.PatchVenderDto;
 import e204.autocazing.vender.dto.PostVenderDto;
 import e204.autocazing.vender.dto.VenderDto;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class VenderService {
     @Autowired
-    private VenderRepository vendorRepository;
+    private VenderRepository venderRepository;
+    @Autowired
+    private StoreRepository storeRepository;
 
-    public void createVendor(PostVenderDto postVenderDto) {
+
+    public void createVender(PostVenderDto postVenderDto, String loginId) {
         VenderEntity venderEntity = new VenderEntity();
-        venderEntity.setVenderName(postVenderDto.getVendorName());
-        venderEntity.setVenderManager(postVenderDto.getVendorManager());
-        venderEntity.setVenderManagerContact(postVenderDto.getVendorManagerContact());
-        venderEntity.setVenderDescription(postVenderDto.getVendorDescription());
-        vendorRepository.save(venderEntity);
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
+        Optional<StoreEntity> store = storeRepository.findById(storeId);
 
+        if (!store.isPresent())
+            throw new EntityNotFoundException("Store not found with id: " + storeId);
+
+        venderEntity.setStore(store);
+        venderEntity.setVenderName(postVenderDto.getVenderName());
+        venderEntity.setVenderManager(postVenderDto.getVenderManager());
+        venderEntity.setVenderManagerContact(postVenderDto.getVenderManagerContact());
+        venderEntity.setVenderDescription(postVenderDto.getVenderDescription());
+        venderRepository.save(venderEntity);
     }
 
-    public VenderDto updateVendor(Integer vendorId, PatchVenderDto patchVenderDto) {
-        VenderEntity vendor = vendorRepository.findById(vendorId)
-                .orElseThrow(() -> new IllegalArgumentException("Vendor not found"));
-        if (patchVenderDto.getVendorName() != null) vendor.setVenderName(patchVenderDto.getVendorName());
-        if (patchVenderDto.getVendorManager() != null) vendor.setVenderManager(patchVenderDto.getVendorManager());
-        if (patchVenderDto.getVendorManagerContact() != null) vendor.setVenderManagerContact(patchVenderDto.getVendorManagerContact());
-        if (patchVenderDto.getVendorDescription() != null) vendor.setVenderDescription(patchVenderDto.getVendorDescription());
-        vendorRepository.save(vendor);
-        return fromEntity(vendor);
+    public VenderDto updateVender(Integer venderId, PatchVenderDto patchVenderDto) {
+        VenderEntity vender = venderRepository.findById(venderId)
+                .orElseThrow(() -> new IllegalArgumentException("Vender not found"));
+        if (patchVenderDto.getVenderName() != null) vender.setVenderName(patchVenderDto.getVenderName());
+        if (patchVenderDto.getVenderManager() != null) vender.setVenderManager(patchVenderDto.getVenderManager());
+        if (patchVenderDto.getVenderManagerContact() != null) vender.setVenderManagerContact(patchVenderDto.getVenderManagerContact());
+        if (patchVenderDto.getVenderDescription() != null) vender.setVenderDescription(patchVenderDto.getVenderDescription());
+        venderRepository.save(vender);
+        return fromEntity(vender);
     }
 
-    public void deleteVendor(Integer vendorId) {
-        vendorRepository.deleteById(vendorId);
+    public void deleteVender(Integer venderId) {
+        venderRepository.deleteById(venderId);
     }
 
-    public List<VenderDto> getAllVendors() {
-        return vendorRepository.findAll().stream()
-                .map(this::fromEntity)
-                .collect(Collectors.toList());
+    public List<VenderDto> getAllVenders(String loginId) {
+        Integer storeId = storeRepository.findStoreIdByLoginId(loginId);
+        List<VenderEntity> venderEntityList = venderRepository.findAllByStoreId(storeId);
+
+        List<VenderDto> venderDtoList = new ArrayList<>();
+        for(VenderEntity vender : venderEntityList)
+            venderDtoList.add(fromEntity(vender));
+
+        return venderDtoList;
     }
 
-    public VenderDto getVendorById(Integer vendorId) {
-        VenderEntity vendor = vendorRepository.findById(vendorId)
-                .orElseThrow(() -> new IllegalArgumentException("Vendor not found with id: " + vendorId));
-        return fromEntity(vendor);
+    public VenderDto getVenderById(Integer venderId) {
+        VenderEntity vender = venderRepository.findById(venderId)
+                .orElseThrow(() -> new IllegalArgumentException("Vender not found with id: " + venderId));
+        return fromEntity(vender);
     }
 
-    private VenderDto fromEntity(VenderEntity vendor) {
+    private VenderDto fromEntity(VenderEntity vender) {
         return VenderDto.builder()
-                .vendorId(vendor.getVenderId())
-                .vendorName(vendor.getVenderName())
-                .vendorManager(vendor.getVenderManager())
-                .vendorManagerContact(vendor.getVenderManagerContact())
-                .vendorDescription(vendor.getVenderDescription())
+                .venderId(vender.getVenderId())
+                .venderName(vender.getVenderName())
+                .venderManager(vender.getVenderManager())
+                .venderManagerContact(vender.getVenderManagerContact())
+                .venderDescription(vender.getVenderDescription())
                 .build();
     }
 }
