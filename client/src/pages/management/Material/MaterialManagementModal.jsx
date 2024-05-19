@@ -8,6 +8,7 @@ import {
     MaterialScalePostApi,
     MaterialEditApi,
 } from "../../../apis/server/MaterialApi";
+import Swal from "sweetalert2";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -86,14 +87,38 @@ const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     }
 
     const handleSubmit = (e) => {
-        postMaterial.mutate(materialPostData);
-        postMaterialScale.mutate(materialPostData.scale);
-        onClose();
+        postMaterial.mutate(materialPostData); // 재료 정보 추가
+        postMaterialScale.mutate(materialPostData.scale); // 스케일 정보 추가
+        onClose(); // 모달 닫기
+
+        Swal.fire({
+            // 성공 알림 표시
+            title: "재료 추가 완료!",
+            text: "재료 정보가 성공적으로 추가되었습니다.",
+            icon: "success",
+            iconColor: "#3C50E0",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3C50E0",
+        });
     };
 
     const handleEdit = (e) => {
-        editMaterial.mutate(materialPostData);
-        onClose();
+        editMaterial.mutate(materialPostData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "재료 수정 완료!",
+                    text: "재료 정보가 성공적으로 수정되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0",
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose();
+                    }
+                });
+            },
+        });
     };
 
     const handleInputChange = (event) => {
