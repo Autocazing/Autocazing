@@ -194,62 +194,293 @@ server {
 }
 ```
 
-### ✅ Docker 설치
-
-#### Set up the repository
-
-1. Update the `apt` package index and install packages to allow `apt` to use a repository over HTTPS:
+### ✅ Docker, Docker Compose 설치
 
 ```
-$ sudo apt-get update
-$ sudo apt-get install \\
-    ca-certificates \\
-    curl \\
-    gnupg \\
-    lsb-release
+curl -fsSL https://get.docker.com -o dockerSetter.sh
+sudo chmod 711 dockerSetter.sh
+./dockerSetter.sh
 ```
 
-2. Add Docker's official GPG key
+### 📋 docker-compose.yml
 
 ```
-$ sudo install -m 0755 -d /etc/apt/keyrings
-$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+version: '3.8'
+
+services:
+  api-gateway-server:
+    image: localhost:5000/api-gateway-server:${API_GATEWAY_SERVER_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-server
+    networks:
+      - prod-network
+
+  discovery-server:
+    image: localhost:5000/discovery-server:${DISCOVERY_SERVER_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8761:8761"
+    depends_on:
+      - api-gateway-server
+    networks:
+      - prod-network
+
+  config-server:
+    image: localhost:5000/config-server:${CONFIG_SERVER_TAG}
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql
+      - Kafka00Service
+      - Kafka01Service
+      - Kafka02Service
+      - redis
+    networks:
+      - prod-network
+
+  auth-server:
+    image: localhost:5000/auth-server:${AUTH_SERVER_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8085:8080"
+    depends_on:
+      - api-gateway-server
+    networks:
+      - prod-network
+      - auth-network
+
+  inventory-service:
+    image: localhost:5000/inventory-service:${INVENTORY_SERVICE_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8086:8080"
+    depends_on:
+      - api-gateway-server
+    networks:
+      - prod-network
+
+  alert-service:
+    image: localhost:5000/alert-service:${ALERT_SERVICE_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8087:8080"
+    depends_on:
+      - api-gateway-server
+    networks:
+      - prod-network
+
+  solution-service:
+    image: localhost:5000/solution-service:${SOLUTION_SERVICE_TAG}
+    ports:
+      - "8088:8088"
+    depends_on:
+      - api-gateway-server
+    networks:
+      - prod-network
+      - metric-network
+
+  mysql:
+    image: mysql:latest
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ssafy
+      MYSQL_DATABASE: autocazing_inventor
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    networks:
+      - prod-network
+
+  influxdb:
+    image: bitnami/influxdb:latest
+    ports:
+      - "3386:8086"
+      - "3388:8088"
+    environment:
+      - INFLUXDB_ADMIN_USER_PASSWORD=ssafy123
+      - INFLUXDB_ADMIN_USER_TOKEN=ssafy123
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    networks:
+      - metric-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - auth-network
+
+  Kafka00Service:
+    image: bitnami/kafka:3.5.1-debian-11-r44
+    restart: unless-stopped
+    ports:
+      - '10000:9094'
+    environment:
+      - KAFKA_CFG_BROKER_ID=0
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_KRAFT_CLUSTER_ID=HsDBs9l6UUmQq7Y5E6bNlw
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@Kafka00Service:9093,1@Kafka01Service:9093,2@Kafka02Service:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://Kafka00Service:9092,EXTERNAL://k10e204.p.ssafy.io:10000
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms512M
+    volumes:
+      - kafka0-data:/var/lib/kafka
+    networks:
+      - prod-network
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "0.5"
+        reservations:
+          memory: 512m
+          cpus: "0.25"
+
+  Kafka01Service:
+    image: bitnami/kafka:3.5.1-debian-11-r44
+    restart: unless-stopped
+    ports:
+      - '10001:9094'
+    environment:
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_KRAFT_CLUSTER_ID=HsDBs9l6UUmQq7Y5E6bNlw
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@Kafka00Service:9093,1@Kafka01Service:9093,2@Kafka02Service:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://Kafka01Service:9092,EXTERNAL://k10e204.p.ssafy.io:10001
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms512M
+    volumes:
+      - kafka1-data:/var/lib/kafka
+    networks:
+      - prod-network
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "0.5"
+        reservations:
+          memory: 512m
+          cpus: "0.25"
+
+  Kafka02Service:
+    image: bitnami/kafka:3.5.1-debian-11-r44
+    restart: unless-stopped
+    ports:
+      - '10002:9094'
+    environment:
+      - KAFKA_CFG_BROKER_ID=2
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_KRAFT_CLUSTER_ID=HsDBs9l6UUmQq7Y5E6bNlw
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@Kafka00Service:9093,1@Kafka01Service:9093,2@Kafka02Service:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://Kafka02Service:9092,EXTERNAL://k10e204.p.ssafy.io:10002
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms512M
+    volumes:
+      - kafka2-data:/var/lib/kafka
+    networks:
+      - prod-network
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "0.5"
+        reservations:
+          memory: 512m
+          cpus: "0.25"
+
+  KafkaWebUiService:
+    image: provectuslabs/kafka-ui:latest
+    restart: always
+    container_name: KafkaWebUiContainer
+    ports:
+      - '8090:8080' # 호스트의 8085 포트를 컨테이너의 8080 포트에 바인딩
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=Local-Kraft-Cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=Kafka00Service:9092,Kafka01Service:9092,Kafka02Service:9092
+      - DYNAMIC_CONFIG_ENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_TOPICAUDITENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED=true
+    depends_on:
+      - Kafka00Service
+      - Kafka01Service
+      - Kafka02Service
+    networks:
+      - prod-network
+
+volumes:
+  mysql-data:
+  influxdb-data:
+  kafka0-data:
+  kafka1-data:
+  kafka2-data:
+
+networks:
+  prod-network:
+    driver: bridge
+  auth-network:
+    driver: bridge
+  metric-network:
+    driver: bridge
 ```
 
-3. Use the following command to set up the repository
+### 📋 spring boot Docker 파일
 
 ```
-$ echo \\
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] <https://download.docker.com/linux/ubuntu> \\
-$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-```
+# Use Zulu OpenJDK for the build stage
+FROM azul/zulu-openjdk:17 as builder
 
-#### Install Docker Engine
+# ARG to receive profile name during build( ex) docker build --build-arg PROFILE=dev -t your_image_name . )
+# if no --build-arg option given, local will applied to image)
+ARG PROFILE=prod
 
-1. Update the apt package index
+WORKDIR /home/ubuntu/your_deploy_dir_name
 
-```
-$ sudo apt-get update
-```
+# Copy the jar from the build stage to the production image
+COPY your_service_name-0.0.1-SNAPSHOT.jar your_service_name.jar
 
-2. Install Docker Engine, containerd, and Docker Compose
-
-```
-$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-### ✅ PostgreSQL 설치와 실행
-
-```
-$ sudo docker pull postgres
-$ sudo docker run -d -p <Your>:<Port> -e POSTGRES_PASSWORD="<YourStrong@Passw0rd>" --name <YourContainerName> postgres
-```
-
-### ✅ Redis 설치와 실행
-
-```
-$ sudo docker pull redis
-$ sudo docker run -d -p <Your>:<Port> --name <YourConatinerName> redis
+# Specify the entrypoint to start the application
+ENTRYPOINT ["java", "-jar", "your_service_name.jar", "--spring.profiles.active=prod"]
 ```
 
 ### 📋 프레임워크 설정 파일 내용
