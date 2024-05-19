@@ -32,7 +32,7 @@ const customStyles = {
         overflow: "auto",
     },
 };
-const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
+const StockManagementModal = ({ isOpen, onClose }) => {
     const [stockPostData, setStockPostData] = useState({
         onExcel: false,
         postStockDtoList: [
@@ -47,19 +47,11 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [productNames, setProductNames] = useState({});
 
     const { data: materialInfo, isLoading, isError, error } = MaterialGetApi();
-    useEffect(() => {
-        console.log(stockPostData);
-    }, [stockPostData]);
+
     const postStock = StockPostApi();
-    const editStock = StockEditApi(initialValue.stockId);
 
     const handleSubmit = (e) => {
         postStock.mutate(stockPostData);
-        onClose();
-    };
-
-    const handleEdit = (e) => {
-        editStock.mutate(stockPostData);
         onClose();
     };
 
@@ -172,15 +164,11 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                     />
                 </button>
             </div>
-            {Object.keys(initialValue).length === 0 ? (
-                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
-                    재고 추가
-                </h1>
-            ) : (
-                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
-                    재고 수정
-                </h1>
-            )}
+
+            <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                재고 추가
+            </h1>
+
             <div className="p-6.5">
                 {Array.isArray(stockPostData) &&
                 stockPostData.some((item) => item.quantity > 0) ? (
@@ -219,7 +207,6 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         영수증 파일이 있다면 파일을 넣어주세요.
                     </p>
                 )}
-
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                         영주증 파일
@@ -291,22 +278,12 @@ const StockManagementModal = ({ isOpen, onClose, initialValue }) => {
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                 </div> */}
-
-                {Object.keys(initialValue).length === 0 ? (
-                    <button
-                        onClick={handleSubmit}
-                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                    >
-                        추가하기
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleEdit}
-                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
-                    >
-                        수정하기
-                    </button>
-                )}
+                <button
+                    onClick={handleSubmit}
+                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                >
+                    추가하기
+                </button>
             </div>
         </Modal>
     );
