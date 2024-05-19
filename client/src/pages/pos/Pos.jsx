@@ -20,6 +20,9 @@ function Pos() {
     const { data: Menu } = GetMenu(); // 서버 통신용 코드(Get)
     const postOrders = PostOrders(); //  서보 통신용 코드(Post)
 
+    {
+        console.log(products);
+    }
     const handleSubmit = (extractedProducts) => {
         console.log(extractedProducts);
         postOrders.mutate({
@@ -239,7 +242,7 @@ function Pos() {
 
                                 <div className="px-0 h-20 lg:h-28 rounded-lg">
                                     <img
-                                        src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
+                                        src={product?.imageUrl}
                                         alt="img"
                                         className="w-full rounded h-full"
                                     />
@@ -294,7 +297,7 @@ function Pos() {
                                 <div className="flex py-2 px-1 items-center">
                                     <div className="h-16 w-16 hidden lg:inline-block">
                                         <img
-                                            src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
+                                            src={p.imageUrl}
                                             alt="img"
                                             className="w-full rounded h-full"
                                         />
