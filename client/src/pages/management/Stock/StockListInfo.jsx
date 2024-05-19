@@ -3,7 +3,8 @@ import deleteIcon from "../../../images/orderlist/delete.svg";
 
 import { useState } from "react";
 import { StockDeleteApi } from "../../../apis/server/StockApi";
-import StockManagementModal from "./StockManagementModal";
+import StockPutModal from "./StockPutModal";
+
 const StockListInfo = ({ stock, isLastItem }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const deleteStock = StockDeleteApi(stock.stockId);
@@ -59,7 +60,7 @@ const StockListInfo = ({ stock, isLastItem }) => {
                     <img src={deleteIcon} alt="delete" />
                 </button>
                 {modalIsOpen && (
-                    <StockManagementModal
+                    <StockPutModal
                         isOpen={modalIsOpen}
                         onClose={() => setModalIsOpen(false)}
                         initialValue={stock}
