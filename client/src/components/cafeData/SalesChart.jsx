@@ -100,8 +100,37 @@ let options = {
     },
 };
 
+// 날짜 계산을 위한 헬퍼 함수들
+const getDaysAgo = (days) => {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+};
+
+const getWeeksAgo = (weeks) => {
+    const date = new Date();
+    date.setDate(date.getDate() - weeks * 7);
+    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+};
+
+const getMonthsAgo = (months) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - months);
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+};
+
+// 동적 x축 레이블 생성 함수
+const generateXAxisLabels = () => {
+    const dayx = Array.from({ length: 7 }, (_, i) => getDaysAgo(6 - i));
+    const weekx = Array.from({ length: 7 }, (_, i) => getWeeksAgo(6 - i));
+    const monthx = Array.from({ length: 7 }, (_, i) => getMonthsAgo(6 - i));
+
+    return { dayx, weekx, monthx };
+};
+
 const SalesChart = ({ dayData, weekData, monthData }) => {
     const [headContent, setHeadContent] = useState("day");
+    const { dayx, weekx, monthx } = generateXAxisLabels();
 
     const [state, setState] = useState({
         series: [
@@ -113,6 +142,7 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
     });
 
     const [maxSize, setMaxSize] = useState(0);
+    const [xval, setXval] = useState([]);
 
     const updatedOptions = {
         ...options, // 기존 옵션들 복사
@@ -120,6 +150,11 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
             ...options.yaxis, // 기존 yaxis 옵션 복사
             min: 0, // 최솟값(min)을 minSize로 업데이트
             max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+        },
+
+        xaxis: {
+            ...options.xaxis,
+            categories: xval,
         },
     };
 
@@ -180,10 +215,13 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
         let max = 0;
         if (selectedButton === "day" && dayData) {
             max = Math.max(800000);
+            setXval(dayx);
         } else if (selectedButton === "week" && weekData) {
             max = Math.max(3000000);
+            setXval(weekx);
         } else if (selectedButton === "month" && monthData) {
             max = Math.max(12000000);
+            setXval(monthx);
         }
 
         if (max > 1) {
