@@ -15,10 +15,6 @@ const DefaultLayout = ({ children }) => {
     } else if (posPage) {
         return (
             <>
-                <Header
-                    sidebarOpen={sidebarOpen}
-                    setSidebarOpen={setSidebarOpen}
-                />
                 <div>{children}</div>
             </>
         );
