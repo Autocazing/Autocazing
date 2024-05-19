@@ -227,7 +227,7 @@ const ChartOne = ({ thisWeekSold, thisMonthAvgSold }) => {
         yaxis: {
             ...options.yaxis, // 기존 yaxis 옵션 복사
             min: 0, // 최솟값(min)을 minSize로 업데이트
-            max: maxSize, // 최댓값(max)을 maxSize로 업데이트
+            max: 800000, // 최댓값(max)을 maxSize로 업데이트
         },
     };
 

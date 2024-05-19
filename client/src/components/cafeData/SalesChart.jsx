@@ -179,11 +179,11 @@ const SalesChart = ({ dayData, weekData, monthData }) => {
     useEffect(() => {
         let max = 0;
         if (selectedButton === "day" && dayData) {
-            max = Math.max(...dayData);
+            max = Math.max(800000);
         } else if (selectedButton === "week" && weekData) {
-            max = Math.max(...weekData);
+            max = Math.max(3000000);
         } else if (selectedButton === "month" && monthData) {
-            max = Math.max(...monthData);
+            max = Math.max(12000000);
         }
 
         if (max > 1) {
