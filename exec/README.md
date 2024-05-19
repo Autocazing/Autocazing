@@ -483,16 +483,25 @@ COPY your_service_name-0.0.1-SNAPSHOT.jar your_service_name.jar
 ENTRYPOINT ["java", "-jar", "your_service_name.jar", "--spring.profiles.active=prod"]
 ```
 
+### 📋 FastAPI Docker 파일
+
+```
+FROM python:3.11.9
+
+WORKDIR /autocazing_solution
+
+COPY requirements.txt /autocazing_solution/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /autocazing_solution/requirements.txt
+
+COPY . /autocazing_solution
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8088"]
+```
+
 ### 📋 프레임워크 설정 파일 내용
 
 ```jsx
----------React---------
-.env 내 환경변수 설정
-
-VITE_TMAP_API_KEY='{key}'
-VITE_KAKAOMAP_API_KEY='{key}'
-VITE_KAKAOMAP_REST_API_KEY='{key}'
-
 ---------Spring---------
 application.yml 내 환경변수 설정
 
@@ -609,54 +618,9 @@ $ cd /path-to-git-directory/server
 $ chmod +x gradlew
 $ ./gradlew build
 $ cd /build/libs
-$ nohup java -jar -Dspring.profiles.active={your-want-profile} dororo-0.0.1-SNAPSHOT.jar
+$ nohup java -jar -Dspring.profiles.active={your-want-profile} your_file_name-0.0.1-SNAPSHOT.jar
 ```
 
 ---
 
-## 3. 외부 서비스
-
-### 🔐 소셜 로그인
-
-[네이버 로그인](https://developers.naver.com/docs/login/overview/overview.md)
-
-1. 네이버 개발자 센터에서 내 어플리케이션 등록
-2. API 설정, Callback URL, 서비스 URL 지정
-
-### 🌐 지도
-
-TMAP
-
-1. [SK Open API](https://openapi.sk.com/) 앱 등록
-2. PRODUCTS -> TMAP 옆 API 버튼 클릭 -> 우측 상단 개발 가이드 클릭 -> 스크롤 후 중간쯤 "구매를 원하시면 여기를 클릭" 하이퍼 텍스트 클릭 -> 앱 등록
-3. [TMAP 기능](https://openapi.sk.com/products/detail?svcSeq=4&menuSeq=3) 참고하여 필요한 API 사용
-
-Kakao Map
-
-1. [카카오 개발자 센터](https://developers.kakao.com/) 앱 등록
-2. [MAPS API](https://apis.map.kakao.com/web/) 참고하여 필요한 API 사용
-
----
-
-## 4. 시연 시나리오
-
-### 1. 랜딩 페이지 & 로그인
-
-<img src = ./assets/landing.gif width=165 height = 330/>
-
-### 2. 코스 추천
-
-<img src = ./assets/findlocation.gif width=165 height = 330/> <img src = ./assets/createoption.gif width=165 height = 330/>
-<img src = ./assets/createcomplete.gif width=165 height = 330/>
-
-### 3. 코스 저장
-
-<img src = ./assets/selectcourse.gif width=165 height = 330/>
-
-### 4. 코스 주행
-
-<img src = ./assets/drive.gif width=165 height = 330/>
-
-### 5. 코스 커스텀
-
-<img src = ./assets/custom.gif width=165 height = 330/>
+## 3. 시연 시나리오
