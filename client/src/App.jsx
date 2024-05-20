@@ -1,7 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/dasgboard/Dashboard";
-import Material from "./pages/cafeData/Material";
-import Menu from "./pages/cafeData/Menu";
 import Sales from "./pages/cafeData/Sales";
 import CafeData from "./pages/cafeData/CafeData";
 import CartList from "./pages/order/CartList";
@@ -9,15 +7,16 @@ import ProgressOrder from "./pages/order/ProgressOrder";
 import Order from "./pages/order/Order";
 import CafeReport from "./pages/cafeReport/CafeReport";
 import Management from "./pages/management/Management";
-import CompanyManagement from "./pages/management/CompanyManagement";
-import MaterialManagement from "./pages/management/MaterialManagement";
-import MenuManagement from "./pages/management/MenuManagement";
-import StockManagement from "./pages/management/StockManagement";
+import CompanyManagement from "./pages/management/Company/CompanyManagement";
+import MaterialManagement from "./pages/management/Material/MaterialManagement";
+import MenuManagement from "./pages/management/Menu/MenuManagement";
+import StockManagement from "./pages/management/Stock/StockManagement";
 import LoginPage from "./pages/login/LoginPage";
 import Pos from "./pages/pos/Pos";
 
 import DefaultLayout from "./layout/DefaultLayout";
 import PrivateRoute from "./PrivateRoute";
+import CompleteOrder from "./pages/order/CompleteOrder";
 
 function App() {
     return (
@@ -27,11 +26,6 @@ function App() {
                     <Route element={<PrivateRoute />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/cafeData" element={<CafeData />}>
-                            <Route
-                                path="material"
-                                element={<Material />}
-                            ></Route>
-                            <Route path="menu" element={<Menu />}></Route>
                             <Route path="sales" element={<Sales />}></Route>
                         </Route>
                         <Route path="/order" element={<Order />}>
@@ -42,6 +36,10 @@ function App() {
                             <Route
                                 path="progressOrder"
                                 element={<ProgressOrder />}
+                            ></Route>
+                            <Route
+                                path="completeOrder"
+                                element={<CompleteOrder />}
                             ></Route>
                         </Route>
                         <Route path="/cafeReport" element={<CafeReport />} />

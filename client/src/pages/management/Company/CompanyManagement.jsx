@@ -1,9 +1,16 @@
-import CompanyTable from "../../components/management/CompanyTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CompanyManagementModal from "./CompanyManagementModal";
+import CompanyTable from "./CompanyTable";
+
+import { CompanyGetApi } from "../../../apis/server/CompanyApi";
 
 const CompanyManagement = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const { data: companyInfo, isLoading, isError, error } = CompanyGetApi();
+
+    // useEffect(() => {
+    //     console.log(companyinfo);
+    // }, [companyinfo]);
 
     return (
         <>
@@ -16,18 +23,20 @@ const CompanyManagement = () => {
                     <li className="font-bold text-primary">업체 관리</li>
                 </ol>
             </div>
-            <CompanyTable />
-            <button
-                onClick={() => setModalIsOpen(true)}
-                className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
-            >
-                업체추가
-            </button>
-
+            <CompanyTable companyInfo={companyInfo} />
+            <div className="flex justify-end mt-6">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
+                >
+                    업체추가
+                </button>
+            </div>
             {modalIsOpen && (
                 <CompanyManagementModal
                     isOpen={modalIsOpen}
                     onClose={() => setModalIsOpen(false)}
+                    initialValue={[]}
                 />
             )}
         </>

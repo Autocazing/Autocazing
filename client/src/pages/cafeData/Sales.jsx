@@ -1,12 +1,50 @@
-import { useState } from "react";
-import ChartOne from "../../components/cafeData/ChartOne.jsx";
+import { useEffect, useState } from "react";
+import SalesChart from "../../components/cafeData/SalesChart.jsx";
+import {
+    GetSalesDay,
+    GetSalesMonth,
+    GetSalesWeek,
+} from "../../apis/server/CafeDataApi.jsx";
 
 const Sales = () => {
-    const [list, setList] = useState([1, 2, 3, 4, 5]);
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
+    const { data: SalesDay } = GetSalesDay();
+    const { data: SalesWeek } = GetSalesWeek();
+    const { data: SalesMonth } = GetSalesMonth();
+
+    const [dayData, setDayData] = useState([]);
+    const [weekData, setWeekData] = useState([]);
+    const [monthData, setMonthData] = useState([]);
+
+    useEffect(() => {
+        if (SalesDay) {
+            if (SalesDay.length > 1) {
+                const lastSevenTotalSales = SalesDay.slice(-7) // 마지막 7개의 데이터만 가져옵니다.
+                    .map((item) => item.totalSales); // totalSales 값만 추출합니다.
+                setDayData(lastSevenTotalSales);
+            }
+        }
+    }, [SalesDay, SalesWeek, SalesMonth]);
+
+    useEffect(() => {
+        if (SalesWeek) {
+            if (SalesWeek.length > 1) {
+                const lastSevenTotalSales = SalesWeek.slice(-7) // 마지막 7개의 데이터만 가져옵니다.
+                    .map((item) => item.totalSales); // totalSales 값만 추출합니다.
+                setWeekData(lastSevenTotalSales);
+            }
+        }
+    }, [SalesDay, SalesWeek, SalesMonth]);
+
+    useEffect(() => {
+        if (SalesMonth) {
+            if (SalesMonth.length > 1) {
+                const lastSevenTotalSales = SalesMonth.slice(-7) // 마지막 7개의 데이터만 가져옵니다.
+                    .map((item) => item.totalSales); // totalSales 값만 추출합니다.
+                setMonthData(lastSevenTotalSales);
+            }
+        }
+    }, [SalesDay, SalesWeek, SalesMonth]);
+
     return (
         <div>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -18,18 +56,12 @@ const Sales = () => {
                     <li className="font-bold text-primary">매출별</li>
                 </ol>
             </div>
-            {/* <button className="dropdown-btn" onClick={toggleDropdown}>
-                Dropdown Button
-            </button>
-            {isOpen && (
-                <div className="dropdown-content">
-                    {list.map((item, index) => {
-                        return <li key={index}>{list[index]}</li>;
-                    })}
-                </div>
-            )} */}
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <ChartOne />
+                <SalesChart
+                    dayData={dayData}
+                    weekData={weekData}
+                    monthData={monthData}
+                />
             </div>
         </div>
     );

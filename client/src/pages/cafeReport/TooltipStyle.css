@@ -1,0 +1,8 @@
+/* TooltipStyles.css */
+.custom-tooltip {
+    background-color: white !important; /* 중요 플래그를 사용하여 기본 스타일을 강제로 오버라이드 */
+    color: black; /* 텍스트 색상 지정 */
+    border: 1px solid #ccc; /* 경계선 추가 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    border-radius: 8px; /* 모서리 둥글게 */
+}

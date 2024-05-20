@@ -1,6 +1,14 @@
-import CardDataStats from "../../components/CardDataState";
-import ChartOne from "../../components/ChartOne";
-import DashboardServer from "../../apis/server/DashboardServer";
+import CardDataStats from "../../components/dashboard/CardDataState";
+import ChartOne from "../../components/dashboard/ChartOne";
+import DashboardReport from "../cafeReport/DashboardReport";
+import {
+    GetSalesSold,
+    GetSalesDay,
+    GetSalesMonth,
+    GetSalesMonthAvg,
+} from "../../apis/server/DashboardServer";
+import { useEffect, useState } from "react";
+
 const date = new Date();
 
 const year = date.getFullYear();
@@ -10,17 +18,93 @@ const day = date.getDate();
 const date2 = new Date(year, month, day - 1);
 const date3 = new Date(year, month, 1);
 
-const today = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
-const yesterday = `${date2.getFullYear()}.${date2.getMonth()}.${date2.getDate()}`;
-const curmonth = `${date3.getFullYear()}.${date3.getMonth()}.${date3.getDate()} ~ ${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+const today = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+const yesterday = `${date2.getFullYear()}.${
+    date2.getMonth() + 1
+}.${date2.getDate()}`;
+const curmonth = `${date3.getFullYear()}.${
+    date3.getMonth() + 1
+}.${date3.getDate()} ~ ${date.getFullYear()}.${
+    date.getMonth() + 1
+}.${date.getDate()}`;
 
 const Dashboard = () => {
+    const [todaySold, setTodaySold] = useState(0);
+    const [yesterdaySold, setYesterdaySold] = useState(0);
+    const [thisMonthSold, setThisMonthSold] = useState(0);
+    const [thisWeekSold, setThisWeekSold] = useState([]);
+    const [thisMonthAvgSold, setThisMonthAvgSold] = useState([]);
+    const [visited, setVisited] = useState();
+
+    const { data: SalesSold } = GetSalesSold();
+
+    const { data: SalesDay } = GetSalesDay();
+
+    const { data: SalesMonth } = GetSalesMonth();
+
+    const { data: SalesMonthAvg } = GetSalesMonthAvg();
+
+    useEffect(() => {
+        if (SalesMonthAvg !== undefined) {
+            if (SalesMonthAvg !== 0) {
+                setThisMonthAvgSold(SalesMonthAvg);
+            }
+            // console.log(SalesMonthAvg);
+        }
+    }, [SalesMonthAvg]);
+
+    useEffect(() => {
+        if (SalesMonth !== undefined) {
+            if (SalesMonth.length !== 0) {
+                // console.log(SalesMonth[SalesMonth.length - 1].totalSales);
+                setThisMonthSold(
+                    SalesMonth[
+                        SalesMonth.length - 1
+                    ].totalSales.toLocaleString(),
+                );
+            }
+            // console.log(SalesSold.length);
+            // console.log(SalesSold);
+        }
+    }, [SalesMonth]);
+
+    useEffect(() => {
+        // console.log(GetSalesMonth);
+        if (SalesSold !== undefined) {
+            if (SalesSold.length !== 0) {
+                setVisited(SalesSold);
+            }
+        }
+    }, [SalesSold]);
+
+    useEffect(() => {
+        if (SalesDay !== undefined) {
+            setTodaySold(
+                SalesDay[SalesDay.length - 1].totalSales.toLocaleString(),
+            );
+            setYesterdaySold(
+                SalesDay[SalesDay.length - 2].totalSales.toLocaleString(),
+            );
+
+            const thisWeekData = [];
+            for (let i = SalesDay.length - 7; i < SalesDay.length; i++) {
+                if (i >= 0) {
+                    thisWeekData.push(SalesDay[i]);
+                } else {
+                    break;
+                }
+            }
+            setThisWeekSold(thisWeekData);
+            // console.log(thisWeekData);
+            // console.log(thisWeekData);
+        }
+    }, [SalesDay]);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
                 <CardDataStats
                     title="금일 매출 현황"
-                    total="314,320"
+                    total={todaySold}
                     isNum={true}
                     Date={today}
                 >
@@ -44,7 +128,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="전일 매출"
-                    total="263,100"
+                    total={yesterdaySold}
                     isNum={true}
                     Date={yesterday}
                 >
@@ -72,7 +156,7 @@ const Dashboard = () => {
                 </CardDataStats>
                 <CardDataStats
                     title="당월 매출"
-                    total="6,130,340"
+                    total={thisMonthSold}
                     isNum={true}
                     Date={curmonth}
                 >
@@ -95,12 +179,16 @@ const Dashboard = () => {
                     </svg>
                 </CardDataStats>
                 <CardDataStats
-                    title="금일 방문 인원"
-                    total="122"
+                    title="금일 판매 잔 수"
+                    total={SalesSold?.todaySold}
                     isNum={false}
                     Date={today}
-                    rate="100"
-                    levelUp
+                    rate={Math.abs(
+                        SalesSold?.todaySold - SalesSold?.yesterdaySold,
+                    )}
+                    // levelUp, levelDown prop 추가
+                    levelUp={SalesSold?.todaySold > SalesSold?.yesterdaySold}
+                    levelDown={SalesSold?.todaySold < SalesSold?.yesterdaySold}
                 >
                     <svg
                         className="fill-primary dark:fill-white"
@@ -126,9 +214,12 @@ const Dashboard = () => {
                 </CardDataStats>
             </div>
             <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-                <ChartOne />
+                <ChartOne
+                    thisWeekSold={thisWeekSold}
+                    thisMonthAvgSold={thisMonthAvgSold}
+                />
+                <DashboardReport />
             </div>
-            <DashboardServer />
         </div>
     );
 };

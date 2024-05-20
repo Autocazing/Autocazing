@@ -1,6 +1,9 @@
+import { GetBasket } from "../../apis/server/OrderApi";
 import CartListTable from "../../components/order/CartListTable";
 
 const CartList = () => {
+    const { data: Basket } = GetBasket();
+
     return (
         <>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -12,7 +15,7 @@ const CartList = () => {
                     <li className="font-bold text-primary">장바구니</li>
                 </ol>
             </div>
-            <CartListTable />
+            <CartListTable Basket={Basket} />
         </>
     );
 };

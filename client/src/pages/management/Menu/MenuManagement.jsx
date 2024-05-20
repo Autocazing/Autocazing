@@ -1,9 +1,11 @@
-import MenuTable from "../../components/management/MenuTable";
+import MenuTable from "./MenuTable";
 import MenuManagementModal from "./MenuManagementModal";
 import { useState } from "react";
+import { MenuGetApi } from "../../../apis/server/MenuApi";
 
 const MenuManagement = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const { data: menuInfo, isLoading, isError, error } = MenuGetApi();
     return (
         <>
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -15,18 +17,21 @@ const MenuManagement = () => {
                     <li className="font-bold text-primary">메뉴 관리</li>
                 </ol>
             </div>
-            <MenuTable />
-            <button
-                onClick={() => setModalIsOpen(true)}
-                className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
-            >
-                메뉴추가
-            </button>
+            <MenuTable menuInfo={menuInfo} />
+            <div className="flex justify-end mt-6">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="bg-transparent hover:bg-primary text-primary font-semibold hover:text-white py-2 px-4 border border-primary hover:border-transparent rounded"
+                >
+                    메뉴추가
+                </button>
+            </div>
 
             {modalIsOpen && (
                 <MenuManagementModal
                     isOpen={modalIsOpen}
                     onClose={() => setModalIsOpen(false)}
+                    initialValue={[]}
                 />
             )}
         </>

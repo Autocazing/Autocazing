@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../apis/server/Users";
 import cafeImage from "../../images/login/cafe-interior-design.jpg";
+import { TbLocationStar } from "react-icons/tb";
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
     const [Id, setId] = useState(""); // Id
@@ -16,15 +18,35 @@ const LoginPage = () => {
             { loginId: Id, password: Pw },
             (res) => {
                 if (res) {
-                    // console.log(res.headers.token);
+                    console.log(res);
+                    console.log(res.headers.token);
                     localStorage.setItem("accessToken", res.headers.token);
-                    navigate("/dashboard"); // 메인페이지 이동
-                    window.location.reload();
+                    localStorage.setItem("userId", Id);
+
+                    Swal.fire({
+                        title: "로그인 성공!",
+                        icon: "success",
+                        iconColor: "#3C50E0",
+                        confirmButtonText: "확인",
+                        confirmButtonColor: "#3C50E0",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate("/dashboard");
+                            window.location.reload();
+                        }
+                    });
                 }
             },
             (err) => {
                 console.log("로그인 오류");
                 console.log(err);
+                Swal.fire({
+                    // 로그인 실패 시 SweetAlert 표시
+                    title: "로그인 실패",
+                    text: "아이디 또는 비밀번호를 확인해주세요.",
+                    icon: "error",
+                    confirmButtonText: "다시 시도",
+                });
             },
         );
     };
@@ -73,9 +95,9 @@ const LoginPage = () => {
                             </p>
                         </div>
                         <div className="mt-8 text-center">
-                            <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
+                            {/* <button className="bg-blue-700 text-white font-bold py-2 px-4 mx-auto w-full rounded max-w-100  hover:bg-blue-600">
                                 문의하기
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div

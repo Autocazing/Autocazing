@@ -1,58 +1,88 @@
+import MaterialManagementModal from "../../pages/order/MaterialManagementModal";
 import modifyIcon from "../../images/orderlist/modify.svg";
 import deleteIcon from "../../images/orderlist/delete.svg";
+import { useEffect, useState } from "react";
+import { DelRestock, PutStatus } from "../../apis/server/OrderApi";
+import Swal from "sweetalert2";
 
-const CartList = [
-    // 테스트용
-    {
-        name: "우유",
-        amount: 1,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "원두",
-        amount: 2,
-        price: "8000",
-        company: "동민상사",
-        ordertime: 2,
-    },
-    {
-        name: "연유",
-        amount: 1,
-        price: "9000",
-        company: "민호상사",
-        ordertime: 7,
-    },
-    {
-        name: "우유2",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-    {
-        name: "우유3",
-        amount: 99,
-        price: "2000",
-        company: "동민상사",
-        ordertime: 1,
-    },
-];
+const CartListTable = ({ Basket }) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [cartList, setCartList] = useState([]);
+    const [itemNo, setItemNo] = useState(0);
+    const [putNo, setPutNo] = useState(0);
+    const deleteStock = DelRestock(itemNo);
+    const putStatus = PutStatus(putNo);
 
-const CartListTable = () => {
+    // useEffect(() => {
+    //     console.log(cartList);
+    // }, [cartList]);
+
+    useEffect(() => {
+        if (Basket !== undefined) {
+            //console.log(Basket[0].restockOrderId);
+            setPutNo(Basket[0].restockOrderId);
+            setCartList(Basket[0].specifics);
+        }
+    }, [Basket]);
+
+    const handleItemClick = (item) => {
+        // console.log(item);
+        setSelectedItem(item);
+        setModalIsOpen(true);
+    };
+
+    const deleteItem = (item) => {
+        const updatedCartList = cartList.filter(
+            (cartItem) =>
+                cartItem.restockOrderSpecificId !== item.restockOrderSpecificId,
+        );
+        setCartList(updatedCartList);
+
+        setSelectedItem(item);
+        setItemNo(item.restockOrderSpecificId);
+        deleteStock.mutate();
+    };
+
+    const Order = () => {
+        if (cartList.length > 0) {
+            putStatus.mutate(
+                { status: "ORDERED" },
+                {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: "발주 완료!",
+                            text: "발주가 성공적으로 처리되었습니다.",
+                            icon: "success",
+                            iconColor: "#3C50E0",
+                            confirmButtonText: "확인",
+                            confirmButtonColor: "#3C50E0",
+                        });
+                        setCartList([]); // Clear cart after order
+                    },
+                },
+            );
+        }
+    };
+
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="flex-col gap-3 flex sm:flex-row sm:items-center sm:justify-between">
                 <h4 className="mb-6 text-xl font-semibold text-black dark:text-white flex-row">
                     Cart List
                 </h4>
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    onClick={() => Order()}
+                >
                     발주하기
                 </button>
             </div>
 
-            <div className="flex flex-col">
+            <div
+                style={{ height: "35rem" }}
+                className="flex flex-col overflow-auto"
+            >
                 <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
                     <div className="p-2.5 xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
@@ -61,7 +91,7 @@ const CartListTable = () => {
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            용량
+                            총량
                         </h5>
                     </div>
                     <div className="p-2.5 text-center xl:p-5">
@@ -76,7 +106,7 @@ const CartListTable = () => {
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
                         <h5 className="text-sm font-medium uppercase xsm:text-base">
-                            배송소요기간
+                            배송 소요기간
                         </h5>
                     </div>
                     <div className="hidden p-2.5 text-center sm:block xl:p-5">
@@ -86,55 +116,78 @@ const CartListTable = () => {
                     </div>
                 </div>
 
-                {CartList.map((order, key) => (
+                {cartList.map((order, key) => (
                     <div
                         className={`grid grid-cols-3 sm:grid-cols-6 ${
-                            key === CartList.length - 1
+                            key === cartList.length - 1
                                 ? ""
                                 : "border-b border-stroke dark:border-strokedark"
                         }`}
                         key={key}
                     >
                         <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                            <div className="flex-shrink-0">
-                                사진
-                                {/* <img src={brand.logo} alt="Brand" /> */}
-                            </div>
                             <p className="hidden text-black dark:text-white sm:block">
-                                {order.name}
+                                {order.ingredientName}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.amount}
+                                {order.ingredientQuanrtity.toLocaleString()}
                             </p>
                         </div>
 
                         <div className="flex items-center justify-center p-2.5 xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.price}
+                                {order.ingredientPrice.toLocaleString()}
                             </p>
                         </div>
 
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.company}
+                                {order.venderName}
                             </p>
                         </div>
 
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
                             <p className="text-black dark:text-white">
-                                {order.ordertime}
+                                {order.deliveryTime} 일
                             </p>
                         </div>
                         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                            <button className="mr-2">
-                                <img src={modifyIcon} alt="Modify" />
+                            <button
+                                className="mr-2"
+                                onClick={() => handleItemClick(order)}
+                            >
+                                <img
+                                    src={modifyIcon}
+                                    alt="Modify"
+                                    onClick={() => setModalIsOpen(true)}
+                                />
                             </button>
                             <button>
-                                <img src={deleteIcon} alt="delete" />
+                                <img
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    onClick={() => deleteItem(order)}
+                                />
                             </button>
+                            {modalIsOpen && selectedItem && (
+                                <MaterialManagementModal
+                                    setCartList={setCartList}
+                                    cartList={cartList}
+                                    isOpen={modalIsOpen}
+                                    onClose={() => setModalIsOpen(false)}
+                                    initialValue={{
+                                        ingredientName:
+                                            selectedItem.ingredientName,
+                                        ingredientQuantity:
+                                            selectedItem.ingredientQuanrtity,
+                                        restockOrderSpecificId:
+                                            selectedItem.restockOrderSpecificId,
+                                    }}
+                                />
+                            )}
                         </div>
                     </div>
                 ))}

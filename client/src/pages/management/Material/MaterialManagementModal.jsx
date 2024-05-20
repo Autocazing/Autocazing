@@ -1,7 +1,14 @@
 import Modal from "react-modal";
-import { useState } from "react";
-import closeIcon from "../../images/icon/close.svg";
-
+import { useEffect, useState } from "react";
+import closeIcon from "../../../images/icon/close.svg";
+import { CompanyGetApi } from "../../../apis/server/CompanyApi";
+import {
+    MaterialScaleGetApi,
+    MaterialPostApi,
+    MaterialScalePostApi,
+    MaterialEditApi,
+} from "../../../apis/server/MaterialApi";
+import Swal from "sweetalert2";
 const customStyles = {
     overlay: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -29,75 +36,145 @@ const customStyles = {
         overflow: "auto",
     },
 };
-const MaterialManagementModal = ({ isOpen, onClose }) => {
+const MaterialManagementModal = ({ isOpen, onClose, initialValue }) => {
     const [materialPostData, setMaterialPostData] = useState({
-        picture: "",
-        name: "",
-        price: 0,
-        volume: 0,
-        unit: "",
-        minimum: 0,
-        orderVolume: 0,
-        period: 0,
-        companyName: "",
+        storeId: 1,
+        venderId: initialValue.venderId || 0, // disable 속성 없애서 0으로 둠
+        ingredientName: initialValue.ingredientName || "",
+        ingredientPrice: initialValue.ingredientPrice || 0,
+        ingredientCapacity: initialValue.ingredientCapacity || 0,
+        scale: initialValue.scale || { scaleId: 1, unit: "" },
+        minimumCount: initialValue.minimumCount || 0,
+        deliveryTime: initialValue.deliveryTime || 0,
+        orderCount: initialValue.orderCount || 0,
+        imageUrl: "",
     });
+
     const [isDirectInput, setIsDirectInput] = useState(false);
+
+    const postMaterial = MaterialPostApi();
+    const postMaterialScale = MaterialScalePostApi();
+    const editMaterial = MaterialEditApi(initialValue.ingredientId);
+    const {
+        data: companyInfo,
+        isLoading: companyLoading,
+        isError: companyError,
+        error: companyErrorInfo,
+    } = CompanyGetApi();
+    const {
+        data: materialScaleInfo,
+        isLoading: scaleLoading,
+        isError: scaleError,
+        error: scaleErrorInfo,
+    } = MaterialScaleGetApi();
+
+    // API 호출 결과를 기다리는 중에 조건부 렌더링을 하지 않도록 합니다.
+    if (companyLoading || scaleLoading) {
+        return <div>Loading...</div>; // 로딩 상태 처리
+    }
+
+    if (companyError || scaleError) {
+        return (
+            <div>
+                {companyError
+                    ? `Error loading company data: ${companyErrorInfo.message}`
+                    : ""}
+                {scaleError
+                    ? `Error loading scale data: ${scaleErrorInfo.message}`
+                    : ""}
+            </div>
+        ); // 에러 상태 처리
+    }
+
+    const handleSubmit = (e) => {
+        postMaterial.mutate(materialPostData); // 재료 정보 추가
+        postMaterialScale.mutate(materialPostData.scale); // 스케일 정보 추가
+        onClose(); // 모달 닫기
+
+        Swal.fire({
+            // 성공 알림 표시
+            title: "재료 추가 완료!",
+            text: "재료 정보가 성공적으로 추가되었습니다.",
+            icon: "success",
+            iconColor: "#3C50E0",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3C50E0",
+        });
+    };
+
+    const handleEdit = (e) => {
+        editMaterial.mutate(materialPostData, {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "재료 수정 완료!",
+                    text: "재료 정보가 성공적으로 수정되었습니다.",
+                    icon: "success",
+                    iconColor: "#3C50E0",
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3C50E0",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onClose();
+                    }
+                });
+            },
+        });
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setMaterialPostData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-        // console.log(materialPostData);
+        if (name === "venderId") {
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                venderId: value, // 선택된 업체의 ID를 venderId로 저장
+                // companyName: selectedText, // 선택된 업체의 이름을 저장, 필요하지 않으면 이 라인 제거
+            }));
+        } else {
+            setMaterialPostData((prevState) => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
+
+        console.log(value);
     };
+
+    // const handleInputChange = (event) => {
+    //     const { name, value } = event.target;
+    //     setMaterialPostData((prevState) => ({
+    //         ...prevState,
+    //         [name]: value,
+    //     }));
+    // };
     const handleUnitChange = (event) => {
         const { value } = event.target;
         if (value === "직접입력") {
             setIsDirectInput(true);
             setMaterialPostData((prevState) => ({
                 ...prevState,
-                unit: value,
+                scale: { scaleId: 0, unit: "" },
             }));
         } else {
             setIsDirectInput(false);
+            const selectedScale = materialScaleInfo.find(
+                (scale) => scale.unit === value,
+            );
             setMaterialPostData((prevState) => ({
                 ...prevState,
-                unit: value,
+                scale: {
+                    scaleId: selectedScale.scaleId,
+                    unit: selectedScale.unit,
+                },
             }));
         }
-
-        console.log(materialPostData);
     };
 
     const handleDirectUnitInput = (event) => {
         const { value } = event.target;
-        if (isDirectInput) {
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                unit: value,
-            }));
-        }
-        console.log(materialPostData);
-    };
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setMaterialPostData((prevState) => ({
-                    ...prevState,
-                    picture: e.target.result,
-                }));
-            };
-            reader.readAsDataURL(file);
-        } else {
-            setMaterialPostData((prevState) => ({
-                ...prevState,
-                picture: "",
-            }));
-        }
-        // console.log(materialPostData);
+        setMaterialPostData((prevState) => ({
+            ...prevState,
+            scale: { ...prevState.scale, unit: value },
+        }));
     };
 
     return (
@@ -125,46 +202,24 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                     />
                 </button>
             </div>
-            <h1 className="text-3xl my-4 font-semibold text-black dark:text-white">
-                재료추가
-            </h1>
+            {Object.keys(initialValue).length === 0 ? (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재료 추가
+                </h1>
+            ) : (
+                <h1 className="text-center text-3xl my-4 font-semibold text-black dark:text-white">
+                    재료 수정
+                </h1>
+            )}
             <div className="p-6.5">
-                <div className="mb-4.5">
-                    <div className="flex justify-center items-center mb-3">
-                        <div className="w-36 h-36 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-lg">
-                            {materialPostData.picture ? (
-                                <img
-                                    src={materialPostData.picture}
-                                    alt="Preview"
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            ) : (
-                                "재료사진"
-                            )}
-                        </div>
-                    </div>
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        재료 사진
-                    </label>
-                    <input
-                        onChange={handleFileChange}
-                        name="picture"
-                        type="file"
-                        className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                    />
-                </div>
                 <div className="mb-0.5 flex flex-col gap-6 xl:flex-row">
                     <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
                             재료명
                         </label>
                         <input
-                            name="name"
-                            value={materialPostData.name}
+                            name="ingredientName"
+                            value={materialPostData.ingredientName}
                             onChange={handleInputChange}
                             type="text"
                             placeholder="재료명 입력"
@@ -176,10 +231,11 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                             재료가격
                         </label>
                         <input
-                            name="price"
-                            value={materialPostData.price}
+                            name="ingredientPrice"
+                            value={materialPostData.ingredientPrice}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="재료 가격 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -192,10 +248,11 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                             용량
                         </label>
                         <input
-                            name="volume"
-                            value={materialPostData.volume}
+                            name="ingredientCapacity"
+                            value={materialPostData.ingredientCapacity}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="제품 용량 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -210,48 +267,20 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                             value={
                                 isDirectInput
                                     ? "직접입력"
-                                    : materialPostData.unit
+                                    : materialPostData.scale.unit
                             }
                             onChange={handleUnitChange}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         >
-                            <option
-                                value=""
-                                disabled
-                                className="text-body dark:text-bodydark"
-                            >
+                            <option value="" disabled>
                                 단위 선택
                             </option>
-                            <option
-                                value="g"
-                                className="text-body dark:text-bodydark"
-                            >
-                                g
-                            </option>
-                            <option
-                                value="kg"
-                                className="text-body dark:text-bodydark"
-                            >
-                                kg
-                            </option>
-                            <option
-                                value="L"
-                                className="text-body dark:text-bodydark"
-                            >
-                                L
-                            </option>
-                            <option
-                                value="ml"
-                                className="text-body dark:text-bodydark"
-                            >
-                                ml
-                            </option>
-                            <option
-                                value="직접입력"
-                                className="text-body dark:text-bodydark"
-                            >
-                                직접입력
-                            </option>
+                            {materialScaleInfo.map((scale) => (
+                                <option key={scale.scaleId} value={scale.unit}>
+                                    {scale.unit}
+                                </option>
+                            ))}
+                            <option value="직접입력">직접입력</option>
                         </select>
                         {isDirectInput && (
                             <input
@@ -269,10 +298,11 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                             재료 최소 개수
                         </label>
                         <input
-                            name="minimum"
-                            value={materialPostData.minimum}
+                            name="minimumCount"
+                            value={materialPostData.minimumCount}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="임계점 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -283,10 +313,11 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                             자동 발주 수량
                         </label>
                         <input
-                            name="orderVolume"
-                            value={materialPostData.orderVolume}
+                            name="orderCount"
+                            value={materialPostData.orderCount}
                             onChange={handleInputChange}
                             type="number"
+                            min={0}
                             placeholder="자동 발주 수량 입력"
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -297,10 +328,11 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                         배송 소요 기간
                     </label>
                     <input
-                        name="period"
-                        value={materialPostData.period}
+                        name="deliveryTime"
+                        value={materialPostData.deliveryTime}
                         onChange={handleInputChange}
                         type="number"
+                        min={0}
                         placeholder="배송 소요 기간 입력"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -311,42 +343,38 @@ const MaterialManagementModal = ({ isOpen, onClose }) => {
                         담당 업체명
                     </label>
                     <select
-                        name="companyName"
-                        value={materialPostData.companyName}
+                        name="venderId"
+                        value={materialPostData.venderId}
                         onChange={handleInputChange}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                        <option
-                            value=""
-                            disabled
-                            className="text-body dark:text-bodydark"
-                        >
-                            담당 업체를 선택해주세요.
-                        </option>
-                        <option
-                            value="지호원두"
-                            className="text-body dark:text-bodydark"
-                        >
-                            지호 원두
-                        </option>
-                        <option
-                            value="동민 원두"
-                            className="text-body dark:text-bodydark"
-                        >
-                            동민 원두
-                        </option>
-                        <option
-                            value="영후 원두"
-                            className="text-body dark:text-bodydark"
-                        >
-                            영후 원두
-                        </option>
+                        <option value="">담당 업체를 선택해주세요.</option>
+                        {companyInfo.map((company) => (
+                            <option
+                                key={company.venderId}
+                                value={company.venderId}
+                            >
+                                {company.venderName}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ">
-                    추가하기
-                </button>
+                {Object.keys(initialValue).length === 0 ? (
+                    <button
+                        onClick={handleSubmit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        추가하기
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleEdit}
+                        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 "
+                    >
+                        수정하기
+                    </button>
+                )}
             </div>
         </Modal>
     );

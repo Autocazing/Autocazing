@@ -1,7 +1,88 @@
 import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
+import { useEffect, useState, useRef } from "react";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { GetAlarmList } from "../../apis/server/Alarm";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import AlarmManagementModal from "./AlarmManagementModal";
 
 const Header = (props) => {
+    // 알림 SSE 구현
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [orderName, setOrderName] = useState(); // 발주 데이터
+
+    const token = localStorage.getItem("accessToken");
+
+    const [alarmlist, setAlarmlist] = useState([]);
+    const { data: alarmInfo } = GetAlarmList();
+    const posPage = window.location.pathname === "/pos";
+    const queryClient = useQueryClient();
+
+    //console.log(alarmInfo);
+
+    useEffect(() => {
+        if (alarmInfo) {
+            setAlarmlist(alarmInfo);
+        }
+    }, [alarmInfo]);
+
+    useEffect(() => {
+        if (token) {
+            // login 되었을 때
+            try {
+                const EventSource = EventSourcePolyfill;
+                const fetchSse = async () => {
+                    const eventSource = new EventSource(
+                        `https://k10e204.p.ssafy.io/api/alerts/connect`, // url 추가해야함
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                            withCredentials: true,
+                            heartbeatTimeout: 150000000,
+                        },
+                    );
+
+                    eventSource.addEventListener("connect", (e) => {
+                        console.log(e);
+                        queryClient.invalidateQueries("Alarm");
+                    });
+
+                    eventSource.addEventListener("restock", (e) => {
+                        console.log("restock", e);
+                        // console.log(
+                        //     "보낼 이름",
+                        //     e.ingredientWarnInfo.ingredientName,
+                        // );
+                        const parsedData = JSON.parse(e.data);
+                        setOrderName(parsedData.ingredientName);
+                        setModalIsOpen(true);
+                    });
+
+                    eventSource.addEventListener("sales", (e) => {
+                        console.log("sales 갱신", e);
+                        queryClient.invalidateQueries("GetSales");
+                        queryClient.invalidateQueries("GetSalesDay");
+                        queryClient.invalidateQueries("GetSalesMonth");
+                        queryClient.invalidateQueries("GetSalesMonthAvg");
+                    });
+
+                    eventSource.addEventListener("delivering", (e) => {
+                        console.log("delivery 갱신", e);
+                        queryClient.invalidateQueries("GetOredered");
+                    });
+                };
+
+                fetchSse();
+            } catch (err) {
+                console.log("실시간 알람 통신 에러", err);
+            }
+        }
+    }, [token]);
+
+    if (posPage) {
+        return <></>;
+    }
     return (
         <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
             <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -62,14 +143,16 @@ const Header = (props) => {
                         action="https://formbold.com/s/unique_form_id"
                         method="POST"
                     >
-                        <div className="relative">오토카징</div>
+                        <div className="font-bold relative">
+                            지점명: SsataBucks
+                        </div>
                     </form>
                 </div>
 
                 <div className="flex items-center gap-3 2xsm:gap-7">
                     <ul className="flex items-center gap-2 2xsm:gap-4">
                         {/* <!-- Notification Menu Area --> */}
-                        <DropdownNotification />
+                        <DropdownNotification alarmlist={alarmlist} />
                         {/* <!-- Notification Menu Area --> */}
                     </ul>
 
@@ -78,6 +161,14 @@ const Header = (props) => {
                     {/* <!-- User Area --> */}
                 </div>
             </div>
+
+            {modalIsOpen && (
+                <AlarmManagementModal
+                    isOpen={modalIsOpen}
+                    onClose={() => setModalIsOpen(false)}
+                    orderName={orderName}
+                />
+            )}
         </header>
     );
 };
