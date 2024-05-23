@@ -56,15 +56,15 @@
 
 ### INVENTORY SERVICE
 
-<img src="/exec/assets/erd_inventory_service.png">
+<img width="800" height="500" src="/exec/assets/erd_inventory_service.png">
 
 ### ALERT SERVICE
 
-<img src="/exec/assets/erd_alert_service.png">
+<img width="800" height="500" src="/exec/assets/erd_alert_service.png">
 
 ### SOLUTION SERVICE
 
-<img src="/exec/assets/erd_solution_service.png">
+<img width="800" height="500" src="/exec/assets/erd_solution_service.png">
 
 ## 아키텍쳐
 
