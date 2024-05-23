@@ -17,10 +17,10 @@
 | **메인 페이지**      |                   **대시보드**                    | <img src="exec/assets/service_example/dashoard_1.png" width="450" height="250" />     |
 |                      |               **알림 리스트 조회**                | <img src="exec/assets/service_example/main_alert.png" width="450" height="250" />     |
 | **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="450" height="250" />         |
-| **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/report_1.png" width="450" height="250" />       |
+| **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/restock_1.png" width="450" height="250" />      |
+|                      |          **재료 발주 리스트 추가 알림**           | <img src="exec/assets/service_example/restock_alert.png" width="450" height="250" />  |
 |                      |               **완료된 발주 관리**                | <img src="exec/assets/service_example/restock_2.png" width="450" height="250" />      |
-|                      |                 **장바구니 관리**                 | <img src="exec/assets/service_example/report_3.png" width="450" height="250" />       |
-|                      |           **재료 발주리스트 추가 알림**           | <img src="exec/assets/service_example/report_1.png" width="450" height="250" />       |
+|                      |                 **장바구니 관리**                 | <img src="exec/assets/service_example/restock_3.png" width="450" height="250" />      |
 | **리포트 조회**      |             **지난 리포트 전체 조회**             | <img src="exec/assets/service_example/report_1.png" width="450" height="250" />       |
 |                      |             **지난 리포트 상세 조회**             | <img src="exec/assets/service_example/report_2.png" width="450" height="250" />       |
 |                      | **유통기한 마감 임박 재료 처리 방법 솔루션 제공** | <img src="exec/assets/service_example/report_3.png" width="450" height="250" />       |
