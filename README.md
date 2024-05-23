@@ -3,7 +3,7 @@
 ## :mag: 서비스 소개
 
 <p text-align="center">
-<img width="700" src="exec/assets/logo.png">
+<img width="500" src="exec/assets/logo.png">
 </p>
 가게 운영에 있어 발주는 상시로 해야 하는, 많은 시간을 들여야 하는 중요하면서도 귀찮은 과정입니다. 발주가 제대로 되지 않으면 가게 운영 자체가 힘들어집니다.
 
