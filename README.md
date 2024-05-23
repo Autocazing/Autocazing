@@ -29,8 +29,6 @@
 |                      |                   **메뉴 관리**                   | <img src="exec/assets/service_example/store_manage_3.png" width="450" height="250" /> |
 |                      |                   **재고 관리**                   | <img src="exec/assets/service_example/store_manage_4.png" width="450" height="250" /> |
 
-## :wrench: 주요 기능
-
 ## :page_facing_up: 기술 스택
 
 ### FrontEnd
