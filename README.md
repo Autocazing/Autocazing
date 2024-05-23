@@ -60,7 +60,7 @@
 
 ### ALERT SERVICE
 
-<img width="800" height="500" src="/exec/assets/erd_alert_service.png">
+<img width="400" height="250" src="/exec/assets/erd_alert_service.png">
 
 ### SOLUTION SERVICE
 
