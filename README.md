@@ -27,9 +27,11 @@
 
 ## :page_facing_up: 기술 스택
 
-### Back
+### FrontEnd
 
-### Infra
+### BackEnd
+
+### Infrastructure
 
 ### Communication
 
@@ -45,11 +47,11 @@
 
 <table>
   <tr style="width : 100%">
-    <td align="center"><img src="" width="120" height="120" /><br />김민</td>
-    <td align="center"><img src="" width="120" height="120" /><br />김영후</td>
-    <td align="center"><img src="" width="120" height="120" /><br />문지호</td>
-    <td align="center"><img src="" width="120" height="120" /><br />박민호</td>
-    <td align="center"><img src="" width="120" height="120" /><br />위동민</td>
-    <td align="center"><img src="" width="120" height="120" /><br />진성민</td>
+    <td align="center"><img src="/exec/assets/min.png" width="120" height="120" /><br />김민</td>
+    <td align="center"><img src="/exec/assets/hoo.png" width="120" height="120" /><br />김영후</td>
+    <td align="center"><img src="/exec/assets/moon.png" width="120" height="120" /><br />문지호</td>
+    <td align="center"><img src="/exec/assets/park.png" width="120" height="120" /><br />박민호</td>
+    <td align="center"><img src="/exec/assets/dong.png" width="120" height="120" /><br />위동민</td>
+    <td align="center"><img src="/exec/assets/jin.png" width="120" height="120" /><br />진성민</td>
   </tr>
 </table>
