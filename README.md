@@ -14,20 +14,20 @@
 
 | 기능                 |                       설명                        | 이미지 예시                                                                           |
 | -------------------- | :-----------------------------------------------: | ------------------------------------------------------------------------------------- |
-| **메인 페이지**      |                   **대시보드**                    | <img src="exec/assets/service_example/dashoard_1.png" width="200" height="400" />     |
-| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="200" height="400" />         |
-| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="200" height="400" />         |
-| **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
-|                      |               **완료된 발주 관리**                | <img src="exec/assets/service_example/restock_2.png" width="200" height="400" />      |
-|                      |                 **장바구니 관리**                 | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
-|                      |           **재료 발주리스트 추가 알림**           | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
-| **리포트 조회**      |             **지난 리포트 전체 조회**             | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
-|                      |             **지난 리포트 상세 조회**             | <img src="exec/assets/service_example/report_2.png" width="200" height="400" />       |
-|                      | **유통기한 마감 임박 재료 처리 방법 솔루션 제공** | <img src="exec/assets/service_example/report_3.png" width="200" height="400" />       |
-| **가게 관리**        |                   **업체 관리**                   | <img src="exec/assets/service_example/store_manage_1.png" width="200" height="400" /> |
-|                      |                   **재료 관리**                   | <img src="exec/assets/service_example/store_manage_2.png" width="200" height="400" /> |
-|                      |                   **메뉴 관리**                   | <img src="exec/assets/service_example/store_manage_3.png" width="200" height="400" /> |
-|                      |                   **재고 관리**                   | <img src="exec/assets/service_example/store_manage_4.png" width="200" height="400" /> |
+| **메인 페이지**      |                   **대시보드**                    | <img src="exec/assets/service_example/dashoard_1.png" width="400" height="250" />     |
+| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="400" height="250" />         |
+| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="400" height="250" />         |
+| **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/report_1.png" width="400" height="250" />       |
+|                      |               **완료된 발주 관리**                | <img src="exec/assets/service_example/restock_2.png" width="400" height="250" />      |
+|                      |                 **장바구니 관리**                 | <img src="exec/assets/service_example/report_1.png" width="400" height="250" />       |
+|                      |           **재료 발주리스트 추가 알림**           | <img src="exec/assets/service_example/report_1.png" width="400" height="250" />       |
+| **리포트 조회**      |             **지난 리포트 전체 조회**             | <img src="exec/assets/service_example/report_1.png" width="400" height="250" />       |
+|                      |             **지난 리포트 상세 조회**             | <img src="exec/assets/service_example/report_2.png" width="400" height="250" />       |
+|                      | **유통기한 마감 임박 재료 처리 방법 솔루션 제공** | <img src="exec/assets/service_example/report_3.png" width="400" height="250" />       |
+| **가게 관리**        |                   **업체 관리**                   | <img src="exec/assets/service_example/store_manage_1.png" width="400" height="250" /> |
+|                      |                   **재료 관리**                   | <img src="exec/assets/service_example/store_manage_2.png" width="400" height="250" /> |
+|                      |                   **메뉴 관리**                   | <img src="exec/assets/service_example/store_manage_3.png" width="400" height="250" /> |
+|                      |                   **재고 관리**                   | <img src="exec/assets/service_example/store_manage_4.png" width="400" height="250" /> |
 
 ## :wrench: 주요 기능
 
