@@ -54,6 +54,18 @@
 
 ## ERD
 
+### INVENTORY SERVICE
+
+<img src="/exec/assets/erd_inventory_service.png">
+
+### ALERT SERVICE
+
+<img src="/exec/assets/erd_alert_service.png">
+
+### SOLUTION SERVICE
+
+<img src="/exec/assets/erd_solution_service.png">
+
 ## 아키텍쳐
 
 ## 팀원 소개
