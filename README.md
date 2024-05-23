@@ -12,16 +12,22 @@
 
 ## :tv: 서비스 화면
 
-| 기능            |         설명          | 이미지 예시                                                           |
-| --------------- | :-------------------: | --------------------------------------------------------------------- |
-| **로딩 페이지** |    **소셜 로그인**    | <img src="exec/assets/landing.gif" width="200" height="400" />        |
-| **코스 추천**   |    **출발지 설정**    | <img src="exec/assets/findlocation.gif" width="200" height="400" />   |
-|                 |  **코스 옵션 설정**   | <img src="exec/assets/createoption.gif" width="200" height="400" />   |
-|                 |  **코스 추천 결과**   | <img src="exec/assets/createcomplete.gif" width="200" height="400" /> |
-|                 | **코스 선택 및 저장** | <img src="exec/assets/selectcourse.gif" width="200" height="400" />   |
-| **코스 주행**   |     **코스 조회**     | <img src="exec/assets/image-2.png" width="200" height="400" />        |
-|                 |     **코스 주행**     | <img src="exec/assets/drive.gif" width="200" height="400" />          |
-| **코스 커스텀** |    **코스 커스텀**    | <img src="exec/assets/custom.gif" width="200" height="400" />         |
+| 기능                 |                       설명                        | 이미지 예시                                                                           |
+| -------------------- | :-----------------------------------------------: | ------------------------------------------------------------------------------------- |
+| **메인 페이지**      |                   **대시보드**                    | <img src="exec/assets/service_example/dashoard_1.png" width="200" height="400" />     |
+| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="200" height="400" />         |
+| **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="200" height="400" />         |
+| **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
+|                      |               **완료된 발주 관리**                | <img src="exec/assets/service_example/restock_2.png" width="200" height="400" />      |
+|                      |                 **장바구니 관리**                 | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
+|                      |           **재료 발주리스트 추가 알림**           | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
+| **리포트 조회**      |             **지난 리포트 전체 조회**             | <img src="exec/assets/service_example/report_1.png" width="200" height="400" />       |
+|                      |             **지난 리포트 상세 조회**             | <img src="exec/assets/service_example/report_2.png" width="200" height="400" />       |
+|                      | **유통기한 마감 임박 재료 처리 방법 솔루션 제공** | <img src="exec/assets/service_example/report_3.png" width="200" height="400" />       |
+| **가게 관리**        |                   **업체 관리**                   | <img src="exec/assets/service_example/store_manage_1.png" width="200" height="400" /> |
+|                      |                   **재료 관리**                   | <img src="exec/assets/service_example/store_manage_2.png" width="200" height="400" /> |
+|                      |                   **메뉴 관리**                   | <img src="exec/assets/service_example/store_manage_3.png" width="200" height="400" /> |
+|                      |                   **재고 관리**                   | <img src="exec/assets/service_example/store_manage_4.png" width="200" height="400" /> |
 
 ## :wrench: 주요 기능
 
