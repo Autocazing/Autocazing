@@ -15,6 +15,7 @@
 | 기능                 |                       설명                        | 이미지 예시                                                                           |
 | -------------------- | :-----------------------------------------------: | ------------------------------------------------------------------------------------- |
 | **메인 페이지**      |                   **대시보드**                    | <img src="exec/assets/service_example/dashoard_1.png" width="450" height="250" />     |
+|                      |               **알림 리스트 조회**                | <img src="exec/assets/service_example/main_alert.png" width="450" height="250" />     |
 | **매출 데이터 조회** |               **매출 데이터 조회**                | <img src="exec/assets/service_example/data_1.png" width="450" height="250" />         |
 | **발주 관리**        |              **진행 중인 발주 관리**              | <img src="exec/assets/service_example/report_1.png" width="450" height="250" />       |
 |                      |               **완료된 발주 관리**                | <img src="exec/assets/service_example/restock_2.png" width="450" height="250" />      |
