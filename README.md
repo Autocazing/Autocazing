@@ -68,7 +68,7 @@
 
 ## 아키텍쳐
 
-<img src="/exec/assets/architecture.png">
+<img width="300" height="120" src="/exec/assets/architecture.png">
 
 ## 팀원 소개
 
