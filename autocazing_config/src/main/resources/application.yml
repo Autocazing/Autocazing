@@ -6,7 +6,7 @@ spring:
     active: ${profile}
 
   application:
-    name: config-server
+    name: config
   output:
     ansi:
       enabled: ALWAYS

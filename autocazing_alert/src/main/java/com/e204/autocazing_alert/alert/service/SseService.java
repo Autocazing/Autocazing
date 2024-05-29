@@ -4,7 +4,6 @@ import com.e204.autocazing_alert.db.entity.AlertEntity;
 import com.e204.autocazing_alert.db.repository.AlertRepository;
 import com.e204.autocazing_alert.kafka.entity.ConsumerEntity;
 import com.e204.autocazing_alert.kafka.entity.IngredientWarnEntity;
-import com.e204.autocazing_alert.kafka.entity.IngredientWarnInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -48,13 +47,13 @@ public class SseService {
     }
 
     //발주 시 보내는 알림
-    public void sendRestockNotification(String loginId, IngredientWarnInfoEntity ingredientWarnInfoEntity) {
+    public void sendRestockNotification(String loginId, IngredientWarnEntity ingredientWarnEntity) {
         SseEmitter emitter = emitters.get(loginId);
 
         System.out.println("loginId 로 가져온 emitter 로 알림~" + loginId);
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("restock").data(ingredientWarnInfoEntity));
+                emitter.send(SseEmitter.event().name("restock").data(ingredientWarnEntity));
                 System.out.println("restock 알림 보냈슈");
                 AlertEntity alertEntity = new AlertEntity();
                 alertEntity.setContent("발주를 넣을까요?");

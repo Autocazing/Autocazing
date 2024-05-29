@@ -14,7 +14,7 @@ public class RestockSpecificResponseDto {
     private Integer restockOrderId;
     private Integer ingredientQuantity;
     private Integer ingredientPrice;
-    private String vendorName;
+    private String venderName;
     private String status;
 }
 

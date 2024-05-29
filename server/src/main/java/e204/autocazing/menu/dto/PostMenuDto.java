@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostMenuDto {
+
     private String menuName;
     private Integer menuPrice;
     private Boolean onEvent;
